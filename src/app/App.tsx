@@ -1,0 +1,231 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
+import { Sidebar } from '@/app/components/Sidebar';
+import { AdminSidebar } from '@/app/components/AdminSidebar';
+import { PublicNavbar } from '@/app/components/PublicNavbar';
+import { ToastProvider } from '@/app/components/ToastProvider';
+import { DashboardPage } from '@/app/components/pages/DashboardPage';
+import { PotsPage } from '@/app/components/pages/PotsPage';
+import { MonitoringPage } from '@/app/components/pages/MonitoringPage';
+import { RecognitionPage } from '@/app/components/pages/RecognitionPage';
+import { CoursesPage } from '@/app/components/pages/CoursesPage';
+import { GamesPage } from '@/app/components/pages/GamesPage';
+import { ShopPage } from '@/app/components/pages/ShopPage';
+import { ContactPage } from '@/app/components/pages/ContactPage';
+import { AdminPage } from '@/app/components/pages/AdminPage';
+import { AdminUsersPage } from '@/app/components/pages/AdminUsersPage';
+import { AdminPotsPage } from '@/app/components/pages/AdminPotsPage';
+import { AdminOrdersPage } from '@/app/components/pages/AdminOrdersPage';
+import { AdminCoursesPage } from '@/app/components/pages/AdminCoursesPage';
+import { AdminGamesPage } from '@/app/components/pages/AdminGamesPage';
+import { LoginPage } from '@/app/components/pages/LoginPage';
+import { SignupPage } from '@/app/components/pages/SignupPage';
+import { LandingPage } from '@/app/components/pages/LandingPage';
+import { PlantCarePage } from '@/app/components/pages/PlantCarePage';
+import { GamesDemoPage } from '@/app/components/pages/GamesDemoPage';
+import { CoursesPreviewPage } from '@/app/components/pages/CoursesPreviewPage';
+import { SettingsPage } from '@/app/components/pages/SettingsPage';
+
+type UserRole = 'visitor' | 'client' | 'admin';
+
+export default function App() {
+  const [currentPage, setCurrentPage] = useState('landing');
+  const [userRole, setUserRole] = useState<UserRole>('visitor');
+
+  const handleLogin = (email: string, password: string) => {
+    // Mock authentication
+    if (email.includes('admin')) {
+      setUserRole('admin');
+      toast.success('Connexion administrateur réussie!', {
+        description: 'Bienvenue dans le panneau d\'administration',
+      });
+      setCurrentPage('admin-dashboard');
+    } else {
+      setUserRole('client');
+      toast.success('Connexion réussie!', {
+        description: 'Bienvenue sur Smart Plant Care Platform',
+      });
+      setCurrentPage('dashboard');
+    }
+  };
+
+  const handleSignup = (name: string, email: string, password: string) => {
+    // Mock signup
+    setUserRole('client');
+    toast.success('Compte créé avec succès!', {
+      description: `Bienvenue ${name} !`,
+    });
+    setCurrentPage('dashboard');
+  };
+
+  const handleLogout = () => {
+    setUserRole('visitor');
+    setCurrentPage('landing');
+    toast.info('Déconnexion réussie', {
+      description: 'À bientôt !',
+    });
+  };
+
+  const handleNavigate = (page: string) => {
+    setCurrentPage(page);
+  };
+
+  // Visitor pages (public)
+  const renderVisitorPage = () => {
+    switch (currentPage) {
+      case 'landing':
+        return <LandingPage onNavigate={handleNavigate} />;
+      case 'plant-care':
+        return <PlantCarePage />;
+      case 'games-demo':
+        return <GamesDemoPage onNavigate={handleNavigate} />;
+      case 'courses-preview':
+        return <CoursesPreviewPage onNavigate={handleNavigate} />;
+      case 'login':
+        return <LoginPage onLogin={handleLogin} />;
+      case 'signup':
+        return <SignupPage onSignup={handleSignup} onNavigate={handleNavigate} />;
+      default:
+        return <LandingPage onNavigate={handleNavigate} />;
+    }
+  };
+
+  // Client pages (authenticated user)
+  const renderClientPage = () => {
+    switch (currentPage) {
+      case 'dashboard':
+        return <DashboardPage />;
+      case 'pots':
+        return <PotsPage />;
+      case 'monitoring':
+        return <MonitoringPage />;
+      case 'recognition':
+        return <RecognitionPage />;
+      case 'courses':
+        return <CoursesPage />;
+      case 'games':
+        return <GamesPage />;
+      case 'shop':
+        return <ShopPage />;
+      case 'contact':
+        return <ContactPage />;
+      case 'settings':
+        return <SettingsPage userRole="client" />;
+      default:
+        return <DashboardPage />;
+    }
+  };
+
+  // Admin pages
+  const renderAdminPage = () => {
+    switch (currentPage) {
+      case 'admin-dashboard':
+        return <AdminPage />;
+      case 'admin-users':
+        return <AdminUsersPage />;
+      case 'admin-pots':
+        return <AdminPotsPage />;
+      case 'admin-orders':
+        return <AdminOrdersPage />;
+      case 'admin-courses':
+        return <AdminCoursesPage />;
+      case 'admin-games':
+        return <AdminGamesPage />;
+      case 'admin-analytics':
+        return <AdminPage />; // Reuse dashboard for now
+      case 'admin-settings':
+        return <SettingsPage userRole="admin" />;
+      default:
+        return <AdminPage />;
+    }
+  };
+
+  // Visitor interface (public)
+  if (userRole === 'visitor') {
+    return (
+      <>
+        <ToastProvider />
+        <div className="min-h-screen bg-background">
+          <PublicNavbar currentPage={currentPage} onNavigate={handleNavigate} />
+          <main className="pt-16">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentPage}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                >
+                  {renderVisitorPage()}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </main>
+        </div>
+      </>
+    );
+  }
+
+  // Admin interface
+  if (userRole === 'admin') {
+    return (
+      <>
+        <ToastProvider />
+        <div className="flex min-h-screen bg-background">
+          <AdminSidebar 
+            currentPage={currentPage} 
+            onNavigate={handleNavigate}
+            onLogout={handleLogout}
+          />
+          <main className="flex-1 lg:ml-64 p-4 md:p-8">
+            <div className="max-w-7xl mx-auto">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentPage}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                >
+                  {renderAdminPage()}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </main>
+        </div>
+      </>
+    );
+  }
+
+  // Client interface (authenticated user)
+  return (
+    <>
+      <ToastProvider />
+      <div className="flex min-h-screen bg-background">
+        <Sidebar 
+          currentPage={currentPage} 
+          onNavigate={handleNavigate}
+          onLogout={handleLogout}
+          isAdmin={false}
+        />
+        <main className="flex-1 lg:ml-64 p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentPage}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+              >
+                {renderClientPage()}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </main>
+      </div>
+    </>
+  );
+}
