@@ -197,7 +197,7 @@ export function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      { (user.role || '').toString().toLowerCase() === 'admin'
+                      (user.role || '').toString().toLowerCase() === 'admin'
                         ? 'bg-purple-500/20 text-purple-600'
                         : 'bg-blue-500/20 text-blue-600'
                     }`}>
@@ -206,7 +206,7 @@ export function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      { (user.status || '').toString().toLowerCase() === 'active'
+                      (user.status || '').toString().toLowerCase() === 'active'
                         ? 'bg-green-500/20 text-green-600'
                         : 'bg-orange-500/20 text-orange-600'
                     }`}>

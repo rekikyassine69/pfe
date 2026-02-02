@@ -26,6 +26,7 @@ import { PlantCarePage } from '@/app/components/pages/PlantCarePage';
 import { GamesDemoPage } from '@/app/components/pages/GamesDemoPage';
 import { CoursesPreviewPage } from '@/app/components/pages/CoursesPreviewPage';
 import { SettingsPage } from '@/app/components/pages/SettingsPage';
+import { ErrorBoundary } from '@/app/components/ErrorBoundary';
 
 type UserRole = 'visitor' | 'client' | 'admin';
 
@@ -165,7 +166,9 @@ export default function App() {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
-                  {renderVisitorPage()}
+                  <ErrorBoundary>
+                    {renderVisitorPage()}
+                  </ErrorBoundary>
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -196,7 +199,9 @@ export default function App() {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
-                  {renderAdminPage()}
+                  <ErrorBoundary>
+                    {renderAdminPage()}
+                  </ErrorBoundary>
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -227,7 +232,9 @@ export default function App() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
               >
-                {renderClientPage()}
+                <ErrorBoundary>
+                  {renderClientPage()}
+                </ErrorBoundary>
               </motion.div>
             </AnimatePresence>
           </div>
