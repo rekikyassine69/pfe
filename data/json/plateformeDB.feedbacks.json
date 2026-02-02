@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "6980acf93a1fd18b113c2bcd"
+  },
+  "clientId": {
+    "$oid": "65a1f123abc4567890123456"
+  },
+  "type": "POT_CONNECTE",
+  "referenceId": {
+    "$oid": "65c3f789abc1234567890123"
+  },
+  "note": 5,
+  "commentaire": "Très bon pot, arrosage automatique efficace",
+  "date": {
+    "$date": "2026-02-02T13:56:09.144Z"
+  }
+}]

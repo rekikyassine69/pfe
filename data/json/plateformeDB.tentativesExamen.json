@@ -1,0 +1,80 @@
+[{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bc3"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "coursId": {
+    "$oid": "507f1f77bcf86cd799439401"
+  },
+  "dateExamen": {
+    "$date": "2024-02-03T15:00:00.000Z"
+  },
+  "reponses": [
+    {
+      "questionId": 1,
+      "reponse": 3,
+      "correct": true
+    },
+    {
+      "questionId": 2,
+      "reponse": 1,
+      "correct": true
+    },
+    {
+      "questionId": 3,
+      "reponse": false,
+      "correct": true
+    },
+    {
+      "questionId": 4,
+      "reponse": 0,
+      "correct": true
+    }
+  ],
+  "score": 85,
+  "tempsUtilise": 480,
+  "reussi": true,
+  "tentativeNumero": 1
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bc4"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "coursId": {
+    "$oid": "507f1f77bcf86cd799439401"
+  },
+  "dateExamen": {
+    "$date": "2024-04-10T11:00:00.000Z"
+  },
+  "reponses": [
+    {
+      "questionId": 1,
+      "reponse": 1,
+      "correct": false
+    },
+    {
+      "questionId": 2,
+      "reponse": 1,
+      "correct": true
+    },
+    {
+      "questionId": 3,
+      "reponse": true,
+      "correct": false
+    },
+    {
+      "questionId": 4,
+      "reponse": 0,
+      "correct": true
+    }
+  ],
+  "score": 50,
+  "tempsUtilise": 600,
+  "reussi": false,
+  "tentativeNumero": 1
+}]

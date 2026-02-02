@@ -1,0 +1,72 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439101"
+  },
+  "idNotification": 1,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "message": "Votre plante 'Mon Basilic' a besoin d'eau! Humidité à 35%",
+  "type": "alerte_arrosage",
+  "date": {
+    "$date": "2024-06-01T07:00:00.000Z"
+  },
+  "statut": true,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439201"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439102"
+  },
+  "idNotification": 2,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "message": "Votre commande #1 a été livrée avec succès!",
+  "type": "commande",
+  "date": {
+    "$date": "2024-04-20T14:05:00.000Z"
+  },
+  "statut": true,
+  "commandeId": {
+    "$oid": "507f1f77bcf86cd799439901"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439103"
+  },
+  "idNotification": 3,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "message": "Nouveau cours disponible: 'Diagnostic des maladies des plantes'",
+  "type": "nouveau_cours",
+  "date": {
+    "$date": "2024-03-20T10:00:00.000Z"
+  },
+  "statut": false,
+  "coursId": {
+    "$oid": "507f1f77bcf86cd799439403"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439104"
+  },
+  "idNotification": 4,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "message": "Température élevée détectée sur 'Cactus Bureau': 32°C",
+  "type": "alerte_temperature",
+  "date": {
+    "$date": "2024-06-02T14:30:00.000Z"
+  },
+  "statut": false,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439203"
+  }
+}]

@@ -1,73 +1,117 @@
+import { useMemo } from 'react';
 import { Activity, Droplets, Sun, Wind, TrendingUp, Flower2, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { motion } from 'motion/react';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function DashboardPage() {
-  const statsCards = [
-    {
-      title: 'Pots Actifs',
-      value: '12',
-      change: '+2 ce mois',
-      icon: Flower2,
-      color: 'bg-chart-1',
-      trend: 'up'
-    },
-    {
-      title: 'Humidité Moyenne',
-      value: '68%',
-      change: 'Optimal',
-      icon: Droplets,
-      color: 'bg-chart-2',
-      trend: 'stable'
-    },
-    {
-      title: 'Ensoleillement',
-      value: '7.2h',
-      change: '+0.5h',
-      icon: Sun,
-      color: 'bg-chart-3',
-      trend: 'up'
-    },
-    {
-      title: 'Qualité de l\'air',
-      value: 'Excellente',
-      change: 'CO2: 420 ppm',
-      icon: Wind,
-      color: 'bg-chart-4',
-      trend: 'stable'
-    },
-  ];
+  const { data: potsConnectes } = useCollection<any>('potsConnectes');
+  const { data: historiqueMesures } = useCollection<any>('historiqueMesures');
+  const { data: historiqueArrosage } = useCollection<any>('historiqueArrosage');
+  const { data: alertes } = useCollection<any>('alertes');
 
-  const humidityData = [
-    { time: '00h', value: 65 },
-    { time: '04h', value: 68 },
-    { time: '08h', value: 62 },
-    { time: '12h', value: 58 },
-    { time: '16h', value: 55 },
-    { time: '20h', value: 70 },
-  ];
+  const statsCards = useMemo(() => {
+    const avgHumidity = historiqueMesures.length
+      ? Math.round(historiqueMesures.reduce((sum, entry) => sum + (entry.humidite || 0), 0) / historiqueMesures.length)
+      : 0;
+    const avgLight = historiqueMesures.length
+      ? (historiqueMesures.reduce((sum, entry) => sum + (entry.luminosite || 0), 0) / historiqueMesures.length / 100).toFixed(1)
+      : '0.0';
 
-  const plantStatusData = [
-    { name: 'Excellente', value: 8, color: '#66BB6A' },
-    { name: 'Bonne', value: 3, color: '#81C784' },
-    { name: 'Attention', value: 1, color: '#FFA726' },
-  ];
+    return [
+      {
+        title: 'Pots Actifs',
+        value: String(potsConnectes.length || 0),
+        change: '+0 ce mois',
+        icon: Flower2,
+        color: 'bg-chart-1',
+        trend: 'up',
+      },
+      {
+        title: 'Humidité Moyenne',
+        value: `${avgHumidity || 0}%`,
+        change: avgHumidity ? 'Optimal' : '—',
+        icon: Droplets,
+        color: 'bg-chart-2',
+        trend: 'stable',
+      },
+      {
+        title: 'Ensoleillement',
+        value: `${avgLight}h`,
+        change: '—',
+        icon: Sun,
+        color: 'bg-chart-3',
+        trend: 'up',
+      },
+      {
+        title: 'Qualité de l\'air',
+        value: 'Bonne',
+        change: '—',
+        icon: Wind,
+        color: 'bg-chart-4',
+        trend: 'stable',
+      },
+    ];
+  }, [historiqueMesures, potsConnectes.length]);
 
-  const weeklyActivity = [
-    { day: 'Lun', arrosage: 8, nutriments: 3 },
-    { day: 'Mar', arrosage: 6, nutriments: 2 },
-    { day: 'Mer', arrosage: 10, nutriments: 4 },
-    { day: 'Jeu', arrosage: 7, nutriments: 3 },
-    { day: 'Ven', arrosage: 9, nutriments: 5 },
-    { day: 'Sam', arrosage: 11, nutriments: 4 },
-    { day: 'Dim', arrosage: 8, nutriments: 2 },
-  ];
+  const humidityData = useMemo(() => {
+    if (!historiqueMesures.length) {
+      return [
+        { time: '00h', value: 65 },
+        { time: '04h', value: 68 },
+        { time: '08h', value: 62 },
+        { time: '12h', value: 58 },
+        { time: '16h', value: 55 },
+        { time: '20h', value: 70 },
+      ];
+    }
+    return [...historiqueMesures]
+      .sort((a, b) => new Date(a.dateMesure?.$date || a.dateMesure).getTime() - new Date(b.dateMesure?.$date || b.dateMesure).getTime())
+      .slice(-6)
+      .map((entry) => {
+        const date = new Date(entry.dateMesure?.$date || entry.dateMesure);
+        const time = `${String(date.getHours()).padStart(2, '0')}h`;
+        return { time, value: Math.round(entry.humidite || 0) };
+      });
+  }, [historiqueMesures]);
 
-  const recentAlerts = [
-    { id: 1, type: 'warning', plant: 'Tomate Cerise', message: 'Niveau d\'eau faible', time: 'Il y a 2h' },
-    { id: 2, type: 'success', plant: 'Basilic', message: 'Arrosage automatique effectué', time: 'Il y a 4h' },
-    { id: 3, type: 'info', plant: 'Menthe', message: 'Croissance optimale détectée', time: 'Il y a 6h' },
-  ];
+  const plantStatusData = useMemo(() => {
+    const counts = { excellente: 0, bonne: 0, attention: 0 };
+    potsConnectes.forEach((pot) => {
+      if ((pot.humidite ?? 0) >= 60) counts.excellente += 1;
+      else if ((pot.humidite ?? 0) >= 40) counts.bonne += 1;
+      else counts.attention += 1;
+    });
+    return [
+      { name: 'Excellente', value: counts.excellente, color: '#66BB6A' },
+      { name: 'Bonne', value: counts.bonne, color: '#81C784' },
+      { name: 'Attention', value: counts.attention, color: '#FFA726' },
+    ];
+  }, [potsConnectes]);
+
+  const weeklyActivity = useMemo(() => {
+    const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+    const grouped = new Map<string, number>();
+    historiqueArrosage.forEach((entry) => {
+      const date = new Date(entry.dateArrosage?.$date || entry.dateArrosage);
+      const day = days[date.getDay()];
+      grouped.set(day, (grouped.get(day) || 0) + 1);
+    });
+    return days.map((day) => ({ day, arrosage: grouped.get(day) || 0, nutriments: 0 }));
+  }, [historiqueArrosage]);
+
+  const recentAlerts = useMemo(() => {
+    return [...alertes]
+      .sort((a, b) => new Date(b.dateAlerte?.$date || b.dateAlerte).getTime() - new Date(a.dateAlerte?.$date || a.dateAlerte).getTime())
+      .slice(0, 3)
+      .map((alert) => ({
+        id: alert._id?.$oid ?? alert._id,
+        type: 'warning',
+        plant: 'Pot',
+        message: `Alerte: ${alert.type} (${alert.valeurMesuree})`,
+        time: new Date(alert.dateAlerte?.$date || alert.dateAlerte).toLocaleString('fr-FR'),
+      }));
+  }, [alertes]);
 
   return (
     <div className="space-y-6">

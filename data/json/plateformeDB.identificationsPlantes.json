@@ -1,0 +1,58 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799440101"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "photoUrl": "/uploads/identifications/photo1.jpg",
+  "dateIdentification": {
+    "$date": "2024-05-15T14:30:00.000Z"
+  },
+  "resultat": {
+    "nomPlante": "Monstera Deliciosa",
+    "nomCommun": "Faux philodendron",
+    "confiance": 94.5,
+    "besoinsVitaux": {
+      "arrosage": "Modéré - laisser sécher entre les arrosages",
+      "lumiere": "Lumière indirecte brillante",
+      "temperature": "18-27°C",
+      "humidite": "60-80%",
+      "engrais": "Une fois par mois au printemps/été"
+    },
+    "conseils": [
+      "Nettoyez régulièrement les feuilles pour optimiser la photosynthèse",
+      "Utilisez un tuteur pour soutenir la croissance",
+      "Rempotez tous les 2-3 ans"
+    ]
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799440102"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "photoUrl": "/uploads/identifications/photo2.jpg",
+  "dateIdentification": {
+    "$date": "2024-05-28T10:15:00.000Z"
+  },
+  "resultat": {
+    "nomPlante": "Ficus Elastica",
+    "nomCommun": "Caoutchouc",
+    "confiance": 89.2,
+    "besoinsVitaux": {
+      "arrosage": "Modéré - une fois par semaine",
+      "lumiere": "Lumière vive indirecte",
+      "temperature": "16-24°C",
+      "humidite": "40-60%",
+      "engrais": "Toutes les 2 semaines en période de croissance"
+    },
+    "conseils": [
+      "Évitez les courants d'air froid",
+      "Dépoussiérez les feuilles régulièrement",
+      "Taillez pour maintenir une forme compacte"
+    ]
+  }
+}]

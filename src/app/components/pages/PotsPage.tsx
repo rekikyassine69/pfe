@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Flower2, Droplets, Sun, Thermometer, Wind, Plus, Settings, TrendingUp, AlertCircle, Download, RefreshCw } from 'lucide-react';
 import { AddPlantModal } from '@/app/components/modals/AddPlantModal';
 import { PlantSettingsModal } from '@/app/components/modals/PlantSettingsModal';
 import { ExportDataModal } from '@/app/components/modals/ExportDataModal';
 import { toast } from 'sonner';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function PotsPage() {
   const [selectedPot, setSelectedPot] = useState<number | null>(null);
@@ -15,25 +16,78 @@ export function PotsPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [pots, setPots] = useState<any[]>([]);
-  const [loadingPots, setLoadingPots] = useState(false);
+  const { data: potsConnectes } = useCollection<any>('potsConnectes');
+  const { data: historiqueArrosage } = useCollection<any>('historiqueArrosage');
+  const { data: historiqueMesures } = useCollection<any>('historiqueMesures');
 
-  // Load pots from API
-  useEffect(() => {
-    let mounted = true;
-    setLoadingPots(true);
-    (async () => {
-      try {
-        const api = await import('@/lib/api');
-        const list = await api.getPots();
-        if (mounted) setPots(list);
-      } catch (err) {
-        console.error('Failed to fetch pots', err);
-      } finally {
-        if (mounted) setLoadingPots(false);
+  const lastWateredByPot = useMemo(() => {
+    const map = new Map<string, Date>();
+    historiqueArrosage.forEach((entry) => {
+      const potId = entry.potId?.$oid ?? entry.potId;
+      if (!potId) return;
+      const date = entry.dateArrosage?.$date ? new Date(entry.dateArrosage.$date) : new Date(entry.dateArrosage);
+      if (!map.has(potId) || (date && date > (map.get(potId) as Date))) {
+        map.set(potId, date);
       }
-    })();
-    return () => { mounted = false; };
-  }, []);
+    });
+    return map;
+  }, [historiqueArrosage]);
+
+  const measuresByPot = useMemo(() => {
+    const map = new Map<string, any>();
+    historiqueMesures.forEach((entry) => {
+      const potId = entry.potId?.$oid ?? entry.potId;
+      if (!potId) return;
+      const current = map.get(potId);
+      const currentDate = current?.dateMesure?.$date ? new Date(current.dateMesure.$date) : new Date(current?.dateMesure);
+      const entryDate = entry.dateMesure?.$date ? new Date(entry.dateMesure.$date) : new Date(entry.dateMesure);
+      if (!current || (entryDate && entryDate > currentDate)) {
+        map.set(potId, entry);
+      }
+    });
+    return map;
+  }, [historiqueMesures]);
+
+  useEffect(() => {
+    const formatRelative = (date?: Date) => {
+      if (!date || Number.isNaN(date.getTime())) return '—';
+      const diff = Date.now() - date.getTime();
+      const hours = Math.round(diff / (1000 * 60 * 60));
+      if (hours < 1) return 'Il y a moins d\'1h';
+      if (hours < 24) return `Il y a ${hours}h`;
+      const days = Math.round(hours / 24);
+      return `Il y a ${days}j`;
+    };
+
+    const mapped = potsConnectes.map((pot, index) => {
+      const potId = pot._id?.$oid ?? pot._id;
+      const lastWatered = formatRelative(lastWateredByPot.get(potId));
+      const latestMeasure = measuresByPot.get(potId) || {};
+      const humidity = Math.round(latestMeasure.humidite ?? pot.humidite ?? 0);
+      const temperature = Math.round(latestMeasure.temperature ?? pot.temperature ?? 0);
+      const light = Math.round((latestMeasure.luminosite ?? pot.luminosite ?? 0) / 100);
+      const status = humidity < 35 ? 'warning' : 'healthy';
+      return {
+        id: pot.idPot ?? pot._id,
+        name: pot.nom,
+        plant: pot.typePlante,
+        status,
+        humidity,
+        temperature,
+        light: Number.isNaN(light) ? 0 : light,
+        airQuality: 92,
+        lastWatered,
+        image: [
+          'https://images.unsplash.com/photo-1592841200221-a6898f307baa?w=400',
+          'https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=400',
+          'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400',
+          'https://images.unsplash.com/photo-1611251133334-cb2e8e9df5ec?w=400',
+        ][index % 4],
+      };
+    });
+
+    if (mapped.length) setPots(mapped);
+  }, [potsConnectes, lastWateredByPot, measuresByPot]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -61,28 +115,14 @@ export function PotsPage() {
     }
   };
 
-  const handleAddPlant = async (plant: any) => {
-    try {
-      const api = await import('@/lib/api');
-      const user = JSON.parse(localStorage.getItem('user') || 'null');
-      const payload = { ...plant, ownerId: user?.id };
-      const created = await api.addPot(payload);
-      setPots(prev => [...prev, created]);
-      toast.success(`Pot "${created.name}" ajouté !`);
-    } catch (err: any) {
-      toast.error(err.message || 'Erreur lors de l\'ajout du pot');
-    }
+  const handleAddPlant = (plant: any) => {
+    setPots([...pots, plant]);
   };
 
-  const handleUpdatePlant = async (id: string, updatedData: any) => {
-    try {
-      const api = await import('@/lib/api');
-      const updated = await api.updatePot(id, updatedData);
-      setPots(prev => prev.map(p => p.id.toString() === id ? { ...p, ...updated } : p));
-      toast.success(`Pot "${updated.name}" mis à jour !`);
-    } catch (err: any) {
-      toast.error(err.message || 'Erreur lors de la mise à jour du pot');
-    }
+  const handleUpdatePlant = (id: string, updatedData: any) => {
+    setPots(pots.map(pot => 
+      pot.id.toString() === id ? { ...pot, ...updatedData } : pot
+    ));
   };
 
   const handleRefresh = () => {

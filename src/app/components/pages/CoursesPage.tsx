@@ -1,71 +1,68 @@
+import { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Clock, Users, Star, Play, CheckCircle2, Lock } from 'lucide-react';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function CoursesPage() {
-  const courses = [
-    {
-      id: 1,
-      title: 'Introduction à l\'Agriculture IoT',
-      description: 'Découvrez les bases de l\'agriculture connectée et intelligente',
-      instructor: 'Dr. Marie Dubois',
-      duration: '4h 30min',
-      students: 1234,
-      rating: 4.8,
-      progress: 65,
-      level: 'Débutant',
-      lessons: 12,
-      image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400',
-      enrolled: true,
-    },
-    {
-      id: 2,
-      title: 'Capteurs IoT pour Plantes',
-      description: 'Apprenez à utiliser et configurer différents types de capteurs',
-      instructor: 'Prof. Jean Martin',
-      duration: '3h 45min',
-      students: 892,
-      rating: 4.9,
-      progress: 0,
-      level: 'Intermédiaire',
-      lessons: 10,
-      image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=400',
-      enrolled: false,
-    },
-    {
-      id: 3,
-      title: 'Intelligence Artificielle en Agriculture',
-      description: 'Maîtrisez les algorithmes d\'IA pour l\'agriculture de précision',
-      instructor: 'Dr. Sophie Laurent',
-      duration: '6h 15min',
-      students: 567,
-      rating: 4.7,
-      progress: 30,
-      level: 'Avancé',
-      lessons: 15,
-      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400',
-      enrolled: true,
-    },
-    {
-      id: 4,
-      title: 'Hydroponie et Technologie',
-      description: 'Culture hydroponique assistée par IoT',
-      instructor: 'Marc Rousseau',
-      duration: '5h 00min',
-      students: 734,
-      rating: 4.6,
-      progress: 0,
-      level: 'Intermédiaire',
-      lessons: 11,
-      image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400',
-      enrolled: false,
-    },
-  ];
+  const [courses, setCourses] = useState<any[]>([]);
+  const { data: cours } = useCollection<any>('cours');
+  const { data: progressions } = useCollection<any>('progressionCours');
+
+  const progressByCourse = useMemo(() => {
+    const map = new Map<string, number>();
+    progressions.forEach((entry) => {
+      const courseId = entry.coursId?.$oid ?? entry.coursId;
+      if (!courseId) return;
+      map.set(courseId, Math.max(map.get(courseId) || 0, entry.progression || 0));
+    });
+    return map;
+  }, [progressions]);
+
+  useEffect(() => {
+    const formatDuration = (minutes: number) => {
+      if (!minutes && minutes !== 0) return '—';
+      if (minutes < 60) return `${minutes}min`;
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      return m ? `${h}h ${m}min` : `${h}h`;
+    };
+
+    const mapped = cours.map((course, index) => {
+      const courseId = course._id?.$oid ?? course._id;
+      const progress = progressByCourse.get(courseId) || 0;
+      return {
+        id: course.idCours ?? course._id,
+        title: course.titre,
+        description: course.description,
+        instructor: 'Équipe Smart Plant Care',
+        duration: formatDuration(course.duree),
+        durationMinutes: course.duree || 0,
+        students: 0,
+        rating: 4.7,
+        progress,
+        level: course.niveau ? course.niveau.charAt(0).toUpperCase() + course.niveau.slice(1) : 'Débutant',
+        lessons: course.chapitres?.length || 0,
+        image: course.image || [
+          'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400',
+          'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=400',
+          'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400',
+          'https://images.unsplash.com/photo-1592150621744-aca64f48394a?w=400',
+        ][index % 4],
+        enrolled: progress > 0,
+      };
+    });
+
+    if (mapped.length) setCourses(mapped);
+  }, [cours, progressByCourse]);
+
+  const enrolledCount = courses.filter((course) => course.enrolled).length;
+  const totalMinutes = courses.reduce((sum, course) => sum + (course.durationMinutes || 0), 0);
+  const totalLessons = courses.reduce((sum, course) => sum + (course.lessons || 0), 0);
 
   const categories = [
-    { name: 'Tous les cours', count: 24, active: true },
-    { name: 'IoT & Capteurs', count: 8, active: false },
-    { name: 'Intelligence Artificielle', count: 6, active: false },
-    { name: 'Agriculture Urbaine', count: 5, active: false },
-    { name: 'Hydroponie', count: 5, active: false },
+    { name: 'Tous les cours', count: courses.length, active: true },
+    { name: 'Débutant', count: courses.filter((c) => c.level === 'Débutant').length, active: false },
+    { name: 'Intermédiaire', count: courses.filter((c) => c.level === 'Intermédiaire').length, active: false },
+    { name: 'Avancé', count: courses.filter((c) => c.level === 'Avancé').length, active: false },
   ];
 
   return (
@@ -84,7 +81,7 @@ export function CoursesPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Cours inscrits</p>
-              <p className="text-3xl font-semibold text-foreground mt-2">2</p>
+              <p className="text-3xl font-semibold text-foreground mt-2">{enrolledCount}</p>
             </div>
             <BookOpen className="w-10 h-10 text-primary opacity-20" />
           </div>
@@ -92,8 +89,8 @@ export function CoursesPage() {
         <div className="bg-card border border-border rounded-xl p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Heures d\'apprentissage</p>
-              <p className="text-3xl font-semibold text-foreground mt-2">12.5</p>
+              <p className="text-sm text-muted-foreground">Heures d'apprentissage</p>
+              <p className="text-3xl font-semibold text-foreground mt-2">{(totalMinutes / 60).toFixed(1)}</p>
             </div>
             <Clock className="w-10 h-10 text-chart-2 opacity-20" />
           </div>
@@ -102,7 +99,7 @@ export function CoursesPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Leçons complétées</p>
-              <p className="text-3xl font-semibold text-foreground mt-2">18</p>
+              <p className="text-3xl font-semibold text-foreground mt-2">{totalLessons}</p>
             </div>
             <CheckCircle2 className="w-10 h-10 text-chart-1 opacity-20" />
           </div>
@@ -111,7 +108,7 @@ export function CoursesPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Certificats obtenus</p>
-              <p className="text-3xl font-semibold text-foreground mt-2">1</p>
+              <p className="text-3xl font-semibold text-foreground mt-2">{progressions.filter((p) => p.examenPasse).length}</p>
             </div>
             <Star className="w-10 h-10 text-yellow-500 opacity-20" />
           </div>

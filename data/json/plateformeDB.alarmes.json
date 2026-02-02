@@ -1,0 +1,80 @@
+[{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bb4"
+  },
+  "idAlarme": 1,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439201"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "type": "humidite_basse",
+  "seuil": 30,
+  "operateur": "inferieur",
+  "message": "Humidite critique! Arrosage necessaire.",
+  "active": true,
+  "dateCreation": {
+    "$date": "2024-02-01T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bb5"
+  },
+  "idAlarme": 2,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439201"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "type": "temperature_haute",
+  "seuil": 35,
+  "operateur": "superieur",
+  "message": "Temperature trop elevee! Deplacez votre plante.",
+  "active": true,
+  "dateCreation": {
+    "$date": "2024-02-01T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bb6"
+  },
+  "idAlarme": 3,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439202"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "type": "luminosite_basse",
+  "seuil": 200,
+  "operateur": "inferieur",
+  "message": "Manque de lumiere detecte.",
+  "active": true,
+  "dateCreation": {
+    "$date": "2024-02-05T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bb7"
+  },
+  "idAlarme": 4,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439203"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "type": "arrosage_automatique",
+  "seuil": 15,
+  "operateur": "inferieur",
+  "message": "Arrosage automatique declenche.",
+  "active": false,
+  "dateCreation": {
+    "$date": "2024-03-01T00:00:00.000Z"
+  }
+}]

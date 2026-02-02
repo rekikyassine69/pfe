@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Users, Search, Plus, Edit2, Trash2, CheckCircle2, XCircle, Mail, Phone, Calendar } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { AddUserModal } from '@/app/components/modals/AddUserModal';
 import { EditUserModal } from '@/app/components/modals/EditUserModal';
 import { DeleteConfirmModal } from '@/app/components/modals/DeleteConfirmModal';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function AdminUsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,41 +15,79 @@ export function AdminUsersPage() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const [users, setUsers] = useState<any[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(false);
+  const { data: clients } = useCollection<any>('clients');
+  const { data: admins } = useCollection<any>('administrateurs');
+  const { data: pots } = useCollection<any>('potsConnectes');
+
+  const potCountByClient = useMemo(() => {
+    const counts = new Map<string, number>();
+    pots.forEach((pot) => {
+      const clientId = pot.clientId?.$oid ?? pot.clientId;
+      if (!clientId) return;
+      counts.set(clientId, (counts.get(clientId) || 0) + 1);
+    });
+    return counts;
+  }, [pots]);
 
   useEffect(() => {
-    let mounted = true;
-    setLoadingUsers(true);
-    (async () => {
-      try {
-        const api = await import('@/lib/api');
-        const list = await api.getUsers();
-        if (mounted) setUsers(list);
-      } catch (err) {
-        console.error('Failed to fetch users', err);
-      } finally {
-        if (mounted) setLoadingUsers(false);
-      }
-    })();
-    return () => { mounted = false; };
-  }, []);
+    const formatDate = (value: any) => {
+      const date = value?.$date ? new Date(value.$date) : new Date(value);
+      if (Number.isNaN(date.getTime())) return '—';
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+
+    const mappedAdmins = admins.map((admin) => ({
+      id: admin.idAdmin ?? admin._id,
+      name: admin.nom || 'Admin',
+      email: admin.email,
+      phone: '—',
+      role: 'Admin',
+      status: 'Actif',
+      pots: 0,
+      joinDate: formatDate(admin.dateCreation),
+    }));
+
+    const mappedClients = clients.map((client) => {
+      const clientId = client._id?.$oid ?? client._id;
+      return {
+        id: client.idClient ?? client._id,
+        name: client.nom || 'Client',
+        email: client.email,
+        phone: '—',
+        role: 'Client',
+        status: 'Actif',
+        pots: potCountByClient.get(clientId) || 0,
+        joinDate: formatDate(client.dateInscription),
+      };
+    });
+
+    if (mappedAdmins.length || mappedClients.length) {
+      setUsers([...mappedAdmins, ...mappedClients]);
+    }
+  }, [admins, clients, potCountByClient]);
+
+  const recentUsersCount = useMemo(() => {
+    const now = Date.now();
+    const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+    const isRecent = (value: any) => {
+      const date = value?.$date ? new Date(value.$date) : new Date(value);
+      return !Number.isNaN(date.getTime()) && now - date.getTime() <= thirtyDays;
+    };
+    return [
+      ...admins.map((a) => a.dateCreation),
+      ...clients.map((c) => c.dateInscription),
+    ].filter(isRecent).length;
+  }, [admins, clients]);
 
   const stats = [
-    { label: 'Total Utilisateurs', value: '2,847', icon: Users, color: 'text-chart-1' },
-    { label: 'Actifs ce mois', value: '1,892', icon: CheckCircle2, color: 'text-green-500' },
-    { label: 'Nouveaux (30j)', value: '234', icon: Plus, color: 'text-chart-2' },
-    { label: 'Inactifs', value: '89', icon: XCircle, color: 'text-orange-500' },
+    { label: 'Total Utilisateurs', value: String(users.length), icon: Users, color: 'text-chart-1' },
+    { label: 'Actifs ce mois', value: String(users.length), icon: CheckCircle2, color: 'text-green-500' },
+    { label: 'Nouveaux (30j)', value: String(recentUsersCount), icon: Plus, color: 'text-chart-2' },
+    { label: 'Inactifs', value: '0', icon: XCircle, color: 'text-orange-500' },
   ];
 
-  const handleAddUser = async (user: any) => {
-    try {
-      const api = await import('@/lib/api');
-      const created = await api.addUser(user);
-      setUsers(prev => [...prev, created]);
-      toast.success(`Utilisateur "${created.name}" ajouté !`);
-    } catch (err: any) {
-      toast.error(err.message || 'Erreur lors de la création');
-    }
+  const handleAddUser = (user: any) => {
+    setUsers([...users, user]);
   };
 
   const handleEdit = (user: any) => {
@@ -56,15 +95,10 @@ export function AdminUsersPage() {
     setShowEditModal(true);
   };
 
-  const handleUpdateUser = async (id: string, updatedData: any) => {
-    try {
-      const api = await import('@/lib/api');
-      const updated = await api.updateUser(id, updatedData);
-      setUsers(prev => prev.map(u => u.id.toString() === id ? { ...u, ...updated } : u));
-      toast.success(`Utilisateur "${updated.name}" mis à jour !`);
-    } catch (err: any) {
-      toast.error(err.message || 'Erreur lors de la mise à jour');
-    }
+  const handleUpdateUser = (id: string, updatedData: any) => {
+    setUsers(users.map(user => 
+      user.id.toString() === id ? { ...user, ...updatedData } : user
+    ));
   };
 
   const handleDeleteClick = (user: any) => {
@@ -72,17 +106,11 @@ export function AdminUsersPage() {
     setShowDeleteModal(true);
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = () => {
     if (selectedUser) {
-      try {
-        const api = await import('@/lib/api');
-        await api.deleteUser(selectedUser.id.toString());
-        setUsers(prev => prev.filter(user => user.id !== selectedUser.id));
-        toast.success(`Utilisateur "${selectedUser.name}" supprimé !`);
-        setSelectedUser(null);
-      } catch (err: any) {
-        toast.error(err.message || 'Erreur lors de la suppression');
-      }
+      setUsers(users.filter(user => user.id !== selectedUser.id));
+      toast.success(`Utilisateur "${selectedUser.name}" supprimé !`);
+      setSelectedUser(null);
     }
   };
 
@@ -197,7 +225,7 @@ export function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      (user.role || '').toString().toLowerCase() === 'admin'
+                      user.role === 'Admin'
                         ? 'bg-purple-500/20 text-purple-600'
                         : 'bg-blue-500/20 text-blue-600'
                     }`}>
@@ -206,7 +234,7 @@ export function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      (user.status || '').toString().toLowerCase() === 'active'
+                      user.status === 'Actif'
                         ? 'bg-green-500/20 text-green-600'
                         : 'bg-orange-500/20 text-orange-600'
                     }`}>

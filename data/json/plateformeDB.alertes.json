@@ -1,0 +1,15 @@
+[{
+  "_id": {
+    "$oid": "6980acec3a1fd18b113c2bcb"
+  },
+  "potId": {
+    "$oid": "65c3f789abc1234567890123"
+  },
+  "type": "HUMIDITE_BASSE",
+  "seuil": 30,
+  "valeurMesuree": 22,
+  "etat": "ENVOYEE",
+  "dateAlerte": {
+    "$date": "2026-02-02T13:55:56.635Z"
+  }
+}]

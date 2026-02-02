@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Flower2, Search, Plus, Edit2, Trash2, Wifi, WifiOff, Activity } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { AddPlantModal } from '@/app/components/modals/AddPlantModal';
 import { PlantSettingsModal } from '@/app/components/modals/PlantSettingsModal';
 import { DeleteConfirmModal } from '@/app/components/modals/DeleteConfirmModal';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function AdminPotsPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,62 +14,49 @@ export function AdminPotsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedPot, setSelectedPot] = useState<any>(null);
 
-  const [pots, setPots] = useState([
-    {
-      id: 'POT-001',
-      name: 'Monstera Deliciosa',
-      owner: 'Marie Dupont',
-      location: 'Salon',
-      status: 'En ligne',
-      humidity: 68,
-      temperature: 22,
-      light: 7500,
-      battery: 85,
-      lastUpdate: 'Il y a 5 min',
-    },
-    {
-      id: 'POT-002',
-      name: 'Ficus Lyrata',
-      owner: 'Jean Martin',
-      location: 'Bureau',
-      status: 'En ligne',
-      humidity: 72,
-      temperature: 21,
-      light: 6200,
-      battery: 92,
-      lastUpdate: 'Il y a 2 min',
-    },
-    {
-      id: 'POT-003',
-      name: 'Pothos',
-      owner: 'Sophie Laurent',
-      location: 'Cuisine',
-      status: 'Hors ligne',
-      humidity: 45,
-      temperature: 20,
-      light: 4100,
-      battery: 12,
-      lastUpdate: 'Il y a 2h',
-    },
-    {
-      id: 'POT-004',
-      name: 'Sansevieria',
-      owner: 'Camille Bernard',
-      location: 'Chambre',
-      status: 'En ligne',
-      humidity: 55,
-      temperature: 23,
-      light: 3500,
-      battery: 78,
-      lastUpdate: 'Il y a 1 min',
-    },
-  ]);
+  const [pots, setPots] = useState<any[]>([]);
+  const { data: potsConnectes } = useCollection<any>('potsConnectes');
+  const { data: clients } = useCollection<any>('clients');
+  const { data: alertes } = useCollection<any>('alertes');
+
+  const clientsById = useMemo(() => {
+    const map = new Map<string, any>();
+    clients.forEach((client) => {
+      const id = client._id?.$oid ?? client._id;
+      map.set(id, client);
+    });
+    return map;
+  }, [clients]);
+
+  useEffect(() => {
+    const mapped = potsConnectes.map((pot) => {
+      const clientId = pot.clientId?.$oid ?? pot.clientId;
+      const owner = clientsById.get(clientId)?.nom || '—';
+      return {
+        id: `POT-${String(pot.idPot ?? '').padStart(3, '0')}`,
+        name: pot.nom,
+        owner,
+        location: '—',
+        status: pot.etatArrosage ? 'En ligne' : 'Hors ligne',
+        humidity: Math.round(pot.humidite ?? 0),
+        temperature: Math.round(pot.temperature ?? 0),
+        light: Math.round(pot.luminosite ?? 0),
+        battery: 80,
+        lastUpdate: 'Récemment',
+      };
+    });
+
+    if (mapped.length) setPots(mapped);
+  }, [potsConnectes, clientsById]);
+
+  const onlineCount = potsConnectes.filter((pot) => pot.etatArrosage).length;
+  const offlineCount = potsConnectes.length - onlineCount;
 
   const stats = [
-    { label: 'Total Pots', value: '8,432', icon: Flower2, color: 'text-chart-1' },
-    { label: 'En ligne', value: '7,891', icon: Wifi, color: 'text-green-500' },
-    { label: 'Hors ligne', value: '541', icon: WifiOff, color: 'text-orange-500' },
-    { label: 'Alertes Actives', value: '23', icon: Activity, color: 'text-red-500' },
+    { label: 'Total Pots', value: String(potsConnectes.length), icon: Flower2, color: 'text-chart-1' },
+    { label: 'En ligne', value: String(onlineCount), icon: Wifi, color: 'text-green-500' },
+    { label: 'Hors ligne', value: String(offlineCount), icon: WifiOff, color: 'text-orange-500' },
+    { label: 'Alertes Actives', value: String(alertes.length), icon: Activity, color: 'text-red-500' },
   ];
 
   const handleAddPot = (pot: any) => {

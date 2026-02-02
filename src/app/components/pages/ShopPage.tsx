@@ -1,94 +1,52 @@
+import { useEffect, useState } from 'react';
 import { ShoppingCart, Star, TrendingUp, Package, Filter } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function ShopPage() {
-  const products = [
-    {
-      id: 1,
-      name: 'Smart Pot Pro',
-      description: 'Pot intelligent avec capteurs intégrés et arrosage automatique',
-      price: 89.99,
-      rating: 4.8,
-      reviews: 234,
-      stock: 15,
-      category: 'Pots connectés',
-      image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400',
-      features: ['Capteur d\'humidité', 'Arrosage auto', 'Application mobile'],
-      bestseller: true,
-    },
-    {
-      id: 2,
-      name: 'Capteur Humidité v2',
-      description: 'Capteur de haute précision pour mesurer l\'humidité du sol',
-      price: 24.99,
-      rating: 4.6,
-      reviews: 156,
-      stock: 42,
-      category: 'Capteurs',
-      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400',
-      features: ['Précision ±2%', 'Bluetooth 5.0', 'Batterie 6 mois'],
-      bestseller: false,
-    },
-    {
-      id: 3,
-      name: 'Station Météo IoT',
-      description: 'Station complète pour surveiller les conditions environnementales',
-      price: 149.99,
-      rating: 4.9,
-      reviews: 89,
-      stock: 8,
-      category: 'Stations',
-      image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400',
-      features: ['Temp, humidité, lumière', 'Analyse IA', 'Alertes intelligentes'],
-      bestseller: true,
-    },
-    {
-      id: 4,
-      name: 'Kit Démarrage IoT',
-      description: 'Tout le nécessaire pour débuter en agriculture connectée',
-      price: 199.99,
-      rating: 4.7,
-      reviews: 312,
-      stock: 23,
-      category: 'Kits',
-      image: 'https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=400',
-      features: ['3 pots smart', '6 capteurs', 'Guide complet'],
-      bestseller: true,
-    },
-    {
-      id: 5,
-      name: 'Lampe LED Croissance',
-      description: 'Lampe LED optimisée pour la croissance des plantes',
-      price: 69.99,
-      rating: 4.5,
-      reviews: 178,
-      stock: 31,
-      category: 'Éclairage',
-      image: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=400',
-      features: ['Spectre complet', 'Timer intégré', 'Contrôle app'],
-      bestseller: false,
-    },
-    {
-      id: 6,
-      name: 'Système Arrosage Auto',
-      description: 'Système d\'arrosage intelligent programmable',
-      price: 129.99,
-      rating: 4.8,
-      reviews: 201,
-      stock: 19,
-      category: 'Arrosage',
-      image: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=400',
-      features: ['Programmation app', '8 sorties', 'Capteur pluie'],
-      bestseller: false,
-    },
-  ];
+  const [products, setProducts] = useState<any[]>([]);
+  const { data: produits } = useCollection<any>('produits');
+
+  useEffect(() => {
+    const mapped = produits.map((product, index) => {
+      const features = [] as string[];
+      if (product.specifications?.capteurs) {
+        features.push(...product.specifications.capteurs.map((capteur: string) => `Capteur ${capteur}`));
+      }
+      if (product.specifications?.connectivite) {
+        features.push(product.specifications.connectivite);
+      }
+      return {
+        id: product.idProduit ?? product._id,
+        name: product.nom,
+        description: product.description,
+        price: product.prix,
+        rating: 4.7,
+        reviews: 0,
+        stock: product.quantiteStock ?? 0,
+        category: product.categorie?.replace('_', ' ') || 'Produits',
+        image: product.images?.[0] || [
+          'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400',
+          'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400',
+          'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400',
+          'https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=400',
+          'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=400',
+          'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=400',
+        ][index % 6],
+        features: features.length ? features : ['Accessoire IoT', 'Compatible mobile'],
+        bestseller: index % 3 === 0,
+      };
+    });
+
+    if (mapped.length) setProducts(mapped);
+  }, [produits]);
 
   const categories = [
-    { name: 'Tous', count: 24, active: true },
-    { name: 'Pots connectés', count: 8, active: false },
-    { name: 'Capteurs', count: 12, active: false },
-    { name: 'Kits', count: 4, active: false },
+    { name: 'Tous', count: products.length, active: true },
+    { name: 'Pots connectés', count: products.filter((p) => p.category.includes('pots')).length, active: false },
+    { name: 'Capteurs', count: products.filter((p) => p.category.includes('capteur')).length, active: false },
+    { name: 'Kits', count: products.filter((p) => p.category.includes('kit')).length, active: false },
   ];
 
   return (

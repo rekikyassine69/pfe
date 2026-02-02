@@ -1,0 +1,56 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799440001"
+  },
+  "idReclamation": 1,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "message": "Le capteur d'humidité de mon pot ne fonctionne plus correctement depuis la mise à jour.",
+  "date": {
+    "$date": "2024-05-20T11:30:00.000Z"
+  },
+  "statut": "traitee",
+  "categorie": "technique",
+  "reponse": {
+    "message": "Nous avons identifié le problème. Veuillez redémarrer votre pot en maintenant le bouton 5 secondes. Si le problème persiste, contactez-nous pour un échange.",
+    "dateReponse": {
+      "$date": "2024-05-21T09:00:00.000Z"
+    },
+    "adminId": {
+      "$oid": "507f1f77bcf86cd799439021"
+    }
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799440002"
+  },
+  "idReclamation": 2,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "message": "Ma commande est en retard de 5 jours. Pouvez-vous vérifier?",
+  "date": {
+    "$date": "2024-05-18T16:45:00.000Z"
+  },
+  "statut": "en_cours",
+  "categorie": "livraison",
+  "reponse": null
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799440003"
+  },
+  "idReclamation": 3,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439013"
+  },
+  "message": "Je souhaite avoir plus d'informations sur le programme de fidélité.",
+  "date": {
+    "$date": "2024-06-01T10:00:00.000Z"
+  },
+  "statut": "nouvelle",
+  "categorie": "information",
+  "reponse": null
+}]

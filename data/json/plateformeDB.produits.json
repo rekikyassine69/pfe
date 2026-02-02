@@ -1,0 +1,124 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439801"
+  },
+  "idProduit": 1,
+  "nom": "Pot Connecté Basic",
+  "description": "Pot intelligent avec capteurs de base: humidité et température",
+  "prix": 49.99,
+  "quantiteStock": 150,
+  "categorie": "pots_connectes",
+  "images": [
+    "/images/produits/pot-basic-1.png",
+    "/images/produits/pot-basic-2.png"
+  ],
+  "specifications": {
+    "capteurs": [
+      "humidite",
+      "temperature"
+    ],
+    "capacite": "2L",
+    "autonomieBatterie": "30 jours",
+    "connectivite": "WiFi"
+  },
+  "dateAjout": {
+    "$date": "2024-01-01T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439802"
+  },
+  "idProduit": 2,
+  "nom": "Pot Connecté Pro",
+  "description": "Pot intelligent complet avec tous les capteurs et arrosage automatique",
+  "prix": 89.99,
+  "quantiteStock": 75,
+  "categorie": "pots_connectes",
+  "images": [
+    "/images/produits/pot-pro-1.png",
+    "/images/produits/pot-pro-2.png"
+  ],
+  "specifications": {
+    "capteurs": [
+      "humidite",
+      "temperature",
+      "luminosite",
+      "ph"
+    ],
+    "capacite": "3L",
+    "autonomieBatterie": "45 jours",
+    "connectivite": "WiFi + Bluetooth",
+    "arrosageAuto": true
+  },
+  "dateAjout": {
+    "$date": "2024-01-15T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439803"
+  },
+  "idProduit": 3,
+  "nom": "Kit de démarrage Herbes Aromatiques",
+  "description": "Pack complet pour cultiver vos herbes: pot connecté + graines + terreau",
+  "prix": 69.99,
+  "quantiteStock": 50,
+  "categorie": "kits",
+  "images": [
+    "/images/produits/kit-herbes-1.png"
+  ],
+  "specifications": {
+    "contenu": [
+      "Pot Connecté Basic",
+      "Graines bio (basilic, menthe, persil)",
+      "Terreau spécial herbes",
+      "Guide de culture"
+    ],
+    "capacite": "2L"
+  },
+  "dateAjout": {
+    "$date": "2024-02-01T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439804"
+  },
+  "idProduit": 4,
+  "nom": "Capteur de luminosité additionnel",
+  "description": "Capteur de luminosité compatible avec tous nos pots connectés",
+  "prix": 19.99,
+  "quantiteStock": 200,
+  "categorie": "accessoires",
+  "images": [
+    "/images/produits/capteur-lum-1.png"
+  ],
+  "specifications": {
+    "compatibilite": [
+      "Pot Basic",
+      "Pot Pro"
+    ],
+    "installation": "Plug & Play"
+  },
+  "dateAjout": {
+    "$date": "2024-02-15T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439805"
+  },
+  "idProduit": 5,
+  "nom": "Engrais bio universel 500ml",
+  "description": "Engrais biologique adapté à toutes les plantes d'intérieur",
+  "prix": 12.99,
+  "quantiteStock": 300,
+  "categorie": "entretien",
+  "images": [
+    "/images/produits/engrais-1.png"
+  ],
+  "dateAjout": {
+    "$date": "2024-03-01T00:00:00.000Z"
+  }
+}]

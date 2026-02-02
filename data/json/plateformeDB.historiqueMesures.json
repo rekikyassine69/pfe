@@ -1,0 +1,75 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439301"
+  },
+  "idData": 1,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439201"
+  },
+  "temperature": 22.3,
+  "humidite": 68.5,
+  "luminosite": 820,
+  "dateMesure": {
+    "$date": "2024-06-01T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439302"
+  },
+  "idData": 2,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439201"
+  },
+  "temperature": 23.1,
+  "humidite": 62,
+  "luminosite": 900,
+  "dateMesure": {
+    "$date": "2024-06-01T12:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439303"
+  },
+  "idData": 3,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439201"
+  },
+  "temperature": 22.8,
+  "humidite": 58.3,
+  "luminosite": 750,
+  "dateMesure": {
+    "$date": "2024-06-01T18:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439304"
+  },
+  "idData": 4,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439202"
+  },
+  "temperature": 20.5,
+  "humidite": 52,
+  "luminosite": 680,
+  "dateMesure": {
+    "$date": "2024-06-01T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439305"
+  },
+  "idData": 5,
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439203"
+  },
+  "temperature": 25.2,
+  "humidite": 22,
+  "luminosite": 1350,
+  "dateMesure": {
+    "$date": "2024-06-01T14:00:00.000Z"
+  }
+}]

@@ -1,0 +1,150 @@
+[{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bbf"
+  },
+  "idSequence": 1,
+  "nomPlante": "Tomate",
+  "image": "/images/plantes/tomate.png",
+  "etapes": [
+    {
+      "ordre": 1,
+      "nom": "Graine",
+      "image": "/images/etapes/tomate-graine.png",
+      "description": "La graine de tomate est plantee"
+    },
+    {
+      "ordre": 2,
+      "nom": "Germination",
+      "image": "/images/etapes/tomate-germe.png",
+      "description": "La graine germe et une petite pousse apparait"
+    },
+    {
+      "ordre": 3,
+      "nom": "Plantule",
+      "image": "/images/etapes/tomate-plantule.png",
+      "description": "Les premieres feuilles se developpent"
+    },
+    {
+      "ordre": 4,
+      "nom": "Croissance",
+      "image": "/images/etapes/tomate-croissance.png",
+      "description": "La plante grandit et se ramifie"
+    },
+    {
+      "ordre": 5,
+      "nom": "Floraison",
+      "image": "/images/etapes/tomate-fleur.png",
+      "description": "Des fleurs jaunes apparaissent"
+    },
+    {
+      "ordre": 6,
+      "nom": "Fruit vert",
+      "image": "/images/etapes/tomate-vert.png",
+      "description": "Les tomates vertes se forment"
+    },
+    {
+      "ordre": 7,
+      "nom": "Fruit mur",
+      "image": "/images/etapes/tomate-mure.png",
+      "description": "Les tomates deviennent rouges et mures"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bc0"
+  },
+  "idSequence": 2,
+  "nomPlante": "Tournesol",
+  "image": "/images/plantes/tournesol.png",
+  "etapes": [
+    {
+      "ordre": 1,
+      "nom": "Graine",
+      "image": "/images/etapes/tournesol-graine.png",
+      "description": "Graine de tournesol plantee"
+    },
+    {
+      "ordre": 2,
+      "nom": "Pousse",
+      "image": "/images/etapes/tournesol-pousse.png",
+      "description": "Emergence de la plantule"
+    },
+    {
+      "ordre": 3,
+      "nom": "Feuilles",
+      "image": "/images/etapes/tournesol-feuilles.png",
+      "description": "Developpement des feuilles"
+    },
+    {
+      "ordre": 4,
+      "nom": "Tige haute",
+      "image": "/images/etapes/tournesol-tige.png",
+      "description": "La tige s'allonge"
+    },
+    {
+      "ordre": 5,
+      "nom": "Bourgeon",
+      "image": "/images/etapes/tournesol-bourgeon.png",
+      "description": "Formation du bourgeon floral"
+    },
+    {
+      "ordre": 6,
+      "nom": "Fleur",
+      "image": "/images/etapes/tournesol-fleur.png",
+      "description": "Floraison complete du tournesol"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bc1"
+  },
+  "idSequence": 3,
+  "nomPlante": "Haricot",
+  "image": "/images/plantes/haricot.png",
+  "etapes": [
+    {
+      "ordre": 1,
+      "nom": "Graine",
+      "image": "/images/etapes/haricot-graine.png",
+      "description": "Graine de haricot"
+    },
+    {
+      "ordre": 2,
+      "nom": "Radicule",
+      "image": "/images/etapes/haricot-radicule.png",
+      "description": "La racine emerge"
+    },
+    {
+      "ordre": 3,
+      "nom": "Hypocotyle",
+      "image": "/images/etapes/haricot-hypo.png",
+      "description": "La tige sort de terre"
+    },
+    {
+      "ordre": 4,
+      "nom": "Cotyledons",
+      "image": "/images/etapes/haricot-coty.png",
+      "description": "Les cotyledons s'ouvrent"
+    },
+    {
+      "ordre": 5,
+      "nom": "Vraies feuilles",
+      "image": "/images/etapes/haricot-feuilles.png",
+      "description": "Les vraies feuilles poussent"
+    },
+    {
+      "ordre": 6,
+      "nom": "Fleurs",
+      "image": "/images/etapes/haricot-fleur.png",
+      "description": "Floraison"
+    },
+    {
+      "ordre": 7,
+      "nom": "Gousses",
+      "image": "/images/etapes/haricot-gousse.png",
+      "description": "Formation des gousses"
+    }
+  ]
+}]

@@ -1,0 +1,161 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439601"
+  },
+  "idJeu": 1,
+  "nomJeu": "Memory Plantes",
+  "type": "memory",
+  "description": "Retrouvez les paires de plantes identiques",
+  "regles": "Retournez deux cartes à la fois. Si elles correspondent, elles restent visibles.",
+  "niveaux": [
+    {
+      "niveau": 1,
+      "nombrePaires": 6,
+      "tempsLimite": 60
+    },
+    {
+      "niveau": 2,
+      "nombrePaires": 8,
+      "tempsLimite": 90
+    },
+    {
+      "niveau": 3,
+      "nombrePaires": 12,
+      "tempsLimite": 120
+    }
+  ],
+  "cartes": [
+    {
+      "id": 1,
+      "image": "/images/jeux/basilic.png",
+      "nom": "Basilic"
+    },
+    {
+      "id": 2,
+      "image": "/images/jeux/menthe.png",
+      "nom": "Menthe"
+    },
+    {
+      "id": 3,
+      "image": "/images/jeux/romarin.png",
+      "nom": "Romarin"
+    },
+    {
+      "id": 4,
+      "image": "/images/jeux/thym.png",
+      "nom": "Thym"
+    },
+    {
+      "id": 5,
+      "image": "/images/jeux/persil.png",
+      "nom": "Persil"
+    },
+    {
+      "id": 6,
+      "image": "/images/jeux/ciboulette.png",
+      "nom": "Ciboulette"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439602"
+  },
+  "idJeu": 2,
+  "nomJeu": "Quiz Botanique",
+  "type": "quiz",
+  "description": "Testez vos connaissances sur les plantes",
+  "regles": "Répondez aux questions dans le temps imparti. Chaque bonne réponse vaut 10 points.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Quelle plante est connue pour purifier l'air?",
+      "options": [
+        "Cactus",
+        "Aloe Vera",
+        "Spathiphyllum",
+        "Toutes ces réponses"
+      ],
+      "reponseCorrecte": 3,
+      "points": 10
+    },
+    {
+      "id": 2,
+      "question": "Combien de temps peut survivre un cactus sans eau?",
+      "options": [
+        "1 semaine",
+        "1 mois",
+        "6 mois",
+        "Plusieurs années"
+      ],
+      "reponseCorrecte": 3,
+      "points": 10
+    },
+    {
+      "id": 3,
+      "question": "Quelle est la meilleure exposition pour une orchidée?",
+      "options": [
+        "Plein soleil",
+        "Mi-ombre",
+        "Ombre complète",
+        "Lumière artificielle"
+      ],
+      "reponseCorrecte": 1,
+      "points": 10
+    },
+    {
+      "id": 4,
+      "question": "Quel est le pH idéal du sol pour la plupart des plantes?",
+      "options": [
+        "4.0-5.0",
+        "6.0-7.0",
+        "8.0-9.0",
+        "10.0-11.0"
+      ],
+      "reponseCorrecte": 1,
+      "points": 15
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439603"
+  },
+  "idJeu": 3,
+  "nomJeu": "Puzzle Jardin",
+  "type": "puzzle",
+  "description": "Reconstituez l'image du jardin",
+  "regles": "Déplacez les pièces pour reconstituer l'image originale.",
+  "niveaux": [
+    {
+      "niveau": 1,
+      "type": "image",
+      "grille": "3x3",
+      "image": "/images/jeux/puzzle1.png"
+    },
+    {
+      "niveau": 2,
+      "type": "image",
+      "grille": "4x4",
+      "image": "/images/jeux/puzzle2.png"
+    },
+    {
+      "niveau": 3,
+      "type": "sequence",
+      "description": "Ordonnez les etapes de developpement",
+      "planteId": 1
+    },
+    {
+      "niveau": 4,
+      "type": "sequence",
+      "description": "Ordonnez les etapes de developpement",
+      "planteId": 2
+    },
+    {
+      "niveau": 5,
+      "type": "image",
+      "grille": "5x5",
+      "image": "/images/jeux/puzzle3.png"
+    }
+  ]
+}]

@@ -1,0 +1,53 @@
+[{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bb2"
+  },
+  "userId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "userType": "client",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "dateCreation": {
+    "$date": "2024-06-01T08:00:00.000Z"
+  },
+  "dateExpiration": {
+    "$date": "2024-06-02T08:00:00.000Z"
+  },
+  "adresseIP": "192.168.1.100",
+  "appareil": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bb3"
+  },
+  "userId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "userType": "client",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "dateCreation": {
+    "$date": "2024-06-02T10:30:00.000Z"
+  },
+  "dateExpiration": {
+    "$date": "2024-06-03T10:30:00.000Z"
+  },
+  "adresseIP": "192.168.1.105",
+  "appareil": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0)"
+},
+{
+  "_id": {
+    "$oid": "6980acb73a1fd18b113c2bc8"
+  },
+  "userId": {
+    "$oid": "65a1f123abc4567890123456"
+  },
+  "role": "CLIENT",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+  "deviceInfo": "Chrome / Windows 10",
+  "dateCreation": {
+    "$date": "2026-02-02T13:55:03.891Z"
+  },
+  "dateExpiration": {
+    "$date": "2026-02-02T14:55:03.891Z"
+  }
+}]

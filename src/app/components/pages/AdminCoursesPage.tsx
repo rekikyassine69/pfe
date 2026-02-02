@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Search, Plus, Edit2, Trash2, Users, Clock, Star, Eye } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { CourseModal } from '@/app/components/modals/CourseModal';
 import { DeleteConfirmModal } from '@/app/components/modals/DeleteConfirmModal';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function AdminCoursesPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,66 +13,71 @@ export function AdminCoursesPage() {
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [modalMode, setModalMode] = useState<'add' | 'edit' | 'view'>('add');
 
-  const [courses, setCourses] = useState([
-    {
-      id: 1,
-      title: 'Introduction à l\'IoT pour l\'Agriculture',
-      instructor: 'Dr. Marie Dubois',
-      duration: '4 heures',
-      lessons: 12,
-      students: 1247,
-      rating: 4.8,
-      reviews: 234,
-      status: 'Publié',
-      category: 'Débutant',
-      lastUpdated: '15 Jan 2024',
-    },
-    {
-      id: 2,
-      title: 'Capteurs et Arduino pour Plantes',
-      instructor: 'Jean Martin',
-      duration: '6 heures',
-      lessons: 18,
-      students: 892,
-      rating: 4.9,
-      reviews: 156,
-      status: 'Publié',
-      category: 'Intermédiaire',
-      lastUpdated: '10 Jan 2024',
-    },
-    {
-      id: 3,
-      title: 'Intelligence Artificielle et Botanique',
-      instructor: 'Sophie Laurent',
-      duration: '8 heures',
-      lessons: 24,
-      students: 645,
-      rating: 4.7,
-      reviews: 98,
-      status: 'Publié',
-      category: 'Avancé',
-      lastUpdated: '05 Jan 2024',
-    },
-    {
-      id: 4,
-      title: 'Hydroponie et Systèmes Automatisés',
-      instructor: 'Pierre Durand',
-      duration: '10 heures',
-      lessons: 30,
-      students: 523,
-      rating: 4.9,
-      reviews: 87,
-      status: 'Brouillon',
-      category: 'Avancé',
-      lastUpdated: '20 Jan 2024',
-    },
-  ]);
+  const [courses, setCourses] = useState<any[]>([]);
+  const { data: cours } = useCollection<any>('cours');
+  const { data: progressions } = useCollection<any>('progressionCours');
+
+  const studentsByCourse = useMemo(() => {
+    const counts = new Map<string, number>();
+    progressions.forEach((entry) => {
+      const coursId = entry.coursId?.$oid ?? entry.coursId;
+      if (!coursId) return;
+      counts.set(coursId, (counts.get(coursId) || 0) + 1);
+    });
+    return counts;
+  }, [progressions]);
+
+  useEffect(() => {
+    const formatDuration = (minutes: number) => {
+      if (!minutes && minutes !== 0) return '—';
+      if (minutes < 60) return `${minutes} min`;
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      return m ? `${h}h ${m}min` : `${h}h`;
+    };
+
+    const formatDate = (value: any) => {
+      const date = value?.$date ? new Date(value.$date) : new Date(value);
+      if (Number.isNaN(date.getTime())) return '—';
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+
+    const mapped = cours.map((course) => {
+      const courseId = course._id?.$oid ?? course._id;
+      const students = studentsByCourse.get(courseId) || 0;
+      return {
+        id: course.idCours ?? course._id,
+        title: course.titre,
+        instructor: 'Équipe Smart Plant Care',
+        duration: formatDuration(course.duree),
+        lessons: course.chapitres?.length || 0,
+        students,
+        rating: 4.7,
+        reviews: students,
+        status: 'Publié',
+        category: course.niveau ? course.niveau.charAt(0).toUpperCase() + course.niveau.slice(1) : 'Débutant',
+        lastUpdated: formatDate(course.dateCreation),
+      };
+    });
+
+    if (mapped.length) setCourses(mapped);
+  }, [cours, studentsByCourse]);
+
+  const totalCourses = courses.length;
+  const totalStudents = courses.reduce((sum, course) => sum + (course.students || 0), 0);
+  const totalHours = courses.reduce((sum, course) => {
+    const match = /^(\d+)h/.exec(course.duration || '');
+    return sum + (match ? Number(match[1]) : 0);
+  }, 0);
+  const averageRating = courses.length
+    ? (courses.reduce((sum, course) => sum + (course.rating || 0), 0) / courses.length).toFixed(1)
+    : '0.0';
 
   const stats = [
-    { label: 'Total Cours', value: '42', icon: BookOpen, color: 'text-chart-1' },
-    { label: 'Étudiants', value: '3,307', icon: Users, color: 'text-chart-2' },
-    { label: 'Heures de contenu', value: '156h', icon: Clock, color: 'text-chart-3' },
-    { label: 'Note moyenne', value: '4.8', icon: Star, color: 'text-yellow-500' },
+    { label: 'Total Cours', value: String(totalCourses), icon: BookOpen, color: 'text-chart-1' },
+    { label: 'Étudiants', value: String(totalStudents), icon: Users, color: 'text-chart-2' },
+    { label: 'Heures de contenu', value: `${totalHours}h`, icon: Clock, color: 'text-chart-3' },
+    { label: 'Note moyenne', value: averageRating, icon: Star, color: 'text-yellow-500' },
   ];
 
   const handleAdd = () => {

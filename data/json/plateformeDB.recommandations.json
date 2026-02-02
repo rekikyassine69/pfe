@@ -1,0 +1,85 @@
+[{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bb8"
+  },
+  "idRecommandation": 1,
+  "typePlante": "Basilic",
+  "saison": "ete",
+  "recommandations": [
+    {
+      "type": "arrosage",
+      "conseil": "Augmentez la frequence d'arrosage a tous les 2 jours",
+      "priorite": "haute"
+    },
+    {
+      "type": "lumiere",
+      "conseil": "Assurez au moins 6h de lumiere directe par jour",
+      "priorite": "moyenne"
+    },
+    {
+      "type": "recolte",
+      "conseil": "Pincez regulierement les sommets pour favoriser la ramification",
+      "priorite": "basse"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bb9"
+  },
+  "idRecommandation": 2,
+  "typePlante": "Basilic",
+  "saison": "hiver",
+  "recommandations": [
+    {
+      "type": "arrosage",
+      "conseil": "Reduisez l'arrosage a une fois par semaine",
+      "priorite": "haute"
+    },
+    {
+      "type": "temperature",
+      "conseil": "Maintenez une temperature minimale de 15°C",
+      "priorite": "haute"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bba"
+  },
+  "idRecommandation": 3,
+  "typePlante": "Menthe",
+  "saison": "toutes",
+  "recommandations": [
+    {
+      "type": "contenant",
+      "conseil": "Cultivez dans un pot separe, la menthe est envahissante",
+      "priorite": "haute"
+    },
+    {
+      "type": "arrosage",
+      "conseil": "Gardez le sol constamment humide mais pas detrempe",
+      "priorite": "moyenne"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bbb"
+  },
+  "idRecommandation": 4,
+  "typePlante": "Cactus",
+  "saison": "toutes",
+  "recommandations": [
+    {
+      "type": "arrosage",
+      "conseil": "Arrosez seulement quand le sol est completement sec",
+      "priorite": "haute"
+    },
+    {
+      "type": "drainage",
+      "conseil": "Utilisez un pot avec trous et un sol bien drainant",
+      "priorite": "haute"
+    }
+  ]
+}]

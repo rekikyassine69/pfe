@@ -1,57 +1,76 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Trophy, Target, Zap, Crown, Gift, TrendingUp, Star } from 'lucide-react';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function GamesPage() {
-  const games = [
-    {
-      id: 1,
-      title: 'PlantQuiz',
-      description: 'Testez vos connaissances sur les plantes et leurs besoins',
-      icon: Target,
-      color: 'bg-chart-1',
-      players: 2341,
-      highScore: 1250,
-      played: true,
-    },
-    {
-      id: 2,
-      title: 'Sensor Challenge',
-      description: 'Placez les capteurs au bon endroit pour optimiser la croissance',
-      icon: Zap,
-      color: 'bg-chart-2',
-      players: 1876,
-      highScore: 850,
-      played: true,
-    },
-    {
-      id: 3,
-      title: 'Garden Manager',
-      description: 'Gérez votre jardin virtuel et atteignez le niveau expert',
-      icon: Crown,
-      color: 'bg-chart-3',
-      players: 3205,
-      highScore: 0,
-      played: false,
-    },
-    {
-      id: 4,
-      title: 'IoT Builder',
-      description: 'Construisez votre système IoT et résolvez des défis',
-      icon: Trophy,
-      color: 'bg-chart-4',
-      players: 1567,
-      highScore: 650,
-      played: true,
-    },
-  ];
+  const [games, setGames] = useState<any[]>([]);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const { data: jeux } = useCollection<any>('jeux');
+  const { data: scores } = useCollection<any>('scores');
+  const { data: clients } = useCollection<any>('clients');
 
-  const leaderboard = [
-    { rank: 1, name: 'Alexandre M.', score: 2850, avatar: '🌟' },
-    { rank: 2, name: 'Sophie L.', score: 2720, avatar: '🌱' },
-    { rank: 3, name: 'Thomas D.', score: 2580, avatar: '🌿' },
-    { rank: 4, name: 'Marie B.', score: 2450, avatar: '🌻' },
-    { rank: 5, name: 'Lucas R.', score: 2320, avatar: '🌺' },
-    { rank: 6, name: 'Vous', score: 2180, avatar: '🍀', isUser: true },
-  ];
+  const clientsById = useMemo(() => {
+    const map = new Map<string, any>();
+    clients.forEach((client) => {
+      const id = client._id?.$oid ?? client._id;
+      map.set(id, client);
+    });
+    return map;
+  }, [clients]);
+
+  const scoresByGame = useMemo(() => {
+    const map = new Map<string, number[]>();
+    scores.forEach((score) => {
+      const gameId = score.jeuId?.$oid ?? score.jeuId;
+      if (!gameId) return;
+      const list = map.get(gameId) || [];
+      list.push(score.valeur || 0);
+      map.set(gameId, list);
+    });
+    return map;
+  }, [scores]);
+
+  useEffect(() => {
+    const icons = [Target, Zap, Crown, Trophy];
+    const colors = ['bg-chart-1', 'bg-chart-2', 'bg-chart-3', 'bg-chart-4'];
+
+    const mapped = jeux.map((game, index) => {
+      const gameId = game._id?.$oid ?? game._id;
+      const gameScores = scoresByGame.get(gameId) || [];
+      const highScore = gameScores.length ? Math.max(...gameScores) : 0;
+      return {
+        id: game.idJeu ?? game._id,
+        title: game.nomJeu,
+        description: game.description,
+        icon: icons[index % icons.length],
+        color: colors[index % colors.length],
+        players: gameScores.length,
+        highScore,
+        played: highScore > 0,
+      };
+    });
+
+    if (mapped.length) setGames(mapped);
+  }, [jeux, scoresByGame]);
+
+  useEffect(() => {
+    const topScores = [...scores]
+      .sort((a, b) => (b.valeur || 0) - (a.valeur || 0))
+      .slice(0, 6)
+      .map((score, index) => {
+        const clientId = score.clientId?.$oid ?? score.clientId;
+        const client = clientsById.get(clientId);
+        return {
+          rank: index + 1,
+          name: client?.nom || 'Joueur',
+          score: score.valeur || 0,
+          avatar: index === 0 ? '🌟' : index === 1 ? '🌱' : index === 2 ? '🌿' : '🌻',
+          isUser: false,
+        };
+      });
+
+    if (topScores.length) setLeaderboard(topScores);
+  }, [scores, clientsById]);
 
   const achievements = [
     { id: 1, title: 'Premier pas', description: 'Jouer à votre premier jeu', unlocked: true, icon: '🎮' },

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { api, clearAuth, getToken, setAuth } from '@/app/services/api';
 import { Sidebar } from '@/app/components/Sidebar';
 import { AdminSidebar } from '@/app/components/AdminSidebar';
 import { PublicNavbar } from '@/app/components/PublicNavbar';
@@ -26,7 +27,6 @@ import { PlantCarePage } from '@/app/components/pages/PlantCarePage';
 import { GamesDemoPage } from '@/app/components/pages/GamesDemoPage';
 import { CoursesPreviewPage } from '@/app/components/pages/CoursesPreviewPage';
 import { SettingsPage } from '@/app/components/pages/SettingsPage';
-import { ErrorBoundary } from '@/app/components/ErrorBoundary';
 
 type UserRole = 'visitor' | 'client' | 'admin';
 
@@ -34,40 +34,66 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('landing');
   const [userRole, setUserRole] = useState<UserRole>('visitor');
 
+  useEffect(() => {
+    const restoreSession = async () => {
+      const token = getToken();
+      if (!token) return;
+      try {
+        const data = await api.me();
+        const role = data?.role === 'admin' ? 'admin' : 'client';
+        setUserRole(role);
+        setCurrentPage(role === 'admin' ? 'admin-dashboard' : 'dashboard');
+      } catch {
+        clearAuth();
+      }
+    };
+
+    restoreSession();
+  }, []);
+
   const handleLogin = async (email: string, password: string) => {
     try {
-      const { token, user } = await (await import('@/lib/api')).login(email, password);
-      // persist token and user
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      setUserRole(user.role === 'admin' ? 'admin' : 'client');
-      toast.success(user.role === 'admin' ? 'Connexion administrateur réussie!' : 'Connexion réussie!', {
-        description: user.role === 'admin' ? 'Bienvenue dans le panneau d\'administration' : 'Bienvenue sur Smart Plant Care Platform',
+      const response = await api.login(email, password);
+      const role = response?.role === 'admin' ? 'admin' : 'client';
+      setAuth(response.token, role);
+      setUserRole(role);
+      toast.success(role === 'admin' ? 'Connexion administrateur réussie!' : 'Connexion réussie!', {
+        description: role === 'admin'
+          ? 'Bienvenue dans le panneau d\'administration'
+          : 'Bienvenue sur Smart Plant Care Platform',
       });
-      setCurrentPage(user.role === 'admin' ? 'admin-dashboard' : 'dashboard');
-    } catch (err: any) {
-      toast.error(err.message || 'Erreur de connexion');
+      setCurrentPage(role === 'admin' ? 'admin-dashboard' : 'dashboard');
+    } catch (error) {
+      toast.error('Connexion échouée', {
+        description: (error as Error).message || 'Vérifiez vos identifiants',
+      });
     }
   };
 
   const handleSignup = async (name: string, email: string, password: string) => {
     try {
-      const { token, user } = await (await import('@/lib/api')).signup(name, email, password);
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      await api.register(name, email, password);
+      const login = await api.login(email, password, 'client');
+      setAuth(login.token, 'client');
       setUserRole('client');
       toast.success('Compte créé avec succès!', {
         description: `Bienvenue ${name} !`,
       });
       setCurrentPage('dashboard');
-    } catch (err: any) {
-      toast.error(err.message || 'Erreur lors de la création du compte');
+    } catch (error) {
+      toast.error('Inscription échouée', {
+        description: (error as Error).message || 'Veuillez réessayer',
+      });
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    try {
+      await api.logout();
+    } catch {
+      // ignore logout errors
+    }
+    clearAuth();
     setUserRole('visitor');
     setCurrentPage('landing');
     toast.info('Déconnexion réussie', {
@@ -166,9 +192,7 @@ export default function App() {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
-                  <ErrorBoundary>
-                    {renderVisitorPage()}
-                  </ErrorBoundary>
+                  {renderVisitorPage()}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -199,9 +223,7 @@ export default function App() {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
-                  <ErrorBoundary>
-                    {renderAdminPage()}
-                  </ErrorBoundary>
+                  {renderAdminPage()}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -232,9 +254,7 @@ export default function App() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
               >
-                <ErrorBoundary>
-                  {renderClientPage()}
-                </ErrorBoundary>
+                {renderClientPage()}
               </motion.div>
             </AnimatePresence>
           </div>
