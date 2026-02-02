@@ -27,9 +27,8 @@ export function AddPlantModal({ isOpen, onClose, onAdd }: AddPlantModalProps) {
     e.preventDefault();
     
     const newPlant = {
-      id: Date.now().toString(),
       name: formData.name,
-      type: formData.type,
+      plant: formData.type,
       location: formData.location,
       status: 'healthy' as const,
       humidity: 65,

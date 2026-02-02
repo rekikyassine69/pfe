@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Flower2, Droplets, Sun, Thermometer, Wind, Plus, Settings, TrendingUp, AlertCircle, Download, RefreshCw } from 'lucide-react';
 import { AddPlantModal } from '@/app/components/modals/AddPlantModal';
 import { PlantSettingsModal } from '@/app/components/modals/PlantSettingsModal';
@@ -14,80 +14,26 @@ export function PotsPage() {
   const [selectedPlantForExport, setSelectedPlantForExport] = useState<string | undefined>(undefined);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const [pots, setPots] = useState([
-    {
-      id: 1,
-      name: 'Tomate Cerise',
-      plant: 'Solanum lycopersicum',
-      status: 'healthy',
-      humidity: 68,
-      temperature: 24,
-      light: 7.5,
-      airQuality: 95,
-      lastWatered: 'Il y a 6h',
-      image: 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?w=400',
-    },
-    {
-      id: 2,
-      name: 'Basilic',
-      plant: 'Ocimum basilicum',
-      status: 'healthy',
-      humidity: 72,
-      temperature: 22,
-      light: 6.8,
-      airQuality: 92,
-      lastWatered: 'Il y a 4h',
-      image: 'https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=400',
-    },
-    {
-      id: 3,
-      name: 'Menthe Poivrée',
-      plant: 'Mentha piperita',
-      status: 'warning',
-      humidity: 45,
-      temperature: 26,
-      light: 5.2,
-      airQuality: 88,
-      lastWatered: 'Il y a 12h',
-      image: 'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400',
-    },
-    {
-      id: 4,
-      name: 'Lavande',
-      plant: 'Lavandula angustifolia',
-      status: 'healthy',
-      humidity: 55,
-      temperature: 23,
-      light: 8.2,
-      airQuality: 94,
-      lastWatered: 'Il y a 8h',
-      image: 'https://images.unsplash.com/photo-1611251133334-cb2e8e9df5ec?w=400',
-    },
-    {
-      id: 5,
-      name: 'Coriandre',
-      plant: 'Coriandrum sativum',
-      status: 'healthy',
-      humidity: 65,
-      temperature: 21,
-      light: 6.5,
-      airQuality: 91,
-      lastWatered: 'Il y a 5h',
-      image: 'https://images.unsplash.com/photo-1652363723838-742a8a87b9c1?w=400',
-    },
-    {
-      id: 6,
-      name: 'Persil',
-      plant: 'Petroselinum crispum',
-      status: 'healthy',
-      humidity: 70,
-      temperature: 20,
-      light: 6.0,
-      airQuality: 93,
-      lastWatered: 'Il y a 7h',
-      image: 'https://images.unsplash.com/photo-1573770012580-3ce8c93fd48e?w=400',
-    },
-  ]);
+  const [pots, setPots] = useState<any[]>([]);
+  const [loadingPots, setLoadingPots] = useState(false);
+
+  // Load pots from API
+  useEffect(() => {
+    let mounted = true;
+    setLoadingPots(true);
+    (async () => {
+      try {
+        const api = await import('@/lib/api');
+        const list = await api.getPots();
+        if (mounted) setPots(list);
+      } catch (err) {
+        console.error('Failed to fetch pots', err);
+      } finally {
+        if (mounted) setLoadingPots(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -115,14 +61,28 @@ export function PotsPage() {
     }
   };
 
-  const handleAddPlant = (plant: any) => {
-    setPots([...pots, plant]);
+  const handleAddPlant = async (plant: any) => {
+    try {
+      const api = await import('@/lib/api');
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      const payload = { ...plant, ownerId: user?.id };
+      const created = await api.addPot(payload);
+      setPots(prev => [...prev, created]);
+      toast.success(`Pot "${created.name}" ajouté !`);
+    } catch (err: any) {
+      toast.error(err.message || 'Erreur lors de l\'ajout du pot');
+    }
   };
 
-  const handleUpdatePlant = (id: string, updatedData: any) => {
-    setPots(pots.map(pot => 
-      pot.id.toString() === id ? { ...pot, ...updatedData } : pot
-    ));
+  const handleUpdatePlant = async (id: string, updatedData: any) => {
+    try {
+      const api = await import('@/lib/api');
+      const updated = await api.updatePot(id, updatedData);
+      setPots(prev => prev.map(p => p.id.toString() === id ? { ...p, ...updated } : p));
+      toast.success(`Pot "${updated.name}" mis à jour !`);
+    } catch (err: any) {
+      toast.error(err.message || 'Erreur lors de la mise à jour du pot');
+    }
   };
 
   const handleRefresh = () => {

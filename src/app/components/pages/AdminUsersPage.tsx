@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Users, Search, Plus, Edit2, Trash2, CheckCircle2, XCircle, Mail, Phone, Calendar } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
@@ -13,58 +13,25 @@ export function AdminUsersPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: 'Marie Dupont',
-      email: 'marie.dupont@email.com',
-      phone: '+33 6 12 34 56 78',
-      role: 'Client',
-      status: 'Actif',
-      pots: 5,
-      joinDate: '15 Jan 2024',
-    },
-    {
-      id: 2,
-      name: 'Jean Martin',
-      email: 'jean.martin@email.com',
-      phone: '+33 6 23 45 67 89',
-      role: 'Client',
-      status: 'Actif',
-      pots: 3,
-      joinDate: '22 Jan 2024',
-    },
-    {
-      id: 3,
-      name: 'Sophie Laurent',
-      email: 'sophie.laurent@email.com',
-      phone: '+33 6 34 56 78 90',
-      role: 'Client',
-      status: 'Inactif',
-      pots: 1,
-      joinDate: '10 Fév 2024',
-    },
-    {
-      id: 4,
-      name: 'Pierre Durand',
-      email: 'pierre.durand@email.com',
-      phone: '+33 6 45 67 89 01',
-      role: 'Admin',
-      status: 'Actif',
-      pots: 8,
-      joinDate: '05 Jan 2024',
-    },
-    {
-      id: 5,
-      name: 'Camille Bernard',
-      email: 'camille.bernard@email.com',
-      phone: '+33 6 56 78 90 12',
-      role: 'Client',
-      status: 'Actif',
-      pots: 12,
-      joinDate: '28 Fév 2024',
-    },
-  ]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    setLoadingUsers(true);
+    (async () => {
+      try {
+        const api = await import('@/lib/api');
+        const list = await api.getUsers();
+        if (mounted) setUsers(list);
+      } catch (err) {
+        console.error('Failed to fetch users', err);
+      } finally {
+        if (mounted) setLoadingUsers(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
 
   const stats = [
     { label: 'Total Utilisateurs', value: '2,847', icon: Users, color: 'text-chart-1' },
@@ -73,8 +40,15 @@ export function AdminUsersPage() {
     { label: 'Inactifs', value: '89', icon: XCircle, color: 'text-orange-500' },
   ];
 
-  const handleAddUser = (user: any) => {
-    setUsers([...users, user]);
+  const handleAddUser = async (user: any) => {
+    try {
+      const api = await import('@/lib/api');
+      const created = await api.addUser(user);
+      setUsers(prev => [...prev, created]);
+      toast.success(`Utilisateur "${created.name}" ajouté !`);
+    } catch (err: any) {
+      toast.error(err.message || 'Erreur lors de la création');
+    }
   };
 
   const handleEdit = (user: any) => {
@@ -82,10 +56,15 @@ export function AdminUsersPage() {
     setShowEditModal(true);
   };
 
-  const handleUpdateUser = (id: string, updatedData: any) => {
-    setUsers(users.map(user => 
-      user.id.toString() === id ? { ...user, ...updatedData } : user
-    ));
+  const handleUpdateUser = async (id: string, updatedData: any) => {
+    try {
+      const api = await import('@/lib/api');
+      const updated = await api.updateUser(id, updatedData);
+      setUsers(prev => prev.map(u => u.id.toString() === id ? { ...u, ...updated } : u));
+      toast.success(`Utilisateur "${updated.name}" mis à jour !`);
+    } catch (err: any) {
+      toast.error(err.message || 'Erreur lors de la mise à jour');
+    }
   };
 
   const handleDeleteClick = (user: any) => {
@@ -93,11 +72,17 @@ export function AdminUsersPage() {
     setShowDeleteModal(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (selectedUser) {
-      setUsers(users.filter(user => user.id !== selectedUser.id));
-      toast.success(`Utilisateur "${selectedUser.name}" supprimé !`);
-      setSelectedUser(null);
+      try {
+        const api = await import('@/lib/api');
+        await api.deleteUser(selectedUser.id.toString());
+        setUsers(prev => prev.filter(user => user.id !== selectedUser.id));
+        toast.success(`Utilisateur "${selectedUser.name}" supprimé !`);
+        setSelectedUser(null);
+      } catch (err: any) {
+        toast.error(err.message || 'Erreur lors de la suppression');
+      }
     }
   };
 
@@ -212,7 +197,7 @@ export function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.role === 'Admin'
+                      { (user.role || '').toString().toLowerCase() === 'admin'
                         ? 'bg-purple-500/20 text-purple-600'
                         : 'bg-blue-500/20 text-blue-600'
                     }`}>
@@ -221,7 +206,7 @@ export function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.status === 'Actif'
+                      { (user.status || '').toString().toLowerCase() === 'active'
                         ? 'bg-green-500/20 text-green-600'
                         : 'bg-orange-500/20 text-orange-600'
                     }`}>

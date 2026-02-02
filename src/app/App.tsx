@@ -33,33 +33,40 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('landing');
   const [userRole, setUserRole] = useState<UserRole>('visitor');
 
-  const handleLogin = (email: string, password: string) => {
-    // Mock authentication
-    if (email.includes('admin')) {
-      setUserRole('admin');
-      toast.success('Connexion administrateur réussie!', {
-        description: 'Bienvenue dans le panneau d\'administration',
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const { token, user } = await (await import('@/lib/api')).login(email, password);
+      // persist token and user
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      setUserRole(user.role === 'admin' ? 'admin' : 'client');
+      toast.success(user.role === 'admin' ? 'Connexion administrateur réussie!' : 'Connexion réussie!', {
+        description: user.role === 'admin' ? 'Bienvenue dans le panneau d\'administration' : 'Bienvenue sur Smart Plant Care Platform',
       });
-      setCurrentPage('admin-dashboard');
-    } else {
-      setUserRole('client');
-      toast.success('Connexion réussie!', {
-        description: 'Bienvenue sur Smart Plant Care Platform',
-      });
-      setCurrentPage('dashboard');
+      setCurrentPage(user.role === 'admin' ? 'admin-dashboard' : 'dashboard');
+    } catch (err: any) {
+      toast.error(err.message || 'Erreur de connexion');
     }
   };
 
-  const handleSignup = (name: string, email: string, password: string) => {
-    // Mock signup
-    setUserRole('client');
-    toast.success('Compte créé avec succès!', {
-      description: `Bienvenue ${name} !`,
-    });
-    setCurrentPage('dashboard');
+  const handleSignup = async (name: string, email: string, password: string) => {
+    try {
+      const { token, user } = await (await import('@/lib/api')).signup(name, email, password);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      setUserRole('client');
+      toast.success('Compte créé avec succès!', {
+        description: `Bienvenue ${name} !`,
+      });
+      setCurrentPage('dashboard');
+    } catch (err: any) {
+      toast.error(err.message || 'Erreur lors de la création du compte');
+    }
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUserRole('visitor');
     setCurrentPage('landing');
     toast.info('Déconnexion réussie', {

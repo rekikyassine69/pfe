@@ -22,7 +22,6 @@ export function AddUserModal({ isOpen, onClose, onAdd }: AddUserModalProps) {
     e.preventDefault();
 
     const newUser = {
-      id: Date.now().toString(),
       name: formData.name,
       email: formData.email,
       role: formData.role,
