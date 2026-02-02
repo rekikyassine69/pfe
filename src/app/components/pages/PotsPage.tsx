@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Flower2, Droplets, Sun, Thermometer, Wind, Plus, Settings, TrendingUp, AlertCircle, Download, RefreshCw } from 'lucide-react';
 import { AddPlantModal } from '@/app/components/modals/AddPlantModal';
 import { PlantSettingsModal } from '@/app/components/modals/PlantSettingsModal';
 import { ExportDataModal } from '@/app/components/modals/ExportDataModal';
 import { toast } from 'sonner';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function PotsPage() {
   const [selectedPot, setSelectedPot] = useState<number | null>(null);
@@ -14,80 +15,79 @@ export function PotsPage() {
   const [selectedPlantForExport, setSelectedPlantForExport] = useState<string | undefined>(undefined);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const [pots, setPots] = useState([
-    {
-      id: 1,
-      name: 'Tomate Cerise',
-      plant: 'Solanum lycopersicum',
-      status: 'healthy',
-      humidity: 68,
-      temperature: 24,
-      light: 7.5,
-      airQuality: 95,
-      lastWatered: 'Il y a 6h',
-      image: 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?w=400',
-    },
-    {
-      id: 2,
-      name: 'Basilic',
-      plant: 'Ocimum basilicum',
-      status: 'healthy',
-      humidity: 72,
-      temperature: 22,
-      light: 6.8,
-      airQuality: 92,
-      lastWatered: 'Il y a 4h',
-      image: 'https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=400',
-    },
-    {
-      id: 3,
-      name: 'Menthe Poivrée',
-      plant: 'Mentha piperita',
-      status: 'warning',
-      humidity: 45,
-      temperature: 26,
-      light: 5.2,
-      airQuality: 88,
-      lastWatered: 'Il y a 12h',
-      image: 'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400',
-    },
-    {
-      id: 4,
-      name: 'Lavande',
-      plant: 'Lavandula angustifolia',
-      status: 'healthy',
-      humidity: 55,
-      temperature: 23,
-      light: 8.2,
-      airQuality: 94,
-      lastWatered: 'Il y a 8h',
-      image: 'https://images.unsplash.com/photo-1611251133334-cb2e8e9df5ec?w=400',
-    },
-    {
-      id: 5,
-      name: 'Coriandre',
-      plant: 'Coriandrum sativum',
-      status: 'healthy',
-      humidity: 65,
-      temperature: 21,
-      light: 6.5,
-      airQuality: 91,
-      lastWatered: 'Il y a 5h',
-      image: 'https://images.unsplash.com/photo-1652363723838-742a8a87b9c1?w=400',
-    },
-    {
-      id: 6,
-      name: 'Persil',
-      plant: 'Petroselinum crispum',
-      status: 'healthy',
-      humidity: 70,
-      temperature: 20,
-      light: 6.0,
-      airQuality: 93,
-      lastWatered: 'Il y a 7h',
-      image: 'https://images.unsplash.com/photo-1573770012580-3ce8c93fd48e?w=400',
-    },
-  ]);
+  const [pots, setPots] = useState<any[]>([]);
+  const { data: potsConnectes } = useCollection<any>('potsConnectes');
+  const { data: historiqueArrosage } = useCollection<any>('historiqueArrosage');
+  const { data: historiqueMesures } = useCollection<any>('historiqueMesures');
+
+  const lastWateredByPot = useMemo(() => {
+    const map = new Map<string, Date>();
+    historiqueArrosage.forEach((entry) => {
+      const potId = entry.potId?.$oid ?? entry.potId;
+      if (!potId) return;
+      const date = entry.dateArrosage?.$date ? new Date(entry.dateArrosage.$date) : new Date(entry.dateArrosage);
+      if (!map.has(potId) || (date && date > (map.get(potId) as Date))) {
+        map.set(potId, date);
+      }
+    });
+    return map;
+  }, [historiqueArrosage]);
+
+  const measuresByPot = useMemo(() => {
+    const map = new Map<string, any>();
+    historiqueMesures.forEach((entry) => {
+      const potId = entry.potId?.$oid ?? entry.potId;
+      if (!potId) return;
+      const current = map.get(potId);
+      const currentDate = current?.dateMesure?.$date ? new Date(current.dateMesure.$date) : new Date(current?.dateMesure);
+      const entryDate = entry.dateMesure?.$date ? new Date(entry.dateMesure.$date) : new Date(entry.dateMesure);
+      if (!current || (entryDate && entryDate > currentDate)) {
+        map.set(potId, entry);
+      }
+    });
+    return map;
+  }, [historiqueMesures]);
+
+  useEffect(() => {
+    const formatRelative = (date?: Date) => {
+      if (!date || Number.isNaN(date.getTime())) return '—';
+      const diff = Date.now() - date.getTime();
+      const hours = Math.round(diff / (1000 * 60 * 60));
+      if (hours < 1) return 'Il y a moins d\'1h';
+      if (hours < 24) return `Il y a ${hours}h`;
+      const days = Math.round(hours / 24);
+      return `Il y a ${days}j`;
+    };
+
+    const mapped = potsConnectes.map((pot, index) => {
+      const potId = pot._id?.$oid ?? pot._id;
+      const lastWatered = formatRelative(lastWateredByPot.get(potId));
+      const latestMeasure = measuresByPot.get(potId) || {};
+      const humidity = Math.round(latestMeasure.humidite ?? pot.humidite ?? 0);
+      const temperature = Math.round(latestMeasure.temperature ?? pot.temperature ?? 0);
+      const light = Math.round((latestMeasure.luminosite ?? pot.luminosite ?? 0) / 100);
+      const status = humidity < 35 ? 'warning' : 'healthy';
+      return {
+        id: pot.idPot ?? pot._id,
+        name: pot.nom,
+        plant: pot.typePlante,
+        status,
+        humidity,
+        temperature,
+        light: Number.isNaN(light) ? 0 : light,
+        airQuality: 92,
+        lastWatered,
+        image: [
+          'https://images.unsplash.com/photo-1592841200221-a6898f307baa?w=400',
+          'https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=400',
+          'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400',
+          'https://images.unsplash.com/photo-1611251133334-cb2e8e9df5ec?w=400',
+        ][index % 4],
+      };
+    });
+
+    if (mapped.length) setPots(mapped);
+  }, [potsConnectes, lastWateredByPot, measuresByPot]);
 
   const getStatusColor = (status: string) => {
     switch (status) {

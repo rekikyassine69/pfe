@@ -1,82 +1,113 @@
+import { useMemo } from 'react';
 import { Users, Activity, ShoppingCart, TrendingUp, AlertCircle, CheckCircle2, Clock, DollarSign } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function AdminPage() {
-  const stats = [
-    {
-      title: 'Utilisateurs actifs',
-      value: '2,847',
-      change: '+12.5%',
-      icon: Users,
-      color: 'text-chart-1',
-    },
-    {
-      title: 'Pots connectés',
-      value: '8,432',
-      change: '+8.3%',
-      icon: Activity,
-      color: 'text-chart-2',
-    },
-    {
-      title: 'Ventes ce mois',
-      value: '24,567€',
-      change: '+18.2%',
-      icon: ShoppingCart,
-      color: 'text-chart-3',
-    },
-    {
-      title: 'Taux de satisfaction',
-      value: '98.2%',
-      change: '+2.1%',
-      icon: TrendingUp,
-      color: 'text-chart-1',
-    },
-  ];
+  const { data: clients } = useCollection<any>('clients');
+  const { data: admins } = useCollection<any>('administrateurs');
+  const { data: potsConnectes } = useCollection<any>('potsConnectes');
+  const { data: commandes } = useCollection<any>('commandes');
+  const { data: feedbacks } = useCollection<any>('feedbacks');
+  const { data: alertes } = useCollection<any>('alertes');
 
-  const userData = [
-    { month: 'Jan', users: 1200 },
-    { month: 'Fév', users: 1450 },
-    { month: 'Mar', users: 1680 },
-    { month: 'Avr', users: 1920 },
-    { month: 'Mai', users: 2340 },
-    { month: 'Juin', users: 2847 },
-  ];
+  const stats = useMemo(() => {
+    const totalUsers = clients.length + admins.length;
+    const totalPots = potsConnectes.length;
+    const totalSales = commandes.reduce((sum, order) => sum + (order.total || 0), 0);
+    const avgRating = feedbacks.length
+      ? feedbacks.reduce((sum, feedback) => sum + (feedback.note || 0), 0) / feedbacks.length
+      : 0;
 
-  const salesData = [
-    { month: 'Jan', amount: 12000 },
-    { month: 'Fév', amount: 15400 },
-    { month: 'Mar', amount: 18200 },
-    { month: 'Avr', amount: 19800 },
-    { month: 'Mai', amount: 22100 },
-    { month: 'Juin', amount: 24567 },
-  ];
+    return [
+      {
+        title: 'Utilisateurs actifs',
+        value: String(totalUsers),
+        change: '+0%',
+        icon: Users,
+        color: 'text-chart-1',
+      },
+      {
+        title: 'Pots connectés',
+        value: String(totalPots),
+        change: '+0%',
+        icon: Activity,
+        color: 'text-chart-2',
+      },
+      {
+        title: 'Ventes ce mois',
+        value: `${totalSales.toFixed(2)}€`,
+        change: '+0%',
+        icon: ShoppingCart,
+        color: 'text-chart-3',
+      },
+      {
+        title: 'Taux de satisfaction',
+        value: avgRating ? `${(avgRating * 20).toFixed(1)}%` : '—',
+        change: '+0%',
+        icon: TrendingUp,
+        color: 'text-chart-1',
+      },
+    ];
+  }, [admins.length, clients.length, commandes, feedbacks, potsConnectes.length]);
 
-  const recentOrders = [
-    {
-      id: '#ORD-1234',
-      customer: 'Marie Dupont',
-      product: 'Smart Pot Pro',
-      amount: '89.99€',
-      status: 'Livré',
-      date: 'Il y a 2h',
-    },
-    {
-      id: '#ORD-1235',
-      customer: 'Jean Martin',
-      product: 'Kit Démarrage IoT',
-      amount: '199.99€',
-      status: 'En cours',
-      date: 'Il y a 4h',
-    },
-    {
-      id: '#ORD-1236',
-      customer: 'Sophie Laurent',
-      product: 'Station Météo IoT',
-      amount: '149.99€',
-      status: 'En attente',
-      date: 'Il y a 6h',
-    },
-  ];
+  const monthLabels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+
+  const userData = useMemo(() => {
+    const counts = new Array(12).fill(0);
+    clients.forEach((client) => {
+      const date = client.dateInscription?.$date ? new Date(client.dateInscription.$date) : new Date(client.dateInscription);
+      if (!Number.isNaN(date.getTime())) counts[date.getMonth()] += 1;
+    });
+    admins.forEach((admin) => {
+      const date = admin.dateCreation?.$date ? new Date(admin.dateCreation.$date) : new Date(admin.dateCreation);
+      if (!Number.isNaN(date.getTime())) counts[date.getMonth()] += 1;
+    });
+    return monthLabels.map((label, index) => ({ month: label, users: counts[index] }));
+  }, [admins, clients]);
+
+  const salesData = useMemo(() => {
+    const totals = new Array(12).fill(0);
+    commandes.forEach((order) => {
+      const date = order.dateCommande?.$date ? new Date(order.dateCommande.$date) : new Date(order.dateCommande);
+      if (!Number.isNaN(date.getTime())) totals[date.getMonth()] += order.total || 0;
+    });
+    return monthLabels.map((label, index) => ({ month: label, amount: Math.round(totals[index]) }));
+  }, [commandes]);
+
+  const recentOrders = useMemo(() => {
+    const clientMap = new Map<string, any>();
+    clients.forEach((client) => {
+      const id = client._id?.$oid ?? client._id;
+      clientMap.set(id, client);
+    });
+
+    const statusMap: Record<string, string> = {
+      livree: 'Livré',
+      en_cours: 'En cours',
+      en_attente: 'En attente',
+      annulee: 'Annulé',
+      annule: 'Annulé',
+    };
+
+    return [...commandes]
+      .sort((a, b) => new Date(b.dateCommande?.$date || b.dateCommande).getTime() - new Date(a.dateCommande?.$date || a.dateCommande).getTime())
+      .slice(0, 3)
+      .map((order) => {
+        const clientId = order.clientId?.$oid ?? order.clientId;
+        const client = clientMap.get(clientId);
+        const product = order.lignesCommande?.[0]?.nomProduit || 'Produit';
+        const date = order.dateCommande?.$date ? new Date(order.dateCommande.$date) : new Date(order.dateCommande);
+        return {
+          id: `#ORD-${String(order.idCommande ?? '').padStart(4, '0')}`,
+          customer: client?.nom || 'Client',
+          product,
+          amount: `${(order.total || 0).toFixed(2)}€`,
+          status: statusMap[order.statut] || 'En cours',
+          date: Number.isNaN(date.getTime()) ? '—' : date.toLocaleString('fr-FR'),
+        };
+      });
+  }, [commandes, clients]);
 
   const systemHealth = [
     { name: 'Serveurs API', status: 'ok', uptime: '99.98%' },
@@ -85,23 +116,16 @@ export function AdminPage() {
     { name: 'Système IA', status: 'ok', uptime: '99.9%' },
   ];
 
-  const recentAlerts = [
-    {
-      type: 'warning',
-      message: 'Service IoT: Latence élevée détectée',
-      time: 'Il y a 15min',
-    },
-    {
-      type: 'success',
-      message: 'Mise à jour système déployée avec succès',
-      time: 'Il y a 1h',
-    },
-    {
-      type: 'info',
-      message: 'Nouveau batch de 50 utilisateurs enregistrés',
-      time: 'Il y a 2h',
-    },
-  ];
+  const recentAlerts = useMemo(() => {
+    return [...alertes]
+      .sort((a, b) => new Date(b.dateAlerte?.$date || b.dateAlerte).getTime() - new Date(a.dateAlerte?.$date || a.dateAlerte).getTime())
+      .slice(0, 3)
+      .map((alert) => ({
+        type: 'warning',
+        message: `${alert.type} - ${alert.valeurMesuree}`,
+        time: new Date(alert.dateAlerte?.$date || alert.dateAlerte).toLocaleString('fr-FR'),
+      }));
+  }, [alertes]);
 
   return (
     <div className="space-y-6">

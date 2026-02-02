@@ -1,0 +1,72 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439701"
+  },
+  "idScore": 1,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "jeuId": {
+    "$oid": "507f1f77bcf86cd799439601"
+  },
+  "valeur": 450,
+  "niveau": 2,
+  "tempsRealise": 45,
+  "date": {
+    "$date": "2024-05-15T16:30:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439702"
+  },
+  "idScore": 2,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "jeuId": {
+    "$oid": "507f1f77bcf86cd799439602"
+  },
+  "valeur": 85,
+  "niveau": null,
+  "tempsRealise": 120,
+  "date": {
+    "$date": "2024-05-16T10:15:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439703"
+  },
+  "idScore": 3,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "jeuId": {
+    "$oid": "507f1f77bcf86cd799439601"
+  },
+  "valeur": 520,
+  "niveau": 3,
+  "tempsRealise": 98,
+  "date": {
+    "$date": "2024-05-17T14:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439704"
+  },
+  "idScore": 4,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439013"
+  },
+  "jeuId": {
+    "$oid": "507f1f77bcf86cd799439602"
+  },
+  "valeur": 65,
+  "niveau": null,
+  "tempsRealise": 180,
+  "date": {
+    "$date": "2024-05-18T11:30:00.000Z"
+  }
+}]

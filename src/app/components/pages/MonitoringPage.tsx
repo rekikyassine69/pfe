@@ -1,31 +1,64 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from 'recharts';
 import { Calendar, Download, Filter, RefreshCw } from 'lucide-react';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function MonitoringPage() {
   const [selectedMetric, setSelectedMetric] = useState('humidity');
   const [timeRange, setTimeRange] = useState('24h');
 
-  const humidityData = Array.from({ length: 24 }, (_, i) => ({
-    time: `${i}:00`,
-    pot1: 65 + Math.random() * 10,
-    pot2: 70 + Math.random() * 8,
-    pot3: 55 + Math.random() * 15,
-  }));
+  const { data: historiqueMesures } = useCollection<any>('historiqueMesures');
 
-  const temperatureData = Array.from({ length: 24 }, (_, i) => ({
-    time: `${i}:00`,
-    pot1: 20 + Math.random() * 5,
-    pot2: 22 + Math.random() * 4,
-    pot3: 24 + Math.random() * 3,
-  }));
+  const { humidityData, temperatureData, lightData } = useMemo(() => {
+    if (!historiqueMesures.length) {
+      return {
+        humidityData: [],
+        temperatureData: [],
+        lightData: [],
+      };
+    }
 
-  const lightData = Array.from({ length: 24 }, (_, i) => ({
-    time: `${i}:00`,
-    pot1: i >= 6 && i <= 18 ? 8 + Math.random() * 2 : Math.random() * 2,
-    pot2: i >= 6 && i <= 18 ? 7 + Math.random() * 2 : Math.random() * 1.5,
-    pot3: i >= 6 && i <= 18 ? 6 + Math.random() * 2 : Math.random() * 1,
-  }));
+    const measures = [...historiqueMesures]
+      .sort((a, b) => new Date(a.dateMesure?.$date || a.dateMesure).getTime() - new Date(b.dateMesure?.$date || b.dateMesure).getTime());
+
+    const grouped: Record<string, any> = {};
+    measures.forEach((entry) => {
+      const time = new Date(entry.dateMesure?.$date || entry.dateMesure);
+      const key = `${String(time.getHours()).padStart(2, '0')}h`;
+      if (!grouped[key]) {
+        grouped[key] = { time: key, pot1: null, pot2: null, pot3: null };
+      }
+      const potId = entry.potId?.$oid ?? entry.potId;
+      if (!grouped[key].pot1) grouped[key].pot1 = { id: potId, entry };
+      else if (!grouped[key].pot2) grouped[key].pot2 = { id: potId, entry };
+      else if (!grouped[key].pot3) grouped[key].pot3 = { id: potId, entry };
+    });
+
+    const rows = Object.values(grouped).slice(-12);
+
+    const humidityData = rows.map((row: any) => ({
+      time: row.time,
+      pot1: Math.round(row.pot1?.entry?.humidite ?? 0),
+      pot2: Math.round(row.pot2?.entry?.humidite ?? 0),
+      pot3: Math.round(row.pot3?.entry?.humidite ?? 0),
+    }));
+
+    const temperatureData = rows.map((row: any) => ({
+      time: row.time,
+      pot1: Math.round(row.pot1?.entry?.temperature ?? 0),
+      pot2: Math.round(row.pot2?.entry?.temperature ?? 0),
+      pot3: Math.round(row.pot3?.entry?.temperature ?? 0),
+    }));
+
+    const lightData = rows.map((row: any) => ({
+      time: row.time,
+      pot1: Math.round((row.pot1?.entry?.luminosite ?? 0) / 100),
+      pot2: Math.round((row.pot2?.entry?.luminosite ?? 0) / 100),
+      pot3: Math.round((row.pot3?.entry?.luminosite ?? 0) / 100),
+    }));
+
+    return { humidityData, temperatureData, lightData };
+  }, [historiqueMesures]);
 
   const getCurrentData = () => {
     switch (selectedMetric) {

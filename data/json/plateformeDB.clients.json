@@ -1,0 +1,59 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "idClient": 1,
+  "nom": "Ahmed Ben Ali",
+  "email": "ahmed.benali@email.com",
+  "motDePasse": "$2b$10$hashedPassword123",
+  "dateInscription": {
+    "$date": "2024-01-15T10:30:00.000Z"
+  },
+  "notifications": [
+    {
+      "$oid": "507f1f77bcf86cd799439101"
+    },
+    {
+      "$oid": "507f1f77bcf86cd799439102"
+    }
+  ],
+  "panierId": {
+    "$oid": "507f1f77bcf86cd799439501"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "idClient": 2,
+  "nom": "Fatima Zahra",
+  "email": "fatima.zahra@email.com",
+  "motDePasse": "$2b$10$hashedPassword456",
+  "dateInscription": {
+    "$date": "2024-02-20T14:15:00.000Z"
+  },
+  "notifications": [
+    {
+      "$oid": "507f1f77bcf86cd799439103"
+    }
+  ],
+  "panierId": {
+    "$oid": "507f1f77bcf86cd799439502"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439013"
+  },
+  "idClient": 3,
+  "nom": "Youssef Mansour",
+  "email": "youssef.mansour@email.com",
+  "motDePasse": "$2b$10$hashedPassword789",
+  "dateInscription": {
+    "$date": "2024-03-10T09:00:00.000Z"
+  },
+  "notifications": [],
+  "panierId": {
+    "$oid": "507f1f77bcf86cd799439503"
+  }
+}]

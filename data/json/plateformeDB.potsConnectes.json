@@ -1,0 +1,69 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439201"
+  },
+  "idPot": 1,
+  "nom": "Mon Basilic",
+  "typePlante": "Basilic",
+  "etatArrosage": true,
+  "temperature": 22.5,
+  "humidite": 65.3,
+  "luminosite": 850,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "parametres": {
+    "seuilHumidite": 40,
+    "seuilTemperature": 18,
+    "modeAuto": true
+  },
+  "dateAjout": {
+    "$date": "2024-01-20T11:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439202"
+  },
+  "idPot": 2,
+  "nom": "Menthe Fraîche",
+  "typePlante": "Menthe",
+  "etatArrosage": false,
+  "temperature": 21,
+  "humidite": 55.8,
+  "luminosite": 720,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "parametres": {
+    "seuilHumidite": 50,
+    "seuilTemperature": 16,
+    "modeAuto": true
+  },
+  "dateAjout": {
+    "$date": "2024-02-05T14:30:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439203"
+  },
+  "idPot": 3,
+  "nom": "Cactus Bureau",
+  "typePlante": "Cactus",
+  "etatArrosage": false,
+  "temperature": 24,
+  "humidite": 25,
+  "luminosite": 1200,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "parametres": {
+    "seuilHumidite": 15,
+    "seuilTemperature": 15,
+    "modeAuto": false
+  },
+  "dateAjout": {
+    "$date": "2024-03-01T09:45:00.000Z"
+  }
+}]

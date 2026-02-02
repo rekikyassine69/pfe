@@ -1,0 +1,51 @@
+[{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bbc"
+  },
+  "idAdresse": 1,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "label": "Domicile",
+  "nom": "Ahmed Ben Ali",
+  "telephone": "+212 612 345 678",
+  "rue": "123 Rue des Jardins",
+  "ville": "Casablanca",
+  "codePostal": "20000",
+  "pays": "Maroc",
+  "parDefaut": true
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bbd"
+  },
+  "idAdresse": 2,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "label": "Bureau",
+  "nom": "Ahmed Ben Ali",
+  "telephone": "+212 612 345 678",
+  "rue": "456 Boulevard Business",
+  "ville": "Casablanca",
+  "codePostal": "20100",
+  "pays": "Maroc",
+  "parDefaut": false
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bbe"
+  },
+  "idAdresse": 3,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "label": "Domicile",
+  "nom": "Fatima Zahra",
+  "telephone": "+212 698 765 432",
+  "rue": "45 Avenue Mohammed V",
+  "ville": "Rabat",
+  "codePostal": "10000",
+  "pays": "Maroc",
+  "parDefaut": true
+}]

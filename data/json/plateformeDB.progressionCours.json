@@ -1,0 +1,125 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439411"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "coursId": {
+    "$oid": "507f1f77bcf86cd799439401"
+  },
+  "chapitresCompletes": [
+    1,
+    2
+  ],
+  "progression": 100,
+  "examenPasse": true,
+  "scoreExamen": 85,
+  "dateDebut": {
+    "$date": "2024-02-01T10:00:00.000Z"
+  },
+  "dateCompletion": {
+    "$date": "2024-02-03T15:30:00.000Z"
+  },
+  "tempsTotal": 0,
+  "dernierChapitre": 1,
+  "dernierePosition": 0,
+  "dateDerniereVisite": {
+    "$date": "2026-02-02T13:48:14.451Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439412"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "coursId": {
+    "$oid": "507f1f77bcf86cd799439402"
+  },
+  "chapitresCompletes": [
+    1
+  ],
+  "progression": 33,
+  "examenPasse": false,
+  "scoreExamen": null,
+  "dateDebut": {
+    "$date": "2024-03-15T09:00:00.000Z"
+  },
+  "dateCompletion": null,
+  "tempsTotal": 0,
+  "dernierChapitre": 1,
+  "dernierePosition": 0,
+  "dateDerniereVisite": {
+    "$date": "2026-02-02T13:48:14.451Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439413"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "coursId": {
+    "$oid": "507f1f77bcf86cd799439401"
+  },
+  "chapitresCompletes": [
+    1
+  ],
+  "progression": 50,
+  "examenPasse": false,
+  "scoreExamen": null,
+  "dateDebut": {
+    "$date": "2024-04-01T14:00:00.000Z"
+  },
+  "dateCompletion": null,
+  "tempsTotal": 0,
+  "dernierChapitre": 1,
+  "dernierePosition": 0,
+  "dateDerniereVisite": {
+    "$date": "2026-02-02T13:48:14.451Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bc2"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439013"
+  },
+  "coursId": {
+    "$oid": "507f1f77bcf86cd799439401"
+  },
+  "chapitresCompletes": [],
+  "progression": 15,
+  "examenPasse": false,
+  "scoreExamen": null,
+  "dateDebut": {
+    "$date": "2024-05-01T10:00:00.000Z"
+  },
+  "dateCompletion": null,
+  "tempsTotal": 540,
+  "dernierChapitre": 1,
+  "dernierePosition": 120,
+  "dateDerniereVisite": {
+    "$date": "2024-05-02T14:30:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6980acd63a1fd18b113c2bc9"
+  },
+  "clientId": {
+    "$oid": "65a1f123abc4567890123456"
+  },
+  "coursId": {
+    "$oid": "65b2e456def7890123456789"
+  },
+  "dernierChapitre": 3,
+  "pourcentage": 65,
+  "dateDernierAcces": {
+    "$date": "2026-02-02T13:55:34.019Z"
+  }
+}]

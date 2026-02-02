@@ -1,0 +1,121 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439901"
+  },
+  "idCommande": 1,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "dateCommande": {
+    "$date": "2024-04-15T11:30:00.000Z"
+  },
+  "statut": "livree",
+  "lignesCommande": [
+    {
+      "idLigne": 1,
+      "produitId": {
+        "$oid": "507f1f77bcf86cd799439801"
+      },
+      "nomProduit": "Pot Connecté Basic",
+      "quantite": 2,
+      "prixUnitaire": 49.99,
+      "sousTotal": 99.98
+    },
+    {
+      "idLigne": 2,
+      "produitId": {
+        "$oid": "507f1f77bcf86cd799439805"
+      },
+      "nomProduit": "Engrais bio universel 500ml",
+      "quantite": 1,
+      "prixUnitaire": 12.99,
+      "sousTotal": 12.99
+    }
+  ],
+  "total": 112.97,
+  "adresseLivraison": {
+    "rue": "123 Rue des Jardins",
+    "ville": "Casablanca",
+    "codePostal": "20000",
+    "pays": "Maroc"
+  },
+  "dateLivraison": {
+    "$date": "2024-04-20T14:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439902"
+  },
+  "idCommande": 2,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "dateCommande": {
+    "$date": "2024-05-10T09:45:00.000Z"
+  },
+  "statut": "en_cours",
+  "lignesCommande": [
+    {
+      "idLigne": 1,
+      "produitId": {
+        "$oid": "507f1f77bcf86cd799439802"
+      },
+      "nomProduit": "Pot Connecté Pro",
+      "quantite": 1,
+      "prixUnitaire": 89.99,
+      "sousTotal": 89.99
+    }
+  ],
+  "total": 89.99,
+  "adresseLivraison": {
+    "rue": "45 Avenue Mohammed V",
+    "ville": "Rabat",
+    "codePostal": "10000",
+    "pays": "Maroc"
+  },
+  "dateLivraison": null
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439903"
+  },
+  "idCommande": 3,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "dateCommande": {
+    "$date": "2024-05-25T16:00:00.000Z"
+  },
+  "statut": "confirmee",
+  "lignesCommande": [
+    {
+      "idLigne": 1,
+      "produitId": {
+        "$oid": "507f1f77bcf86cd799439803"
+      },
+      "nomProduit": "Kit de démarrage Herbes Aromatiques",
+      "quantite": 1,
+      "prixUnitaire": 69.99,
+      "sousTotal": 69.99
+    },
+    {
+      "idLigne": 2,
+      "produitId": {
+        "$oid": "507f1f77bcf86cd799439804"
+      },
+      "nomProduit": "Capteur de luminosité additionnel",
+      "quantite": 2,
+      "prixUnitaire": 19.99,
+      "sousTotal": 39.98
+    }
+  ],
+  "total": 109.97,
+  "adresseLivraison": {
+    "rue": "123 Rue des Jardins",
+    "ville": "Casablanca",
+    "codePostal": "20000",
+    "pays": "Maroc"
+  },
+  "dateLivraison": null
+}]

@@ -1,0 +1,13 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439021"
+  },
+  "idAdmin": 1,
+  "nom": "Admin Principal",
+  "email": "admin@gmail.com",
+  "motDePasse": "admin",
+  "role": "super_admin",
+  "dateCreation": {
+    "$date": "2023-06-01T08:00:00.000Z"
+  }
+}]

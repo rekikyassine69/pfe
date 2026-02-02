@@ -1,0 +1,57 @@
+[{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bc5"
+  },
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439201"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "dateArrosage": {
+    "$date": "2024-06-01T08:30:00.000Z"
+  },
+  "type": "automatique",
+  "duree": 30,
+  "quantiteEau": 150,
+  "humiditéAvant": 35,
+  "humiditeApres": 68
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bc6"
+  },
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439201"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "dateArrosage": {
+    "$date": "2024-05-28T09:00:00.000Z"
+  },
+  "type": "manuel",
+  "duree": 20,
+  "quantiteEau": 100,
+  "humiditéAvant": 42,
+  "humiditeApres": 65
+},
+{
+  "_id": {
+    "$oid": "6980ab1e3a1fd18b113c2bc7"
+  },
+  "potId": {
+    "$oid": "507f1f77bcf86cd799439202"
+  },
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "dateArrosage": {
+    "$date": "2024-06-01T08:35:00.000Z"
+  },
+  "type": "automatique",
+  "duree": 25,
+  "quantiteEau": 120,
+  "humiditéAvant": 38,
+  "humiditeApres": 60
+}]

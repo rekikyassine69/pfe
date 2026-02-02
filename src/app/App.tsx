@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { api, clearAuth, getToken, setAuth } from '@/app/services/api';
 import { Sidebar } from '@/app/components/Sidebar';
 import { AdminSidebar } from '@/app/components/AdminSidebar';
 import { PublicNavbar } from '@/app/components/PublicNavbar';
@@ -33,33 +34,66 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('landing');
   const [userRole, setUserRole] = useState<UserRole>('visitor');
 
-  const handleLogin = (email: string, password: string) => {
-    // Mock authentication
-    if (email.includes('admin')) {
-      setUserRole('admin');
-      toast.success('Connexion administrateur réussie!', {
-        description: 'Bienvenue dans le panneau d\'administration',
+  useEffect(() => {
+    const restoreSession = async () => {
+      const token = getToken();
+      if (!token) return;
+      try {
+        const data = await api.me();
+        const role = data?.role === 'admin' ? 'admin' : 'client';
+        setUserRole(role);
+        setCurrentPage(role === 'admin' ? 'admin-dashboard' : 'dashboard');
+      } catch {
+        clearAuth();
+      }
+    };
+
+    restoreSession();
+  }, []);
+
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const response = await api.login(email, password);
+      const role = response?.role === 'admin' ? 'admin' : 'client';
+      setAuth(response.token, role);
+      setUserRole(role);
+      toast.success(role === 'admin' ? 'Connexion administrateur réussie!' : 'Connexion réussie!', {
+        description: role === 'admin'
+          ? 'Bienvenue dans le panneau d\'administration'
+          : 'Bienvenue sur Smart Plant Care Platform',
       });
-      setCurrentPage('admin-dashboard');
-    } else {
-      setUserRole('client');
-      toast.success('Connexion réussie!', {
-        description: 'Bienvenue sur Smart Plant Care Platform',
+      setCurrentPage(role === 'admin' ? 'admin-dashboard' : 'dashboard');
+    } catch (error) {
+      toast.error('Connexion échouée', {
+        description: (error as Error).message || 'Vérifiez vos identifiants',
       });
-      setCurrentPage('dashboard');
     }
   };
 
-  const handleSignup = (name: string, email: string, password: string) => {
-    // Mock signup
-    setUserRole('client');
-    toast.success('Compte créé avec succès!', {
-      description: `Bienvenue ${name} !`,
-    });
-    setCurrentPage('dashboard');
+  const handleSignup = async (name: string, email: string, password: string) => {
+    try {
+      await api.register(name, email, password);
+      const login = await api.login(email, password, 'client');
+      setAuth(login.token, 'client');
+      setUserRole('client');
+      toast.success('Compte créé avec succès!', {
+        description: `Bienvenue ${name} !`,
+      });
+      setCurrentPage('dashboard');
+    } catch (error) {
+      toast.error('Inscription échouée', {
+        description: (error as Error).message || 'Veuillez réessayer',
+      });
+    }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await api.logout();
+    } catch {
+      // ignore logout errors
+    }
+    clearAuth();
     setUserRole('visitor');
     setCurrentPage('landing');
     toast.info('Déconnexion réussie', {

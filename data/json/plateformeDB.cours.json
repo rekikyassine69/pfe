@@ -1,0 +1,167 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439401"
+  },
+  "idCours": 1,
+  "titre": "Introduction à l'entretien des plantes",
+  "description": "Apprenez les bases de l'entretien des plantes d'intérieur",
+  "contenu": "Ce cours couvre les fondamentaux: arrosage, lumière, température et nutriments essentiels pour vos plantes.",
+  "duree": 45,
+  "niveau": "debutant",
+  "chapitres": [
+    {
+      "numero": 1,
+      "titre": "Les besoins en eau",
+      "contenu": "L'eau est essentielle pour la photosynthèse...",
+      "videoUrl": "/videos/cours1-chap1.mp4"
+    },
+    {
+      "numero": 2,
+      "titre": "L'importance de la lumière",
+      "contenu": "La lumière permet aux plantes de produire leur énergie...",
+      "videoUrl": "/videos/cours1-chap2.mp4"
+    }
+  ],
+  "examen": {
+    "questions": [
+      {
+        "id": 1,
+        "question": "Quelle est la frequence d'arrosage recommandee pour un cactus?",
+        "type": "choix_multiple",
+        "options": [
+          "Tous les jours",
+          "Une fois par semaine",
+          "Une fois par mois",
+          "Toutes les 2-3 semaines"
+        ],
+        "reponseCorrecte": 3,
+        "points": 5
+      },
+      {
+        "id": 2,
+        "question": "Quel type de lumiere preferent la plupart des plantes d'interieur?",
+        "type": "choix_multiple",
+        "options": [
+          "Lumiere directe intense",
+          "Lumiere indirecte brillante",
+          "Obscurite totale",
+          "Lumiere artificielle uniquement"
+        ],
+        "reponseCorrecte": 1,
+        "points": 5
+      },
+      {
+        "id": 3,
+        "question": "L'eau stagnante dans la soucoupe est benefique pour les plantes.",
+        "type": "vrai_faux",
+        "reponseCorrecte": false,
+        "points": 5
+      },
+      {
+        "id": 4,
+        "question": "Quels sont les signes d'un exces d'arrosage?",
+        "type": "choix_multiple",
+        "options": [
+          "Feuilles jaunes molles",
+          "Feuilles seches et cassantes",
+          "Croissance rapide",
+          "Fleurs abondantes"
+        ],
+        "reponseCorrecte": 0,
+        "points": 5
+      }
+    ],
+    "scoreMinimum": 70,
+    "dureeMinutes": 15,
+    "nombreTentatives": 3
+  },
+  "dateCreation": {
+    "$date": "2024-01-01T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439402"
+  },
+  "idCours": 2,
+  "titre": "Plantes aromatiques: culture et récolte",
+  "description": "Maîtrisez la culture des herbes aromatiques chez vous",
+  "contenu": "Découvrez comment cultiver basilic, menthe, persil et autres herbes aromatiques.",
+  "duree": 60,
+  "niveau": "intermediaire",
+  "chapitres": [
+    {
+      "numero": 1,
+      "titre": "Le Basilic",
+      "contenu": "Le basilic nécessite beaucoup de soleil et un arrosage régulier...",
+      "videoUrl": "/videos/cours2-chap1.mp4"
+    },
+    {
+      "numero": 2,
+      "titre": "La Menthe",
+      "contenu": "La menthe est une plante vigoureuse qui peut devenir envahissante...",
+      "videoUrl": "/videos/cours2-chap2.mp4"
+    },
+    {
+      "numero": 3,
+      "titre": "Récolte et conservation",
+      "contenu": "Pour récolter vos herbes, coupez toujours au-dessus d'un nœud...",
+      "videoUrl": "/videos/cours2-chap3.mp4"
+    }
+  ],
+  "examen": {
+    "questions": [
+      {
+        "question": "À quelle température le basilic commence-t-il à souffrir?",
+        "options": [
+          "En dessous de 20°C",
+          "En dessous de 10°C",
+          "En dessous de 5°C",
+          "En dessous de 0°C"
+        ],
+        "reponseCorrecte": 1
+      }
+    ],
+    "scoreMinimum": 60
+  },
+  "dateCreation": {
+    "$date": "2024-02-15T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439403"
+  },
+  "idCours": 3,
+  "titre": "Diagnostic des maladies des plantes",
+  "description": "Apprenez à identifier et traiter les maladies courantes",
+  "contenu": "Guide complet pour diagnostiquer et soigner vos plantes malades.",
+  "duree": 90,
+  "niveau": "avance",
+  "chapitres": [
+    {
+      "numero": 1,
+      "titre": "Les signes de maladie",
+      "contenu": "Feuilles jaunes, taches brunes, moisissures...",
+      "videoUrl": "/videos/cours3-chap1.mp4"
+    }
+  ],
+  "examen": {
+    "questions": [
+      {
+        "question": "Que signifient des feuilles jaunes avec des nervures vertes?",
+        "options": [
+          "Excès d'eau",
+          "Carence en fer",
+          "Trop de soleil",
+          "Manque d'azote"
+        ],
+        "reponseCorrecte": 1
+      }
+    ],
+    "scoreMinimum": 75
+  },
+  "dateCreation": {
+    "$date": "2024-03-20T00:00:00.000Z"
+  }
+}]

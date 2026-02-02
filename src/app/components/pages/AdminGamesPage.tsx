@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Gamepad2, Search, Plus, Edit2, Trash2, Users, Trophy, BarChart3, Eye } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { GameModal } from '@/app/components/modals/GameModal';
 import { DeleteConfirmModal } from '@/app/components/modals/DeleteConfirmModal';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function AdminGamesPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,74 +13,63 @@ export function AdminGamesPage() {
   const [selectedGame, setSelectedGame] = useState<any>(null);
   const [modalMode, setModalMode] = useState<'add' | 'edit' | 'view' | 'stats'>('add');
 
-  const [games, setGames] = useState([
-    {
-      id: 1,
-      title: 'Quiz Botanique',
-      description: 'Testez vos connaissances sur les plantes',
-      icon: '🌿',
-      difficulty: 'Facile',
-      status: 'Actif',
-      players: 1523,
-      completions: 1247,
-      avgScore: 78,
-      lastPlayed: 'Il y a 2 min',
-    },
-    {
-      id: 2,
-      title: 'Puzzle des Capteurs',
-      description: 'Assemblez les composants IoT',
-      icon: '🔧',
-      difficulty: 'Moyen',
-      status: 'Actif',
-      players: 892,
-      completions: 645,
-      avgScore: 65,
-      lastPlayed: 'Il y a 15 min',
-    },
-    {
-      id: 3,
-      title: 'Course contre la Déshydratation',
-      description: 'Arrosez vos plantes à temps !',
-      icon: '💧',
-      difficulty: 'Facile',
-      status: 'Actif',
-      players: 2134,
-      completions: 1876,
-      avgScore: 82,
-      lastPlayed: 'Il y a 5 min',
-    },
-    {
-      id: 4,
-      title: 'Jardin Virtuel',
-      description: 'Créez et gérez votre propre jardin',
-      icon: '🏡',
-      difficulty: 'Avancé',
-      status: 'Beta',
-      players: 456,
-      completions: 234,
-      avgScore: 71,
-      lastPlayed: 'Il y a 1h',
-    },
-    {
-      id: 5,
-      title: 'Détective des Maladies',
-      description: 'Identifiez les problèmes de vos plantes',
-      icon: '🔍',
-      difficulty: 'Moyen',
-      status: 'Maintenance',
-      players: 723,
-      completions: 512,
-      avgScore: 68,
-      lastPlayed: 'Il y a 2h',
-    },
-  ]);
+  const [games, setGames] = useState<any[]>([]);
+  const { data: jeux } = useCollection<any>('jeux');
+  const { data: scores } = useCollection<any>('scores');
+
+  const scoreByGame = useMemo(() => {
+    const map = new Map<string, number[]>();
+    scores.forEach((score) => {
+      const gameId = score.jeuId?.$oid ?? score.jeuId;
+      if (!gameId) return;
+      const list = map.get(gameId) || [];
+      list.push(score.valeur || 0);
+      map.set(gameId, list);
+    });
+    return map;
+  }, [scores]);
+
+  useEffect(() => {
+    const difficultyFromType = (type: string) => {
+      if (type === 'memory') return 'Facile';
+      if (type === 'quiz') return 'Moyen';
+      return 'Avancé';
+    };
+
+    const mapped = jeux.map((game) => {
+      const gameId = game._id?.$oid ?? game._id;
+      const scoresList = scoreByGame.get(gameId) || [];
+      const avgScore = scoresList.length
+        ? Math.round(scoresList.reduce((sum, v) => sum + v, 0) / scoresList.length)
+        : 0;
+      return {
+        id: game.idJeu ?? game._id,
+        title: game.nomJeu,
+        description: game.description,
+        icon: '🎮',
+        difficulty: difficultyFromType(game.type),
+        status: 'Actif',
+        players: new Set(scoresList).size || scoresList.length,
+        completions: scoresList.length,
+        avgScore,
+        lastPlayed: 'Récemment',
+      };
+    });
+
+    if (mapped.length) setGames(mapped);
+  }, [jeux, scoreByGame]);
+
+  const totalGames = games.length;
+  const totalPlays = games.reduce((sum, game) => sum + (game.completions || 0), 0);
+  const avgScore = games.length
+    ? Math.round(games.reduce((sum, game) => sum + (game.avgScore || 0), 0) / games.length)
+    : 0;
 
   const stats = [
-    { label: 'Total Jeux', value: '12', icon: Gamepad2, color: 'text-chart-1' },
-    { label: 'Joueurs Actifs', value: '5,728', icon: Users, color: 'text-chart-2' },
-    { label: 'Parties Jouées', value: '45,321', icon: Trophy, color: 'text-chart-3' },
-    { label: 'Score Moyen', value: '73%', icon: BarChart3, color: 'text-yellow-500' },
+    { label: 'Total Jeux', value: String(totalGames), icon: Gamepad2, color: 'text-chart-1' },
+    { label: 'Joueurs Actifs', value: String(totalPlays), icon: Users, color: 'text-chart-2' },
+    { label: 'Parties Jouées', value: String(totalPlays), icon: Trophy, color: 'text-chart-3' },
+    { label: 'Score Moyen', value: `${avgScore}%`, icon: BarChart3, color: 'text-yellow-500' },
   ];
 
   const handleAdd = () => {

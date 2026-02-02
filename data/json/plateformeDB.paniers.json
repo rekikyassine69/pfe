@@ -1,0 +1,65 @@
+[{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439501"
+  },
+  "idPanier": 1,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439011"
+  },
+  "produits": [
+    {
+      "produitId": {
+        "$oid": "507f1f77bcf86cd799439802"
+      },
+      "quantite": 1,
+      "prixUnitaire": 89.99
+    },
+    {
+      "produitId": {
+        "$oid": "507f1f77bcf86cd799439805"
+      },
+      "quantite": 2,
+      "prixUnitaire": 12.99
+    }
+  ],
+  "total": 115.97,
+  "dateModification": {
+    "$date": "2024-06-01T10:30:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439502"
+  },
+  "idPanier": 2,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439012"
+  },
+  "produits": [
+    {
+      "produitId": {
+        "$oid": "507f1f77bcf86cd799439803"
+      },
+      "quantite": 1,
+      "prixUnitaire": 69.99
+    }
+  ],
+  "total": 69.99,
+  "dateModification": {
+    "$date": "2024-06-02T14:15:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439503"
+  },
+  "idPanier": 3,
+  "clientId": {
+    "$oid": "507f1f77bcf86cd799439013"
+  },
+  "produits": [],
+  "total": 0,
+  "dateModification": {
+    "$date": "2024-05-20T09:00:00.000Z"
+  }
+}]

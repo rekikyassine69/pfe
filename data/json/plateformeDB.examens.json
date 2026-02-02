@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "6980ace13a1fd18b113c2bca"
+  },
+  "coursId": {
+    "$oid": "65b2e456def7890123456789"
+  },
+  "clientId": {
+    "$oid": "65a1f123abc4567890123456"
+  },
+  "score": 14,
+  "total": 20,
+  "reussi": true,
+  "dateExamen": {
+    "$date": "2026-02-02T13:55:45.419Z"
+  }
+}]

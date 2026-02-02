@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Users, Search, Plus, Edit2, Trash2, CheckCircle2, XCircle, Mail, Phone, Calendar } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { AddUserModal } from '@/app/components/modals/AddUserModal';
 import { EditUserModal } from '@/app/components/modals/EditUserModal';
 import { DeleteConfirmModal } from '@/app/components/modals/DeleteConfirmModal';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function AdminUsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,64 +14,76 @@ export function AdminUsersPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: 'Marie Dupont',
-      email: 'marie.dupont@email.com',
-      phone: '+33 6 12 34 56 78',
-      role: 'Client',
-      status: 'Actif',
-      pots: 5,
-      joinDate: '15 Jan 2024',
-    },
-    {
-      id: 2,
-      name: 'Jean Martin',
-      email: 'jean.martin@email.com',
-      phone: '+33 6 23 45 67 89',
-      role: 'Client',
-      status: 'Actif',
-      pots: 3,
-      joinDate: '22 Jan 2024',
-    },
-    {
-      id: 3,
-      name: 'Sophie Laurent',
-      email: 'sophie.laurent@email.com',
-      phone: '+33 6 34 56 78 90',
-      role: 'Client',
-      status: 'Inactif',
-      pots: 1,
-      joinDate: '10 Fév 2024',
-    },
-    {
-      id: 4,
-      name: 'Pierre Durand',
-      email: 'pierre.durand@email.com',
-      phone: '+33 6 45 67 89 01',
+  const [users, setUsers] = useState<any[]>([]);
+  const { data: clients } = useCollection<any>('clients');
+  const { data: admins } = useCollection<any>('administrateurs');
+  const { data: pots } = useCollection<any>('potsConnectes');
+
+  const potCountByClient = useMemo(() => {
+    const counts = new Map<string, number>();
+    pots.forEach((pot) => {
+      const clientId = pot.clientId?.$oid ?? pot.clientId;
+      if (!clientId) return;
+      counts.set(clientId, (counts.get(clientId) || 0) + 1);
+    });
+    return counts;
+  }, [pots]);
+
+  useEffect(() => {
+    const formatDate = (value: any) => {
+      const date = value?.$date ? new Date(value.$date) : new Date(value);
+      if (Number.isNaN(date.getTime())) return '—';
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+
+    const mappedAdmins = admins.map((admin) => ({
+      id: admin.idAdmin ?? admin._id,
+      name: admin.nom || 'Admin',
+      email: admin.email,
+      phone: '—',
       role: 'Admin',
       status: 'Actif',
-      pots: 8,
-      joinDate: '05 Jan 2024',
-    },
-    {
-      id: 5,
-      name: 'Camille Bernard',
-      email: 'camille.bernard@email.com',
-      phone: '+33 6 56 78 90 12',
-      role: 'Client',
-      status: 'Actif',
-      pots: 12,
-      joinDate: '28 Fév 2024',
-    },
-  ]);
+      pots: 0,
+      joinDate: formatDate(admin.dateCreation),
+    }));
+
+    const mappedClients = clients.map((client) => {
+      const clientId = client._id?.$oid ?? client._id;
+      return {
+        id: client.idClient ?? client._id,
+        name: client.nom || 'Client',
+        email: client.email,
+        phone: '—',
+        role: 'Client',
+        status: 'Actif',
+        pots: potCountByClient.get(clientId) || 0,
+        joinDate: formatDate(client.dateInscription),
+      };
+    });
+
+    if (mappedAdmins.length || mappedClients.length) {
+      setUsers([...mappedAdmins, ...mappedClients]);
+    }
+  }, [admins, clients, potCountByClient]);
+
+  const recentUsersCount = useMemo(() => {
+    const now = Date.now();
+    const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+    const isRecent = (value: any) => {
+      const date = value?.$date ? new Date(value.$date) : new Date(value);
+      return !Number.isNaN(date.getTime()) && now - date.getTime() <= thirtyDays;
+    };
+    return [
+      ...admins.map((a) => a.dateCreation),
+      ...clients.map((c) => c.dateInscription),
+    ].filter(isRecent).length;
+  }, [admins, clients]);
 
   const stats = [
-    { label: 'Total Utilisateurs', value: '2,847', icon: Users, color: 'text-chart-1' },
-    { label: 'Actifs ce mois', value: '1,892', icon: CheckCircle2, color: 'text-green-500' },
-    { label: 'Nouveaux (30j)', value: '234', icon: Plus, color: 'text-chart-2' },
-    { label: 'Inactifs', value: '89', icon: XCircle, color: 'text-orange-500' },
+    { label: 'Total Utilisateurs', value: String(users.length), icon: Users, color: 'text-chart-1' },
+    { label: 'Actifs ce mois', value: String(users.length), icon: CheckCircle2, color: 'text-green-500' },
+    { label: 'Nouveaux (30j)', value: String(recentUsersCount), icon: Plus, color: 'text-chart-2' },
+    { label: 'Inactifs', value: '0', icon: XCircle, color: 'text-orange-500' },
   ];
 
   const handleAddUser = (user: any) => {

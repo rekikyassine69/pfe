@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ShoppingCart, Search, Eye, CheckCircle2, Clock, XCircle, TrendingUp, Package } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { OrderDetailsModal } from '@/app/components/modals/OrderDetailsModal';
+import { useCollection } from '@/app/hooks/useCollection';
 
 export function AdminOrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -10,76 +11,66 @@ export function AdminOrdersPage() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
-  const orders = [
-    {
-      id: '#ORD-1234',
-      customer: 'Marie Dupont',
-      email: 'marie.dupont@email.com',
-      products: [
-        { name: 'Smart Pot Pro', quantity: 2, price: 89.99 },
-        { name: 'Capteur Humidité', quantity: 1, price: 29.99 },
-      ],
-      total: 209.97,
-      status: 'Livré',
-      date: '15 Jan 2024',
-      time: 'Il y a 2h',
-    },
-    {
-      id: '#ORD-1235',
-      customer: 'Jean Martin',
-      email: 'jean.martin@email.com',
-      products: [
-        { name: 'Kit Démarrage IoT', quantity: 1, price: 199.99 },
-      ],
-      total: 199.99,
-      status: 'En cours',
-      date: '16 Jan 2024',
-      time: 'Il y a 4h',
-    },
-    {
-      id: '#ORD-1236',
-      customer: 'Sophie Laurent',
-      email: 'sophie.laurent@email.com',
-      products: [
-        { name: 'Station Météo IoT', quantity: 1, price: 149.99 },
-      ],
-      total: 149.99,
-      status: 'En attente',
-      date: '16 Jan 2024',
-      time: 'Il y a 6h',
-    },
-    {
-      id: '#ORD-1237',
-      customer: 'Pierre Durand',
-      email: 'pierre.durand@email.com',
-      products: [
-        { name: 'Smart Pot Basic', quantity: 5, price: 49.99 },
-      ],
-      total: 249.95,
-      status: 'Annulé',
-      date: '14 Jan 2024',
-      time: 'Il y a 1 jour',
-    },
-    {
-      id: '#ORD-1238',
-      customer: 'Camille Bernard',
-      email: 'camille.bernard@email.com',
-      products: [
-        { name: 'Smart Pot Pro', quantity: 1, price: 89.99 },
-        { name: 'Kit Capteurs', quantity: 2, price: 39.99 },
-      ],
-      total: 169.97,
-      status: 'En cours',
-      date: '17 Jan 2024',
-      time: 'Il y a 30 min',
-    },
-  ];
+  const [orders, setOrders] = useState<any[]>([]);
+  const { data: commandes } = useCollection<any>('commandes');
+  const { data: clients } = useCollection<any>('clients');
+
+  const clientsById = useMemo(() => {
+    const map = new Map<string, any>();
+    clients.forEach((client) => {
+      const id = client._id?.$oid ?? client._id;
+      map.set(id, client);
+    });
+    return map;
+  }, [clients]);
+
+  useEffect(() => {
+    const formatDate = (value: any) => {
+      const date = value?.$date ? new Date(value.$date) : new Date(value);
+      if (Number.isNaN(date.getTime())) return '—';
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+
+    const statusMap: Record<string, string> = {
+      livree: 'Livré',
+      en_cours: 'En cours',
+      en_attente: 'En attente',
+      annulee: 'Annulé',
+      annule: 'Annulé',
+    };
+
+    const mapped = commandes.map((order) => {
+      const clientId = order.clientId?.$oid ?? order.clientId;
+      const client = clientsById.get(clientId);
+      return {
+        id: `#ORD-${String(order.idCommande ?? '').padStart(4, '0')}`,
+        customer: client?.nom || 'Client',
+        email: client?.email || '—',
+        products: (order.lignesCommande || []).map((line: any) => ({
+          name: line.nomProduit,
+          quantity: line.quantite,
+          price: line.prixUnitaire,
+        })),
+        total: order.total || 0,
+        status: statusMap[order.statut] || 'En cours',
+        date: formatDate(order.dateCommande),
+        time: formatDate(order.dateCommande),
+      };
+    });
+
+    if (mapped.length) setOrders(mapped);
+  }, [commandes, clientsById]);
+
+  const totalOrders = orders.length;
+  const deliveredOrders = orders.filter((order) => order.status === 'Livré').length;
+  const inProgressOrders = orders.filter((order) => order.status === 'En cours').length;
+  const revenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
 
   const stats = [
-    { label: 'Total Commandes', value: '3,847', icon: ShoppingCart, color: 'text-chart-1' },
-    { label: 'Livrées', value: '3,234', icon: CheckCircle2, color: 'text-green-500' },
-    { label: 'En cours', value: '541', icon: Clock, color: 'text-yellow-500' },
-    { label: 'Revenus', value: '124,567€', icon: TrendingUp, color: 'text-primary' },
+    { label: 'Total Commandes', value: String(totalOrders), icon: ShoppingCart, color: 'text-chart-1' },
+    { label: 'Livrées', value: String(deliveredOrders), icon: CheckCircle2, color: 'text-green-500' },
+    { label: 'En cours', value: String(inProgressOrders), icon: Clock, color: 'text-yellow-500' },
+    { label: 'Revenus', value: `${revenue.toFixed(2)}€`, icon: TrendingUp, color: 'text-primary' },
   ];
 
   const getStatusColor = (status: string) => {

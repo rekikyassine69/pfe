@@ -1,0 +1,14 @@
+[{
+  "_id": {
+    "$oid": "6980acf23a1fd18b113c2bcc"
+  },
+  "commandeId": {
+    "$oid": "65d4a987fed6543210987654"
+  },
+  "montant": 120.5,
+  "modePaiement": "CARTE_BANCAIRE",
+  "statut": "PAYE",
+  "datePaiement": {
+    "$date": "2026-02-02T13:56:02.916Z"
+  }
+}]
