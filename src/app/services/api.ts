@@ -76,4 +76,11 @@ export const api = {
     const query = search.toString();
     return request(`/api/collections/${collection}${query ? `?${query}` : ""}`);
   },
+  identifyPlant: (image: string, options?: Record<string, unknown>) =>
+    request("/api/recognition/plant", {
+      method: "POST",
+      body: JSON.stringify({ image, ...(options || {}) }),
+    }),
+  fetchRecentRecognitions: (limit = 6) =>
+    request(`/api/recognition/recent?limit=${limit}`),
 };
