@@ -22,6 +22,8 @@ import { AdminCoursesPage } from '@/app/components/pages/AdminCoursesPage';
 import { AdminGamesPage } from '@/app/components/pages/AdminGamesPage';
 import { LoginPage } from '@/app/components/pages/LoginPage';
 import { SignupPage } from '@/app/components/pages/SignupPage';
+import { ForgotPasswordPage } from '@/app/components/pages/ForgotPasswordPage';
+import { ResetPasswordPage } from '@/app/components/pages/ResetPasswordPage';
 import { LandingPage } from '@/app/components/pages/LandingPage';
 import { PlantCarePage } from '@/app/components/pages/PlantCarePage';
 import { GamesDemoPage } from '@/app/components/pages/GamesDemoPage';
@@ -33,6 +35,7 @@ type UserRole = 'visitor' | 'client' | 'admin';
 export default function App() {
   const [currentPage, setCurrentPage] = useState('landing');
   const [userRole, setUserRole] = useState<UserRole>('visitor');
+  const [resetToken, setResetToken] = useState<string | null>(null);
 
   useEffect(() => {
     const restoreSession = async () => {
@@ -49,6 +52,30 @@ export default function App() {
     };
 
     restoreSession();
+  }, []);
+
+  useEffect(() => {
+    const path = window.location.pathname;
+    const params = new URLSearchParams(window.location.search);
+    const routeToPage: Record<string, string> = {
+      '/': 'landing',
+      '/login': 'login',
+      '/signup': 'signup',
+      '/plant-care': 'plant-care',
+      '/games-demo': 'games-demo',
+      '/courses-preview': 'courses-preview',
+      '/forgot-password': 'forgot-password',
+      '/reset-password': 'reset-password',
+    };
+
+    const page = routeToPage[path];
+    if (page) {
+      setCurrentPage(page);
+    }
+
+    if (path === '/reset-password') {
+      setResetToken(params.get('token'));
+    }
   }, []);
 
   const handleLogin = async (email: string, password: string) => {
@@ -87,6 +114,36 @@ export default function App() {
     }
   };
 
+  const handleForgotPassword = async (email: string) => {
+    try {
+      await api.forgotPassword(email);
+      toast.success('Email envoyé', {
+        description: 'Si cet email existe, un lien vous a été envoyé.',
+      });
+      setCurrentPage('login');
+      window.history.pushState({}, '', '/login');
+    } catch (error) {
+      toast.error('Erreur', {
+        description: (error as Error).message || 'Veuillez réessayer',
+      });
+    }
+  };
+
+  const handleResetPassword = async (token: string, newPassword: string) => {
+    try {
+      await api.resetPassword(token, newPassword);
+      toast.success('Mot de passe réinitialisé', {
+        description: 'Vous pouvez maintenant vous connecter.',
+      });
+      setCurrentPage('login');
+      window.history.pushState({}, '', '/login');
+    } catch (error) {
+      toast.error('Réinitialisation échouée', {
+        description: (error as Error).message || 'Veuillez réessayer',
+      });
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await api.logout();
@@ -103,6 +160,23 @@ export default function App() {
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page);
+    if (userRole !== 'visitor') return;
+
+    const routeMap: Record<string, string> = {
+      landing: '/',
+      login: '/login',
+      signup: '/signup',
+      'forgot-password': '/forgot-password',
+      'reset-password': '/reset-password',
+      'plant-care': '/plant-care',
+      'games-demo': '/games-demo',
+      'courses-preview': '/courses-preview',
+    };
+
+    const path = routeMap[page];
+    if (path) {
+      window.history.pushState({}, '', path);
+    }
   };
 
   // Visitor pages (public)
@@ -117,9 +191,19 @@ export default function App() {
       case 'courses-preview':
         return <CoursesPreviewPage onNavigate={handleNavigate} />;
       case 'login':
-        return <LoginPage onLogin={handleLogin} />;
+        return <LoginPage onLogin={handleLogin} onNavigate={handleNavigate} />;
       case 'signup':
         return <SignupPage onSignup={handleSignup} onNavigate={handleNavigate} />;
+      case 'forgot-password':
+        return <ForgotPasswordPage onSubmit={handleForgotPassword} onNavigate={handleNavigate} />;
+      case 'reset-password':
+        return (
+          <ResetPasswordPage
+            token={resetToken}
+            onReset={handleResetPassword}
+            onNavigate={handleNavigate}
+          />
+        );
       default:
         return <LandingPage onNavigate={handleNavigate} />;
     }
