@@ -4,9 +4,10 @@ import { motion } from 'motion/react';
 
 interface LoginPageProps {
   onLogin: (email: string, password: string) => void;
+  onNavigate: (page: string) => void;
 }
 
-export function LoginPage({ onLogin }: LoginPageProps) {
+export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
   const [isSignup, setIsSignup] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -164,7 +165,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   <input type="checkbox" className="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
                   <span className="text-sm text-muted-foreground">Se souvenir de moi</span>
                 </label>
-                <button type="button" className="text-sm text-primary hover:underline">
+                <button
+                  type="button"
+                  onClick={() => onNavigate('forgot-password')}
+                  className="text-sm text-primary hover:underline"
+                >
                   Mot de passe oublié ?
                 </button>
               </div>
@@ -177,19 +182,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               {isSignup ? 'S\'inscrire' : 'Se connecter'}
             </button>
           </form>
-
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              {isSignup ? 'Vous avez déjà un compte ?' : 'Vous n\'avez pas de compte ?'}
-              {' '}
-              <button
-                onClick={() => setIsSignup(!isSignup)}
-                className="text-primary font-medium hover:underline"
-              >
-                {isSignup ? 'Se connecter' : 'S\'inscrire'}
-              </button>
-            </p>
-          </div>
 
           <div className="text-center text-xs text-muted-foreground">
             <p>Projet universitaire IoT • Smart Agriculture</p>

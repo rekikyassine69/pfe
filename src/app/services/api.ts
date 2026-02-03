@@ -54,6 +54,16 @@ export const api = {
     }),
   me: () => request("/api/auth/me"),
   logout: () => request("/api/auth/logout", { method: "POST" }),
+  forgotPassword: (email: string) =>
+    request("/api/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
+  resetPassword: (token: string, newPassword: string) =>
+    request("/api/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ token, newPassword }),
+    }),
   fetchCollection: (collection: string, params?: Record<string, string | number>) => {
     const search = new URLSearchParams();
     if (params) {

@@ -2,6 +2,8 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "bson";
+import crypto from "crypto";
+import { sendPasswordResetEmail, sendWelcomeEmail } from "../utils/email.js";
 
 const router = Router();
 
@@ -27,6 +29,16 @@ const signToken = (payload) => {
   const expiresIn = process.env.JWT_EXPIRES_IN || "2h";
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
 };
+
+const RESET_TOKEN_TTL_MINUTES = Number(process.env.PASSWORD_RESET_TOKEN_TTL_MINUTES || 15);
+
+const createResetToken = () => {
+  const raw = crypto.randomBytes(32).toString("hex");
+  const tokenHash = crypto.createHash("sha256").update(raw).digest("hex");
+  return { raw, tokenHash };
+};
+
+const hashResetToken = (token) => crypto.createHash("sha256").update(token).digest("hex");
 
 router.post("/login", async (req, res) => {
   const { email, password, userType } = req.body;
@@ -107,7 +119,94 @@ router.post("/register", async (req, res) => {
   };
 
   const result = await db.collection("clients").insertOne(client);
+  
+  // Send welcome email
+  await sendWelcomeEmail(nom, email);
+  
   return res.status(201).json({ _id: result.insertedId, ...client });
+});
+
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  const db = req.app.locals.db;
+  const match = await findUserByEmail(db, email);
+  const genericMessage = "Si cet email existe, un lien vous a été envoyé";
+
+  if (match) {
+    const { raw, tokenHash } = createResetToken();
+    const expiresAt = new Date(Date.now() + RESET_TOKEN_TTL_MINUTES * 60 * 1000);
+
+    await db.collection("passwordResets").deleteMany({
+      userId: new ObjectId(match.user._id),
+      userType: match.role,
+    });
+
+    await db.collection("passwordResets").insertOne({
+      userId: new ObjectId(match.user._id),
+      userType: match.role,
+      tokenHash,
+      expiresAt,
+      createdAt: new Date(),
+    });
+
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const resetUrl = `${frontendUrl}/reset-password?token=${raw}`;
+    
+    // Send password reset email
+    const emailSent = await sendPasswordResetEmail(email, resetUrl);
+    if (!emailSent) {
+      console.log(`[Password Reset] ${email} -> ${resetUrl}`);
+    }
+
+    if (process.env.RETURN_RESET_URL === "true") {
+      return res.json({ message: genericMessage, resetUrl });
+    }
+  }
+
+  return res.json({ message: genericMessage });
+});
+
+router.post("/reset-password", async (req, res) => {
+  const { token, newPassword } = req.body;
+  if (!token || !newPassword) {
+    return res.status(400).json({ message: "token and newPassword are required" });
+  }
+
+  const db = req.app.locals.db;
+  const tokenHash = hashResetToken(token);
+
+  const reset = await db.collection("passwordResets").findOne({
+    tokenHash,
+    expiresAt: { $gt: new Date() },
+  });
+
+  if (!reset) {
+    return res.status(400).json({ message: "Invalid or expired token" });
+  }
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+  const collection = reset.userType === "admin" ? "administrateurs" : "clients";
+
+  await db.collection(collection).updateOne(
+    { _id: new ObjectId(reset.userId) },
+    { $set: { motDePasse: hashed } }
+  );
+
+  await db.collection("passwordResets").deleteMany({
+    userId: new ObjectId(reset.userId),
+    userType: reset.userType,
+  });
+
+  await db.collection("sessions").deleteMany({
+    userId: new ObjectId(reset.userId),
+    userType: reset.userType,
+  });
+
+  return res.json({ message: "Mot de passe réinitialisé avec succès" });
 });
 
 router.get("/me", async (req, res) => {
