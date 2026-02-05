@@ -28,7 +28,9 @@ app.use("/api/collections", requireAuth, collectionsRouter);
 app.use("/api/admin/collections", requireAuth, requireRole(["admin"]), collectionsRouter);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const publicDir = path.resolve(__dirname, "..", "public");
 const clientDist = path.resolve(__dirname, "..", "dist");
+app.use(express.static(publicDir));
 app.use(express.static(clientDist));
 app.get("*", (req, res) => {
   if (req.path.startsWith("/api")) return res.status(404).json({ message: "Not found" });

@@ -11,6 +11,25 @@ const coursSchema = new mongoose.Schema({
   nombreEtudiants: { type: Number, default: 0 },
   imageUrl: String,
   contenu: String,
+  chapitres: [{ // modules/chapters
+    numero: Number,
+    titre: String,
+    contenu: String,
+    videoUrl: String
+  }],
+  examen: {
+    nombreQuestions: Number,
+    dureeMinutes: { type: Number, default: 15 },
+    scoreMinimum: { type: Number, default: 60 },
+    questions: [{
+      id: Number,
+      question: String,
+      type: String,
+      options: [String],
+      reponseCorrecte: Number,
+      points: Number
+    }]
+  },
   dateCreation: { type: Date, default: Date.now },
   statut: { type: String, enum: ['publié', 'brouillon', 'archivé'], default: 'publié' }
 }, { timestamps: true });

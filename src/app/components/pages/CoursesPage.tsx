@@ -2,7 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Clock, Users, Star, Play, CheckCircle2, Lock } from 'lucide-react';
 import { useCollection } from '@/app/hooks/useCollection';
 
-export function CoursesPage() {
+interface CoursesPageProps {
+  onSelectCourse?: (courseId: string) => void;
+}
+
+export function CoursesPage({ onSelectCourse }: CoursesPageProps) {
   const [courses, setCourses] = useState<any[]>([]);
   const { data: cours } = useCollection<any>('cours');
   const { data: progressions } = useCollection<any>('progressionCours');
@@ -30,7 +34,8 @@ export function CoursesPage() {
       const courseId = course._id?.$oid ?? course._id;
       const progress = progressByCourse.get(courseId) || 0;
       return {
-        id: course.idCours ?? course._id,
+        id: courseId,
+        idCours: course.idCours ?? course._id,
         title: course.titre,
         description: course.description,
         instructor: 'Équipe Smart Plant Care',
@@ -64,6 +69,12 @@ export function CoursesPage() {
     { name: 'Intermédiaire', count: courses.filter((c) => c.level === 'Intermédiaire').length, active: false },
     { name: 'Avancé', count: courses.filter((c) => c.level === 'Avancé').length, active: false },
   ];
+
+  const handleCourseClick = (courseId: string) => {
+    if (onSelectCourse) {
+      onSelectCourse(courseId);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -134,9 +145,10 @@ export function CoursesPage() {
       {/* Courses Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {courses.map((course) => (
-          <div
+          <button
             key={course.id}
-            className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl transition-shadow group"
+            onClick={() => handleCourseClick(course.id)}
+            className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl transition-shadow group text-left"
           >
             {/* Image */}
             <div className="relative h-48 overflow-hidden">
@@ -200,11 +212,11 @@ export function CoursesPage() {
                   </div>
                   <p className="text-sm text-muted-foreground">{course.instructor}</p>
                 </div>
-                <button
+                <div
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                     course.enrolled
-                      ? 'bg-primary text-primary-foreground hover:opacity-90'
-                      : 'bg-secondary text-foreground hover:bg-secondary/80'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-secondary text-foreground'
                   }`}
                 >
                   {course.enrolled ? (
@@ -218,10 +230,10 @@ export function CoursesPage() {
                       <span className="text-sm">S'inscrire</span>
                     </>
                   )}
-                </button>
+                </div>
               </div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>

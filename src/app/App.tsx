@@ -11,6 +11,7 @@ import { PotsPage } from '@/app/components/pages/PotsPage';
 import { MonitoringPage } from '@/app/components/pages/MonitoringPage';
 import { RecognitionPage } from '@/app/components/pages/RecognitionPage';
 import { CoursesPage } from '@/app/components/pages/CoursesPage';
+import { CourseDetailPage } from '@/app/components/pages/CourseDetailPage';
 import { GamesPage } from '@/app/components/pages/GamesPage';
 import { ShopPage } from '@/app/components/pages/ShopPage';
 import { ContactPage } from '@/app/components/pages/ContactPage';
@@ -36,6 +37,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('landing');
   const [userRole, setUserRole] = useState<UserRole>('visitor');
   const [resetToken, setResetToken] = useState<string | null>(null);
+  const [courseId, setCourseId] = useState<string | null>(null);
 
   useEffect(() => {
     const restoreSession = async () => {
@@ -221,6 +223,22 @@ export default function App() {
       case 'recognition':
         return <RecognitionPage />;
       case 'courses':
+        return <CoursesPage onSelectCourse={(id: string) => {
+          setCourseId(id);
+          setCurrentPage('course-detail');
+        }} />;
+      case 'course-detail':
+        return courseId ? (
+          <CourseDetailPage 
+            courseId={courseId}
+            onBack={() => setCurrentPage('courses')}
+          />
+        ) : (
+          <CoursesPage onSelectCourse={(id: string) => {
+            setCourseId(id);
+            setCurrentPage('course-detail');
+          }} />
+        );
         return <CoursesPage />;
       case 'games':
         return <GamesPage />;

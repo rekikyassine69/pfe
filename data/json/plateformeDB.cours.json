@@ -164,4 +164,1220 @@
   "dateCreation": {
     "$date": "2024-03-20T00:00:00.000Z"
   }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439404"
+  },
+  "idCours": 4,
+  "titre": "L'Hydroponie : Culture sans sol",
+  "description": "Maîtrisez les techniques modernes de culture hydroponique sans terrain",
+  "contenu": "Un cours complet sur l'hydroponie, des fondements biologiques aux applications commerciales avec analyse des risques opérationnels.",
+  "duree": 180,
+  "niveau": "intermediaire",
+  "chapitres": [
+    {
+      "numero": 1,
+      "titre": "MODULE 1 : Fondements et Mécanismes Biologiques",
+      "contenu": "MODULE 1 : Fondements et Mécanismes Biologiques\n1.1 Qu'est-ce que l'hydroponie ?\nL'hydroponie est une méthode de culture où les plantes ne sont pas cultivées dans un sol conventionnel. À la place, les racines sont soit submergées dans un milieu de culture inorganique, soit directement exposées à une eau riche en nutriments.\n1.2 Le rôle substitutif du sol\nPour comprendre l'hydroponie, il faut comprendre les fonctions du sol qu'elle remplace :\n• Rétention et fourniture : Le sol sert de réservoir d'eau et de nutriments.\n• Supports inertes : En hydroponie, on utilise des substrats comme la perlite, la vermiculite, la laine de roche ou les billes d'argile expansée pour assurer le maintien physique de la plante.\n• Efficience racinaire : Les racines en hydroponie restent compactes, car elles n'ont pas besoin de se développer de manière extensive pour chercher de la nourriture ; celle-ci leur est apportée directement.",
+      "videoUrl": "/videos/module-1.mp4",
+      "obligatoire": true
+    },
+    {
+      "numero": 2,
+      "titre": "MODULE 2 : Ingénierie des Systèmes Hydroponiques",
+      "contenu": "MODULE 2 : Ingénierie des Systèmes Hydroponiques\nCe module explore les principes fondamentaux de la culture sans sol et la conception technique des différents types d'installations.\n1.1. Principes de base et milieux de culture\nL'hydroponie repose sur la culture de plantes sans sol conventionnel. À la place, les racines sont soit immergées dans l'eau, soit soutenues par un substrat de culture inorganique tel que :\n• La vermiculite.\n• La perlite.\n• La laine de roche (rockwool).\n• Les billes d'argile expansée.\nL'objectif principal est de fournir directement aux racines une solution nutritive riche pour compenser l'absence de terre.\n1.2. Typologie des systèmes de culture\nLes sources identifient six configurations d'ingénierie majeures, allant du plus simple au plus complexe :\n1. Technique de la pellicule nutritive (NFT) : Les plantes sont placées dans des canaux ou des tuyaux en pente. Une pompe fait circuler l'eau nutrifiée en continu sur le système racinaire. C'est un système fermé qui recycle l'eau.\n2. Systèmes à mèche (Wick Systems) : Le plus simple pour les débutants. L'eau remonte du réservoir vers le substrat par action capillaire via une mèche.\n3. Table à marée (Ebb and Flow) : Le système inonde périodiquement la zone des racines avant de laisser l'eau s'écouler lentement vers le réservoir.\n4. Culture en eau profonde (DWC) : Les plantes flottent sur une plateforme à la surface de l'eau, les racines plongées directement dans la solution. Une pompe à air est indispensable pour oxygéner l'eau.\n5. Systèmes de goutte-à-goutte : Des lignes de goutte-à-goutte transportent l'eau vers chaque plante, permettant un réglage précis de l'intensité de l'arrosage et des nutriments.\n6. Aéroponie : Les racines sont suspendues dans l'air (verticalement ou horizontalement) et reçoivent une brumisation de nutriments à intervalles réguliers. C'est le système le plus avancé technologiquement.",
+      "videoUrl": null,
+      "obligatoire": true
+    },
+    {
+      "numero": 3,
+      "titre": "MODULE 3 : Nutrition Végétale et Variantes Écologiques",
+      "contenu": "MODULE 3 : Nutrition Végétale et Variantes Écologiques\n3.1 La triade NPK et les oligo-éléments\nLa plante a besoin de trois éléments majeurs pour prospérer :\n• Azote (N) : Stimule la croissance des parties aériennes (tiges et feuilles).\n• Phosphore (P) : Vital pour le développement racinaire et le renforcement des défenses immunitaires.\n• Potassium (K) : Essentiel pour la floraison et la production de fruits.\nPour éviter le jaunissement des feuilles et renforcer le système immunitaire, l'apport d'oligo-éléments comme le magnésium et le calcium est indispensable.\n3.2 Bioponie et Aquaponie\n• Bioponie : Utilise une solution organique (souvent à base de fientes) qui favorise le développement d'une vie microbienne dans le système. Ces micro-organismes génèrent naturellement les nutriments.\n• Aquaponie : Un écosystème en circuit fermé où les déchets des poissons sont transformés par des bactéries en nutriments pour les plantes, lesquelles filtrent l'eau pour les poissons.",
+      "videoUrl": "/videos/module-3.mp4",
+      "obligatoire": true
+    },
+    {
+      "numero": 4,
+      "titre": "MODULE 4 : Analyse Opérationnelle : Avantages et Risques",
+      "contenu": "MODULE 4 : Analyse Opérationnelle : Avantages et Risques\nCe module examine la viabilité économique et les défis de gestion liés à l'exploitation d'un système hydroponique.\n2.1. Avantages Opérationnels\nL'hydroponie offre des gains d'efficacité significatifs par rapport à l'agriculture traditionnelle :\n• Optimisation de l'espace et du rendement : Les racines restant compactes (car elles n'ont pas besoin de chercher les nutriments), on peut cultiver plus de plantes dans un espace réduit.\n• Économies de ressources : Contrairement à l'agriculture conventionnelle où l'eau se perd par drainage ou évaporation, l'hydroponie applique la quantité exacte nécessaire. Les systèmes circulatoires permettent de recycler l'eau indéfiniment.\n• Contrôle climatique et saisonnier : En contrôlant la température et l'éclairage, on peut produire des cultures hors saison, ce qui permet d'obtenir des prix de vente plus élevés.\n• Santé des plantes : L'absence de sol élimine les maladies telluriques et les mauvaises herbes, réduisant ainsi les coûts de main-d'œuvre et de pesticides.\n2.2. Analyse des Risques et Obstacles\nMalgré ses avantages, plusieurs facteurs de risque doivent être pris en compte :\n• Coûts initiaux élevés : Si une petite installation domestique est abordable, le démarrage d'une exploitation commerciale nécessite un investissement initial important.\n• Dépendance technologique : Les pannes de courant ou d'eau représentent un risque critique. Sans sol pour retenir l'humidité, une interruption prolongée peut entraîner des pertes de récolte massives très rapidement.\n• Besoin d'expertise : Une exploitation commerciale exige des connaissances techniques approfondies pour éviter des erreurs coûteuses.\nNote : Selon les sources, les producteurs commerciaux devraient systématiquement investir dans des générateurs et des forages pour pallier les risques d'interruption de service.",
+      "videoUrl": null,
+      "obligatoire": true
+    }
+  ],
+  "examen": {
+    "dureeMinutes": 60,
+    "nombreTentatives": 3,
+    "scoreMinimum": 70,
+    "questions": [
+      {
+        "id": 1,
+        "question": "Quel est l'élément principal absent de l'hydroponie ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: Eau",
+          "**B: Terre**",
+          "C: Oxygène"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 2,
+        "question": "Quel rôle le sol remplit-il pour la plante ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Rétention d'eau/nutriments**",
+          "B: Photosynthèse",
+          "C: Production de CO2"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 3,
+        "question": "Citez un substrat inorganique courant.",
+        "type": "choix_multiple",
+        "options": [
+          "A: Terreau",
+          "**B: Laine de roche**",
+          "C: Écorce de pin"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 4,
+        "question": "Pourquoi les racines hydroponiques sont-elles plus compactes ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Accès direct aux nutriments**",
+          "B: Manque d'espace",
+          "C: Absence de gravité"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 5,
+        "question": "L'hydroponie permet-elle de cultiver à l'intérieur ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Oui**",
+          "B: Non"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 6,
+        "question": "Quel système fonctionne par capillarité ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: NFT",
+          "**B: Système à mèche**",
+          "C: Aéroponie"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 7,
+        "question": "Le système NFT nécessite-t-il beaucoup de substrat ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: Oui",
+          "**B: Non**"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 8,
+        "question": "Comment appelle-t-on le système où les racines flottent ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: DWC**",
+          "B: Goutte-à-goutte",
+          "C: Table à marée"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 9,
+        "question": "Quel système est conseillé uniquement aux experts ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: DWC",
+          "B: Mèche",
+          "**C: Aéroponie**"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 10,
+        "question": "Qu'est-ce qu'une table à marée ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Un cycle inondation/drainage**",
+          "B: Un système de brumisation",
+          "C: Une tour verticale"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 11,
+        "question": "Quel système permet un réglage individuel pour chaque plante ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: NFT",
+          "**B: Goutte-à-goutte**",
+          "C: Aquaponie"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 12,
+        "question": "Dans une tour verticale, quel outil déclenche la pompe ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: Un baromètre",
+          "**B: Un programmateur**",
+          "C: Un thermomètre"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 13,
+        "question": "Quel est l'avantage principal des tours verticales ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Gain de place**",
+          "B: Moins de nutriments",
+          "C: Pas besoin d'eau"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 14,
+        "question": "L'eau en hydroponie est-elle généralement :",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Recirculée**",
+          "B: Évaporée",
+          "C: Jetée"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 15,
+        "question": "L'aéroponie utilise :",
+        "type": "choix_multiple",
+        "options": [
+          "A: Des mèches",
+          "**B: Des brumisateurs**",
+          "C: Des poissons"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 16,
+        "question": "Que signifie le N ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Azote**",
+          "B: Natrium",
+          "C: Nickel"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 17,
+        "question": "Quel élément booste la croissance des feuilles ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Azote**",
+          "B: Phosphore",
+          "C: Potassium"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 18,
+        "question": "Quel élément est crucial pour les racines ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: Azote",
+          "**B: Phosphore**",
+          "C: Potassium"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 19,
+        "question": "Le Potassium (K) agit sur :",
+        "type": "choix_multiple",
+        "options": [
+          "A: Les racines",
+          "B: La tige",
+          "**C: Les fruits/fleurs**"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 20,
+        "question": "Quel symptôme indique une carence en calcium/magnésium ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Jaunissement des feuilles**",
+          "B: Racines rouges",
+          "C: Tiges bleues"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 21,
+        "question": "Pourquoi préfère-t-on l'engrais liquide ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Assimilation rapide**",
+          "B: Moins d'odeur",
+          "C: Moins cher"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 22,
+        "question": "La bioponie repose sur :",
+        "type": "choix_multiple",
+        "options": [
+          "A: Les poissons",
+          "**B: La vie microbienne**",
+          "C: L'eau pure"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 23,
+        "question": "D'où viennent souvent les nutriments en bioponie ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: De l'air",
+          "**B: De fientes d'animaux**",
+          "C: De sable"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 24,
+        "question": "En aquaponie, qui nourrit les plantes ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: L'agriculteur",
+          "**B: Les déchets de poissons**",
+          "C: Les bactéries seules"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 25,
+        "question": "Quel est le rôle des bactéries en aquaponie ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Transformer les déchets en nutriments**",
+          "B: Nettoyer les feuilles",
+          "C: Tuer les insectes"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 26,
+        "question": "Quel système nécessite de nourrir des poissons ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Aquaponie**",
+          "B: Bioponie",
+          "C: Hydroponie classique"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 27,
+        "question": "Quelle est l'économie d'eau moyenne ?",
+        "type": "choix_multiple",
+        "options": [
+          "A: 50%",
+          "B: 75%",
+          "**C: 90%**"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 28,
+        "question": "Quel est le risque majeur en cas de panne de courant ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Mort des plantes**",
+          "B: Croissance lente",
+          "C: Invasion d'insectes"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 29,
+        "question": "Pourquoi l'hydroponie est-elle rentable commercialement ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Récoltes hors saison et croissance rapide**",
+          "B: Aucun besoin d'électricité",
+          "C: Engrais gratuits"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 30,
+        "question": "L'hydroponie est-elle exempte de maladies du sol ?",
+        "type": "choix_multiple",
+        "options": [
+          "**A: Oui**",
+          "B: Non"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      }
+    ]
+  },
+  "dateCreation": {
+    "$date": "2026-02-05T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439405"
+  },
+  "idCours": 5,
+  "titre": "Compostage et Lombricompostage",
+  "description": "Maîtrisez les techniques du compostage industriel et du lombricompostage pour transformer vos déchets organiques en humus fertile.",
+  "contenu": "Un cours complet sur le compostage, des processus naturels à l'industrialisation, et l'équilibre du rapport C/N pour réussir votre compost.",
+  "duree": 120,
+  "niveau": "intermediaire",
+  "chapitres": [
+    {
+      "numero": 1,
+      "titre": "Introduction au Compostage et Processus Industriel",
+      "contenu": "Le compostage est un processus qui imite la nature en décomposant les matières organiques végétales et animales pour les transformer en humus. Ce cycle permet de nourrir le sol, qui à son tour nourrit les plantes.\n\nA. Les Acteurs du Compostage\nLa transformation est assurée par deux types d'organismes :\n• Macro-organismes : Êtres visibles comme les vers de terre, fourmis, acariens et myriapodes.\n• Micro-organismes : Invisibles à l'œil nu, principalement les bactéries et les champignons, qui jouent un rôle essentiel.\n\nB. Le Processus Industriel (Déchets Verts)\nÀ grande échelle, le compostage suit des étapes techniques rigoureuses :\n1. Contrôle : Enregistrement de la provenance, de la composition et du poids.\n2. Broyage : Les végétaux sont broyés pour faciliter la fermentation et mélanger les matières.\n3. Fermentation (6 semaines) : La matière est disposée en tas allongés appelés andains. L'activité des bactéries fait monter la température à environ 75°C, dégageant une fumée visible.\n4. Maturation et Criblage : Le compost se stabilise, puis est trié par granulométrie (criblage) pour son utilisation finale.",
+      "videoUrl": "/videos/cour2module1.mp4"
+    },
+    {
+      "numero": 2,
+      "titre": "L'Équilibre du Rapport Carbone/Azote (C/N)",
+      "contenu": "La réussite d'un compost repose sur une 'recette' équilibrant le carbone (C) et l'azote (N).\n\nA. Le Chiffre d'Or : 30\nLe rapport idéal est de 30 unités de carbone pour 1 unité d'azote (30:1).\n• L'Azote (N) : Essentiel à la croissance des plantes et à la photosynthèse, c'est le 'carburant' des micro-organismes. On le trouve dans la tonte d'herbe ou l'urine.\n• Le Carbone (C) : Trouvé dans les matières sèches comme les feuilles mortes, la paille ou le broyat.\n\nB. Gestion et Diagnostic\n• Odeur de pourriture : Signifie un excès d'azote ; il faut ajouter de la matière carbonée.\n• Absence de décomposition (tas sec) : Signifie un excès de carbone ; il faut ajouter de la matière azotée.\n\nC. La 'Faim d'Azote'\nSi vous apportez trop de carbone au sol, les micro-organismes vont puiser l'azote directement dans la terre pour réussir à le décomposer. Cela crée une carence temporaire pour les plantes (feuilles qui jaunissent). Pour l'éviter, il est conseillé de faire ces apports à l'automne pour que l'équilibre se rétablisse avant le printemps.",
+      "videoUrl": "/videos/cour2module2.mp4"
+    },
+    {
+      "numero": 3,
+      "titre": "Compostage de Jardin vs Lombricompostage",
+      "contenu": "Bien que les deux produisent de l'humus, leurs méthodes diffèrent :\n\nCompostage de Jardin :\n- Écosystème : Très riche et varié (naturel)\n- Apports : Plus larges (viande/poisson possibles selon la gestion)\n- Oxygénation : Nécessite un brassage manuel\n- Rapidité : 6 à 9 mois\n- Produit final : Compost standard\n\nLombricompostage :\n- Écosystème : Moins dense, centré sur les vers ajoutés\n- Apports : Plus restreints (éviter viande/poisson)\n- Oxygénation : Assurée par le mouvement des vers\n- Rapidité : 1 à 3 mois\n- Produit final : Compost plus concentré et nutritif",
+      "videoUrl": "/videos/cour2module3.mp4"
+    }
+  ],
+  "examen": {
+    "questions": [
+      {
+        "id": 1,
+        "question": "Le compostage est un processus qui :",
+        "type": "choix_multiple",
+        "options": [
+          "A) Remplace l'utilisation de la terre",
+          "B) Imite les mécanismes de décomposition naturels",
+          "C) Utilise uniquement des produits chimiques",
+          "D) Empêche la croissance des mauvaises herbes"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 2,
+        "question": "Comment nomme-t-on le produit final du compostage ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Le terreau de bruyère",
+          "B) L'humus",
+          "C) Le lisier de ferme"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 3,
+        "question": "Lesquels sont des macro-organismes du compost ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Les bactéries et virus",
+          "B) Les champignons et levures",
+          "C) Les vers de terre, fourmis et acariens"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 4,
+        "question": "Quelle est la fonction principale des micro-organismes ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Aérer le sol en creusant des galeries",
+          "B) Jouer un rôle essentiel dans la décomposition invisible",
+          "C) Chasser les parasites des plantes"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 5,
+        "question": "Pourquoi ajoute-t-on des vers dans un lombricomposteur ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Parce qu'ils ne sont pas présents naturellement dans un appartement",
+          "B) Pour qu'ils ne mangent les moucherons",
+          "C) Pour humidifier la matière sèche"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 6,
+        "question": "Quel est le délai moyen de récolte en lombricompostage ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) 1 à 2 semaines",
+          "B) 1 à 3 mois",
+          "C) 6 à 9 mois",
+          "D) Plus d'un an"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 7,
+        "question": "Comment l'oxygène arrive-t-il dans un lombricomposteur ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Grâce à une pompe à air",
+          "B) Par l'action naturelle de déplacement des vers",
+          "C) En remuant la matière chaque jour à la fourche"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 8,
+        "question": "Pourquoi le lombricompost est-il considéré comme plus nutritif ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Parce qu'on y ajoute des minéraux",
+          "B) Car il est issu directement de la digestion des vers",
+          "C) Parce qu'il contient plus de sable"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 9,
+        "question": "Quelle étape industrielle permet de mélanger les végétaux ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Le pesage à l'entrée",
+          "B) Le broyage",
+          "C) Le stockage final en andains"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 10,
+        "question": "Qu'est-ce qu'un 'andain' sur une plateforme de compostage ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Une machine à trier",
+          "B) Un tas allongé de matières en fermentation",
+          "C) Un outil de mesure de température"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 11,
+        "question": "Quelle température la fermentation industrielle atteint-elle ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) 30°C environ",
+          "B) 55°C environ",
+          "C) 75°C environ",
+          "D) Plus de 100°C"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 12,
+        "question": "La fumée au-dessus des andains est provoquée par :",
+        "type": "choix_multiple",
+        "options": [
+          "A) La pollution des machines",
+          "B) La chaleur dégagée par l'activité des bactéries",
+          "C) L'arrosage à l'eau froide sur des tas secs"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 13,
+        "question": "À quoi sert l'étape finale de criblage ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) À éliminer les mauvaises odeurs",
+          "B) À obtenir une granulométrie homogène",
+          "C) À tuer les bactéries restantes"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 14,
+        "question": "Le rapport C/N idéal est d'environ :",
+        "type": "choix_multiple",
+        "options": [
+          "A) 10",
+          "B) 30",
+          "C) 50",
+          "D) 100"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 15,
+        "question": "Dans le sigle NPK des engrais, que signifie le N ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Nitrate synthétique",
+          "B) Nature",
+          "C) Azote",
+          "D) Neutre"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 16,
+        "question": "Pourquoi l'azote a-t-il tendance à manquer dans le sol ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Parce qu'il s'évapore au soleil",
+          "B) Car c'est un élément qui se lessive (se barre) très vite",
+          "C) Parce que les pierres l'absorbent"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 17,
+        "question": "Quelle matière est classée dans la colonne 'très azotée' ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Les feuilles mortes",
+          "B) La tonte d'herbe ou l'urine",
+          "C) Le broyat de bois",
+          "D) La paille sèche"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 18,
+        "question": "Où trouve-t-on principalement le carbone ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Dans les épluchures de légumes frais",
+          "B) Dans les matières sèches, brunes et ligneuses",
+          "C) Dans l'eau de pluie"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 19,
+        "question": "Un compost qui sent la pourriture indique :",
+        "type": "choix_multiple",
+        "options": [
+          "A) Un manque d'eau",
+          "B) Un excès d'azote",
+          "C) Un excès de carbone"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 20,
+        "question": "Que faire si le tas de compost est sec et ne se décompose pas ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Ajouter de la matière carbonée (paille)",
+          "B) Ajouter de la matière azotée (gazon, urine)",
+          "C) Retirer les vers de terre"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 21,
+        "question": "Un rapport C/N inférieur à 30 produit un compost :",
+        "type": "choix_multiple",
+        "options": [
+          "A) Plus nutritif sur le court terme",
+          "B) Qui ne contient aucun nutriment",
+          "C) Qui met 3 ans à se décomposer"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 22,
+        "question": "La 'faim d'azote' est déclenchée par :",
+        "type": "choix_multiple",
+        "options": [
+          "A) Un apport massif de matière riche en carbone",
+          "B) Un manque d'arrosage en été",
+          "C) Un apport trop important de tonte de pelouse"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 23,
+        "question": "Pendant la faim d'azote, l'azote du sol est :",
+        "type": "choix_multiple",
+        "options": [
+          "A) Détruit par les rayons UV",
+          "B) Mobilisé par les micro-organismes pour décomposer le carbone",
+          "C) Absorbé par les cailloux"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 24,
+        "question": "Quel est le symptôme visuel de la faim d'azote sur une plante ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Les feuilles deviennent violettes",
+          "B) Les vieilles feuilles jaunissent",
+          "C) Les racines sortent de terre"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 25,
+        "question": "Quand est-il préférable d'apporter des matières très carbonées au jardin ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Au printemps, juste avant de planter",
+          "B) En plein été, pendant la récolte",
+          "C) En automne, pour laisser passer la faim d'azote en hiver"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 26,
+        "question": "Les légumineuses sont utiles car elles :",
+        "type": "choix_multiple",
+        "options": [
+          "A) Consomment tout l'azote du sol",
+          "B) Fixent l'azote gazeux de l'air",
+          "C) Repoussent les vers de terre"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 27,
+        "question": "Quelle matière ne doit-on pas mettre dans un lombricomposteur ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) Les épluchures de carottes",
+          "B) Le marc de café",
+          "C) La viande ou le poisson"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 28,
+        "question": "Combien de temps dure la fermentation active en milieu industriel ?",
+        "type": "choix_multiple",
+        "options": [
+          "A) 6 jours",
+          "B) 6 semaines",
+          "C) 6 mois"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 29,
+        "question": "L'azote utilisé par les microbes lors de la décomposition du carbone est :",
+        "type": "choix_multiple",
+        "options": [
+          "A) Perdu à jamais pour le jardinier",
+          "B) Rendu au sol une fois la décomposition terminée",
+          "C) Transformé en gaz toxique"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 30,
+        "question": "Le mélange de deux andains après 6 semaines sert à :",
+        "type": "choix_multiple",
+        "options": [
+          "A) Refroidir le compost instantanément",
+          "B) Assurer l'homogénéisation du mélange",
+          "C) Arrêter définitivement la vie bactérienne"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      }
+    ],
+    "scoreMinimum": 70,
+    "dureeMinutes": 30,
+    "nombreTentatives": 3
+  },
+  "dateCreation": {
+    "$date": "2026-02-05T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439406"
+  },
+  "idCours": 6,
+  "titre": "Aquaponie : Maîtriser la Culture Hydroponique en Écosystème Fermé",
+  "description": "Découvrez comment créer et gérer un système aquaponique complet, alliant l'élevage de poissons et la culture de plantes en circuit fermé.",
+  "contenu": "Un cours complet sur l'aquaponie couvrant l'architecture du système, l'écosystème microbiologique, et la chimie de l'eau pour optimiser votre installations aquaponique.",
+  "duree": 180,
+  "niveau": "intermediaire",
+  "chapitres": [
+    {
+      "numero": 1,
+      "titre": "Introduction et Architecture du Système",
+      "contenu": "Basé sur la vidéo : \"Comprendre l'aquaponie en moins de 5 min\"\nCe module définit les bases techniques et les composants physiques nécessaires à la création d'un potager immergé.\n• Définition : L'aquaponie est la contraction entre l'aquaculture (élevage de poissons) et l'hydroponie (culture de végétaux dans l'eau).\n• Le Principe du Circuit Fermé : Le système fonctionne en circuit d'eau fermé où l'eau circule en permanence. Le seul apport extérieur requis est une petite quantité d'eau pour compenser l'évaporation.\n• Les Composants Clés :\n    ◦ Bacs de culture : On distingue le bac avec substrat (billes d'argile), qui sert de biofiltre et de support pour maintenir les plantes droites, et le bac à radeaux flottants, idéal pour les salades et plantes aromatiques (basilic, menthe, ciboulette).\n    ◦ Pompes : Une pompe à eau pour la circulation et une pompe à air pour l'oxygénation.\n• L'Importance de l'Oxygène : L'oxygène est indispensable à tous : les poissons pour respirer, les bactéries pour leurs réactions chimiques d'oxydation, et les plantes via leurs racines. À noter : plus la température de l'eau augmente, plus le taux d'oxygène diminue.",
+      "videoUrl": "/videos/cour3module1.mp4"
+    },
+    {
+      "numero": 2,
+      "titre": "L'Écosystème et la Dynamique Thermique",
+      "contenu": "Basé sur la vidéo : \"Comprendre facilement l'écosystème en aquaponie\"\nCe module explore la vie microscopique et l'impact de l'environnement sur la santé du système.\n• Le Cycle de l'Azote (Bob et Bill) :\n    1. Les poissons rejettent de l'ammoniaque (toxique) par leurs branchies et de l'urée.\n    2. Bob (Nitrosomonas) : Cette bactérie transforme l'ammoniaque et l'urée en nitrites (toujours toxiques).\n    3. Bill (Nitrobacter) : Cette bactérie transforme les nitrites en nitrates, qui sont non toxiques pour les poissons et servent de nutriments essentiels aux plantes.\n• La Gestion de la Température :\n    ◦ Les bactéries tolèrent jusqu'à 3°C mais leur activité chute fortement en dessous de 5 ou 6°C.\n    ◦ Les racines des plantes préfèrent une eau entre 15 et 24°C.\n    ◦ Le compromis idéal : La température du système doit se situer entre 18 et 20°C, sans dépasser les 24°C.",
+      "videoUrl": "/videos/cour3module2.mp4"
+    },
+    {
+      "numero": 3,
+      "titre": "La Chimie de l'Eau - La Maîtrise du pH",
+      "contenu": "Basé sur la vidéo : \"Comprendre facilement le pH en aquaponie\"\nCe module enseigne comment équilibrer le Potentiel Hydrogène (pH) pour satisfaire tous les habitants du système.\n• L'Échelle du pH : Elle mesure l'acidité ou l'alcalinité de 0 à 14 (7 étant neutre).\n• Les Besoins Divergents :\n    ◦ Poissons : Préfèrent un pH entre 7 et 8.\n    ◦ Bactéries : Pic d'activité au-dessus de 7.\n    ◦ Plantes : Préfèrent un milieu acide entre 5,5 et 6,5 pour mieux absorber les nutriments.\n• La Cible : Pour équilibrer ces besoins, le pH idéal en aquaponie se situe entre 6,5 et 7.\n• Ajustements :\n    ◦ Pour monter le pH (si < 6) : Utiliser une \"potion\" de bicarbonate de potassium et de carbonate de calcium.\n    ◦ Pour baisser le pH (si > 7,5) : Ajouter de l'eau de pluie (acide) ou nourrir davantage les poissons, car la transformation des nitrites en nitrates acidifie naturellement l'eau.",
+      "videoUrl": "/videos/cour3module3.mp4"
+    }
+  ],
+  "examen": {
+    "questions": [
+      {
+        "id": 1,
+        "question": "L'aquaponie est la fusion de quels domaines ?",
+        "type": "choix_multiple",
+        "options": [
+          "Agriculture et Pisciculture",
+          "Aquaculture et Hydroponie",
+          "Permaculture et Hydrologie"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 2,
+        "question": "Quel est le seul apport d'eau nécessaire une fois le système lancé ?",
+        "type": "choix_multiple",
+        "options": [
+          "Un changement total hebdomadaire",
+          "Une compensation de l'évaporation",
+          "Un arrosage quotidien des feuilles"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 3,
+        "question": "Quel est le rôle principal des billes d'argile dans le biofiltre ?",
+        "type": "choix_multiple",
+        "options": [
+          "Nourrir les poissons",
+          "Servir de support aux plantes et aux bactéries",
+          "Filtrer la lumière du soleil"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 4,
+        "question": "Quelle culture est la plus adaptée aux radeaux flottants ?",
+        "type": "choix_multiple",
+        "options": [
+          "La menthe et le basilic",
+          "Les pommes de terre",
+          "Les arbres fruitiers"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 5,
+        "question": "Pourquoi dit-on que l'aquaponie est un \"cercle vertueux\" ?",
+        "type": "choix_multiple",
+        "options": [
+          "Les plantes purifient l'eau pour les poissons qui fournissent les nutriments",
+          "Parce que l'eau tourne en rond dans les tuyaux",
+          "Parce que les bacs sont généralement ronds"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 6,
+        "question": "Quel appareil permet d'oxygéner l'eau ?",
+        "type": "choix_multiple",
+        "options": [
+          "La pompe à eau",
+          "La pompe à air",
+          "Le chauffage"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 7,
+        "question": "Qui consomme de l'oxygène dans le système ?",
+        "type": "choix_multiple",
+        "options": [
+          "Uniquement les poissons",
+          "Uniquement les bactéries",
+          "Les poissons, les bactéries et les racines des plantes"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 8,
+        "question": "Quel est l'effet d'une hausse de température sur l'oxygène ?",
+        "type": "choix_multiple",
+        "options": [
+          "Le taux d'oxygène diminue",
+          "Le taux d'oxygène augmente",
+          "Il n'y a aucun lien"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 9,
+        "question": "Quel composant permet de maintenir les plantes droites dans le substrat ?",
+        "type": "choix_multiple",
+        "options": [
+          "Les radeaux",
+          "Les billes d'argile",
+          "La pompe à eau"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 10,
+        "question": "L'eau transporte principalement :",
+        "type": "choix_multiple",
+        "options": [
+          "Uniquement de l'air",
+          "Tous les éléments nécessaires (nutriments, oxygène)",
+          "Uniquement les déchets des poissons"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 11,
+        "question": "Quel déchet toxique les poissons rejettent-ils par leurs branchies ?",
+        "type": "choix_multiple",
+        "options": [
+          "Du nitrate",
+          "De l'ammoniaque",
+          "Du CO2"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 12,
+        "question": "Quel est le nom scientifique de la bactérie Bob ?",
+        "type": "choix_multiple",
+        "options": [
+          "Nitrosomonas",
+          "Nitrobacter",
+          "Nitrite"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 13,
+        "question": "Quel est le rôle de la bactérie Bill (Nitrobacter) ?",
+        "type": "choix_multiple",
+        "options": [
+          "Transformer l'ammoniaque en nitrites",
+          "Transformer les nitrites en nitrates",
+          "Nourrir les poissons"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 14,
+        "question": "Pourquoi les nitrates sont-ils importants ?",
+        "type": "choix_multiple",
+        "options": [
+          "Ils sont toxiques pour les poissons",
+          "Ils sont un nutriment principal pour les plantes",
+          "Ils refroidissent l'eau"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 15,
+        "question": "À partir de quelle température l'activité bactérienne chute-t-elle fortement ?",
+        "type": "choix_multiple",
+        "options": [
+          "5 ou 6 °C",
+          "15 °C",
+          "20 °C"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 16,
+        "question": "Quelle est la température idéale recommandée pour le système global ?",
+        "type": "choix_multiple",
+        "options": [
+          "10-15 °C",
+          "18-20 °C",
+          "24-28 °C"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 17,
+        "question": "Quel est le maximum thermique conseillé pour le système ?",
+        "type": "choix_multiple",
+        "options": [
+          "20 °C",
+          "24 °C",
+          "30 °C"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 18,
+        "question": "Où vivent principalement Bob et Bill ?",
+        "type": "choix_multiple",
+        "options": [
+          "Dans l'eau libre",
+          "Sur les billes d'argile",
+          "Dans les branchies des poissons"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 19,
+        "question": "Pourquoi les poissons se \"collent-ils\" entre eux ?",
+        "type": "choix_multiple",
+        "options": [
+          "Ils n'aiment pas être seuls",
+          "Ils ont froid",
+          "Ils cherchent de l'oxygène"
+        ],
+        "reponseCorrecte": 2,
+        "points": 3.33
+      },
+      {
+        "id": 20,
+        "question": "Quel élément Bob jalouse-t-il chez Bill ?",
+        "type": "choix_multiple",
+        "options": [
+          "Bill transforme les nitrites en nutriments non toxiques (nitrates)",
+          "Bill est plus gros",
+          "Bill vit plus longtemps"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 21,
+        "question": "Que mesure le pH ?",
+        "type": "choix_multiple",
+        "options": [
+          "L'acidité ou l'alcalinité",
+          "La dureté de l'eau",
+          "La quantité de poissons"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 22,
+        "question": "Quel est le pH neutre sur l'échelle de 0 à 14 ?",
+        "type": "choix_multiple",
+        "options": [
+          "0",
+          "7",
+          "14"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 23,
+        "question": "Quel pH les végétaux préfèrent-ils idéalement ?",
+        "type": "choix_multiple",
+        "options": [
+          "Entre 5,5 et 6,5",
+          "Entre 7 et 8",
+          "Exactement 7"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 24,
+        "question": "Quel pH est considéré comme idéal pour l'ensemble du système ?",
+        "type": "choix_multiple",
+        "options": [
+          "5,5 - 6",
+          "6,5 - 7",
+          "7,5 - 8"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 25,
+        "question": "Quel est le pic d'activité des bactéries Bob et Bill ?",
+        "type": "choix_multiple",
+        "options": [
+          "En milieu très acide",
+          "Au-dessus d'un pH de 7",
+          "À un pH de 4"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 26,
+        "question": "Pourquoi un mauvais pH est-il dangereux pour les plantes ?",
+        "type": "choix_multiple",
+        "options": [
+          "Elles deviennent bleues",
+          "Elles ne peuvent plus absorber les nutriments",
+          "Les racines deviennent trop longues"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 27,
+        "question": "Quelle est l'acidité naturelle de l'eau de pluie ?",
+        "type": "choix_multiple",
+        "options": [
+          "Acide",
+          "Basique",
+          "Neutre"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 28,
+        "question": "Que faire si le pH est inférieur à 6 ?",
+        "type": "choix_multiple",
+        "options": [
+          "Ajouter de l'eau de pluie",
+          "Ajouter du bicarbonate de potassium et carbonate de calcium",
+          "Arrêter de nourrir les poissons"
+        ],
+        "reponseCorrecte": 1,
+        "points": 3.33
+      },
+      {
+        "id": 29,
+        "question": "Quel est l'effet biologique de la transformation des nitrites en nitrates ?",
+        "type": "choix_multiple",
+        "options": [
+          "Cela acidifie l'eau",
+          "Cela rend l'eau basique",
+          "Cela n'a aucun effet sur le pH"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      },
+      {
+        "id": 30,
+        "question": "Quelle solution naturelle permet de faire baisser un pH de 7,5 ?",
+        "type": "choix_multiple",
+        "options": [
+          "Nourrir plus les poissons ou ajouter de l'eau de pluie",
+          "Ajouter du calcaire",
+          "Retirer les plantes aromatiques"
+        ],
+        "reponseCorrecte": 0,
+        "points": 3.33
+      }
+    ],
+    "scoreMinimum": 70,
+    "dureeMinutes": 45,
+    "nombreTentatives": 3
+  },
+  "dateCreation": {
+    "$date": "2026-02-05T00:00:00.000Z"
+  }
 }]
