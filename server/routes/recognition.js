@@ -1,6 +1,7 @@
 import { Router } from "express";
 import RecognitionAnalysis from "../models/RecognitionAnalysis.js";
 import Plant from "../models/Plant.js";
+import PlantInfo from "../models/PlantInfo.js";
 
 const router = Router();
 
@@ -126,14 +127,29 @@ const forwardIdentification = async ({
 
     if (mode === "plant") {
       try {
-        const plantData = {
-          name: summary.name || "Plante identifiée",
-          species: summary.scientificName || summary.name,
-          notes: `Analyse IA (${summary.confidence ?? "?"}%)`,
-        };
-        console.log("Creating plant with data:", plantData);
-        await Plant.create(plantData);
-        console.log("Plant saved successfully");
+        const plantName = summary.name || "Plante identifiée";
+        const plantSpecies = summary.scientificName || summary.name;
+        
+        // Check if plant already exists by name or species
+        const existingPlant = await Plant.findOne({
+          $or: [
+            { name: { $regex: `^${plantName}$`, $options: "i" } },
+            { species: { $regex: `^${plantSpecies}$`, $options: "i" } },
+          ],
+        });
+
+        if (existingPlant) {
+          console.log(`✓ Plant already exists: ${plantName} (ID: ${existingPlant._id})`);
+        } else {
+          const plantData = {
+            name: plantName,
+            species: plantSpecies,
+            notes: `Analyse IA (${summary.confidence ?? "?"}%)`,
+          };
+          console.log("Creating new plant with data:", plantData);
+          await Plant.create(plantData);
+          console.log("✓ Plant saved successfully");
+        }
       } catch (plantError) {
         console.error("Error saving plant to database:", plantError);
       }
@@ -190,6 +206,186 @@ router.get("/recent", async (req, res) => {
       createdAt: analysis.createdAt,
     }))
   );
+});
+
+// AI Agent endpoint: Get plant care information by plant name
+router.get("/plant-info/:plantName", async (req, res) => {
+  try {
+    const { plantName } = req.params;
+
+    if (!plantName || plantName.trim() === "") {
+      return res.status(400).json({ message: "Plant name is required" });
+    }
+
+    // Normalize special characters (× to x, etc.) for better matching
+    const normalizedPlantName = plantName
+      .replace(/×/g, "x")
+      .replace(/·/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    console.log(`🔍 Searching for plant: "${plantName}" (normalized: "${normalizedPlantName}")`);
+
+    // Search for plant info by common name or scientific name (case-insensitive)
+    // Try multiple search strategies
+    let plantInfo = await PlantInfo.findOne({
+      $or: [
+        { commonNames: { $regex: normalizedPlantName, $options: "i" } },
+        { scientificName: { $regex: normalizedPlantName, $options: "i" } },
+      ],
+    });
+
+    // If not found, try with original plant name
+    if (!plantInfo) {
+      plantInfo = await PlantInfo.findOne({
+        $or: [
+          { commonNames: { $regex: plantName, $options: "i" } },
+          { scientificName: { $regex: plantName, $options: "i" } },
+        ],
+      });
+    }
+
+    // If still not found, try partial matching on last few words
+    if (!plantInfo) {
+      const parts = normalizedPlantName.split(" ");
+      if (parts.length > 1) {
+        const lastWords = parts.slice(-2).join(" ");
+        plantInfo = await PlantInfo.findOne({
+          $or: [
+            { commonNames: { $regex: lastWords, $options: "i" } },
+            { scientificName: { $regex: lastWords, $options: "i" } },
+          ],
+        });
+      }
+    }
+
+    if (!plantInfo) {
+      console.log(`❌ Plant not found: ${plantName}`);
+      return res.status(404).json({
+        message: `Aucune information trouvée pour la plante: ${plantName}`,
+        plantName,
+      });
+    }
+
+    console.log(`✅ Found plant: ${plantInfo.commonNames[0]} (${plantInfo.scientificName})`);
+
+    // Return formatted plant care information
+    res.json({
+      success: true,
+      plant: {
+        commonNames: plantInfo.commonNames,
+        scientificName: plantInfo.scientificName,
+        description: plantInfo.description,
+        difficulty: plantInfo.difficulty,
+        toxicity: plantInfo.toxicity,
+        origin: plantInfo.origin,
+        careRequirements: {
+          humidity: {
+            min: plantInfo.careRequirements.humidity.min,
+            max: plantInfo.careRequirements.humidity.max,
+            ideal: plantInfo.careRequirements.humidity.ideal,
+            unit: "%",
+          },
+          luminosity: {
+            min: plantInfo.careRequirements.luminosity.min,
+            max: plantInfo.careRequirements.luminosity.max,
+            ideal: plantInfo.careRequirements.luminosity.ideal,
+            description: plantInfo.careRequirements.luminosity.description,
+            unit: "lux",
+          },
+          watering: {
+            frequency: plantInfo.careRequirements.watering.frequency,
+            description: plantInfo.careRequirements.watering.description,
+            minIntervalDays: plantInfo.careRequirements.watering.minIntervalDays,
+            maxIntervalDays: plantInfo.careRequirements.watering.maxIntervalDays,
+          },
+          temperature: {
+            min: plantInfo.careRequirements.temperature.min,
+            max: plantInfo.careRequirements.temperature.max,
+            ideal: plantInfo.careRequirements.temperature.ideal,
+            unit: "°C",
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching plant info:", error);
+    res.status(500).json({
+      message: "Erreur lors de la récupération des informations de la plante",
+      error: error.message,
+    });
+  }
+});
+
+// Alternative: POST endpoint to get plant info (useful for batch requests or complex queries)
+router.post("/plant-info", async (req, res) => {
+  try {
+    const { plantName } = req.body;
+
+    if (!plantName || plantName.trim() === "") {
+      return res.status(400).json({ message: "Plant name is required" });
+    }
+
+    // Search for plant info
+    const plantInfo = await PlantInfo.findOne({
+      $or: [
+        { commonNames: { $regex: plantName, $options: "i" } },
+        { scientificName: { $regex: plantName, $options: "i" } },
+      ],
+    });
+
+    if (!plantInfo) {
+      return res.status(404).json({
+        message: `Aucune information trouvée pour la plante: ${plantName}`,
+        plantName,
+      });
+    }
+
+    res.json({
+      success: true,
+      plant: {
+        commonNames: plantInfo.commonNames,
+        scientificName: plantInfo.scientificName,
+        description: plantInfo.description,
+        difficulty: plantInfo.difficulty,
+        toxicity: plantInfo.toxicity,
+        origin: plantInfo.origin,
+        careRequirements: {
+          humidity: {
+            min: plantInfo.careRequirements.humidity.min,
+            max: plantInfo.careRequirements.humidity.max,
+            ideal: plantInfo.careRequirements.humidity.ideal,
+            unit: "%",
+          },
+          luminosity: {
+            min: plantInfo.careRequirements.luminosity.min,
+            max: plantInfo.careRequirements.luminosity.max,
+            ideal: plantInfo.careRequirements.luminosity.ideal,
+            description: plantInfo.careRequirements.luminosity.description,
+            unit: "lux",
+          },
+          watering: {
+            frequency: plantInfo.careRequirements.watering.frequency,
+            description: plantInfo.careRequirements.watering.description,
+            minIntervalDays: plantInfo.careRequirements.watering.minIntervalDays,
+            maxIntervalDays: plantInfo.careRequirements.watering.maxIntervalDays,
+          },
+          temperature: {
+            min: plantInfo.careRequirements.temperature.min,
+            max: plantInfo.careRequirements.temperature.max,
+            ideal: plantInfo.careRequirements.temperature.ideal,
+            unit: "°C",
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching plant info:", error);
+    res.status(500).json({
+      message: "Erreur lors de la récupération des informations de la plante",
+      error: error.message,
+    });
+  }
 });
 
 export default router;

@@ -1,6 +1,44 @@
 import { useEffect, useState } from 'react';
-import { Upload, Camera, Search, Sparkles, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { Upload, Camera, Search, Sparkles, CheckCircle2, AlertCircle, Info, Droplets, Sun, Leaf } from 'lucide-react';
 import { api } from '../../services/api';
+
+type PlantCareInfo = {
+  humidity: {
+    min: number;
+    max: number;
+    ideal?: number;
+    unit: string;
+  };
+  luminosity: {
+    min?: number;
+    max?: number;
+    ideal?: number;
+    description?: string;
+    unit: string;
+  };
+  watering: {
+    frequency: string;
+    description?: string;
+    minIntervalDays?: number;
+    maxIntervalDays?: number;
+  };
+  temperature?: {
+    min?: number;
+    max?: number;
+    ideal?: number;
+    unit?: string;
+  };
+};
+
+type PlantInfoData = {
+  commonNames?: string[];
+  scientificName?: string;
+  description?: string;
+  difficulty?: string;
+  toxicity?: string;
+  origin?: string;
+  careRequirements?: PlantCareInfo;
+};
 
 type RecognitionResult = {
   plantName: string;
@@ -10,6 +48,7 @@ type RecognitionResult = {
   recommendations: string[];
   diseases: string[];
   careLevel: string;
+  careInfo?: PlantInfoData;
 };
 
 type RecentScan = {
@@ -134,6 +173,70 @@ const parseRecognitionResponse = (data: any): RecognitionResult => {
   };
 };
 
+// Generate dynamic recommendations based on plant care info
+const generateDynamicRecommendations = (careInfo: PlantInfoData): string[] => {
+  const recs: string[] = [];
+
+  if (careInfo?.careRequirements) {
+    const care = careInfo.careRequirements;
+
+    // Humidity recommendations
+    if (care.humidity) {
+      recs.push(
+        `💧 Maintenir une humidité de ${care.humidity.ideal || care.humidity.min}-${care.humidity.max}%`
+      );
+    }
+
+    // Luminosity recommendations
+    if (care.luminosity) {
+      if (care.luminosity.description) {
+        recs.push(`☀️ ${care.luminosity.description}`);
+      } else {
+        const lux = care.luminosity.ideal || care.luminosity.min;
+        if (lux) {
+          recs.push(`☀️ Luminosité: environ ${lux} lux`);
+        }
+      }
+    }
+
+    // Watering recommendations
+    if (care.watering) {
+      recs.push(`🚰 Arrosage: ${care.watering.frequency}`);
+      if (care.watering.description) {
+        recs.push(`   ${care.watering.description}`);
+      }
+    }
+
+    // Temperature recommendations
+    if (care.temperature) {
+      recs.push(
+        `🌡️ Température idéale: ${care.temperature.ideal || care.temperature.min}-${care.temperature.max}°C`
+      );
+    }
+  }
+
+  // Difficulty-based recommendations
+  if (careInfo?.difficulty) {
+    const difficultyTips: Record<string, string> = {
+      Facile: "Cette plante est facile à entretenir, parfaite pour les débutants.",
+      Intermédiaire: "Cette plante nécessite un entretien régulier et une attention particulière.",
+      Difficile: "Cette plante est exigeante. Une surveillance constante est recommandée.",
+    };
+    if (difficultyTips[careInfo.difficulty]) {
+      recs.push(`📌 Niveau: ${difficultyTips[careInfo.difficulty]}`);
+    }
+  }
+
+  // Toxicity warning
+  if (careInfo?.toxicity && careInfo.toxicity.toLowerCase() !== "non-toxique") {
+    recs.push(
+      `⚠️ ATTENTION: ${careInfo.toxicity}. Gardez hors de portée des enfants et animaux.`
+    );
+  }
+
+  return recs;
+};
+
 export function RecognitionPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -174,6 +277,41 @@ export function RecognitionPage() {
     try {
       const response = await api.identifyPlant(imageData);
       const parsed = parseRecognitionResponse(response);
+      
+      // Fetch plant care information - try with common name first, then scientific name
+      let careResponse = null;
+      const searchNames = [
+        parsed.plantName,
+        parsed.scientificName,
+        // Also try normalized versions (replace × with x)
+        parsed.plantName?.replace(/×/g, "x"),
+        parsed.scientificName?.replace(/×/g, "x"),
+      ].filter(Boolean);
+
+      for (const name of searchNames) {
+        if (!name) continue;
+        try {
+          console.log(`🔍 Attempting to fetch care info for: "${name}"`);
+          careResponse = await api.getPlantInfo(name);
+          if (careResponse?.plant) {
+            console.log(`✅ Found plant care info for: "${name}"`);
+            break;
+          }
+        } catch (err) {
+          console.log(`⚠️ Not found with "${name}", trying next...`);
+        }
+      }
+      
+      if (careResponse?.plant) {
+        parsed.careInfo = careResponse.plant;
+        // Add dynamic recommendations based on care info
+        const dynamicRecs = generateDynamicRecommendations(careResponse.plant);
+        parsed.recommendations = [...parsed.recommendations, ...dynamicRecs];
+        console.log('✅ Plant info found! Displaying', dynamicRecs.length, 'dynamic recommendations');
+      } else {
+        console.warn('⚠️ No plant care info found for any search variant');
+      }
+      
       setResult(parsed);
       if (selectedImage) {
         await loadRecentScans();
@@ -331,18 +469,42 @@ export function RecognitionPage() {
               </div>
 
               <div>
-                <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
                   <Info className="w-5 h-5 text-primary" />
-                  Recommandations
+                  Recommandations complètes ({result.recommendations.length} recommandations)
                 </h4>
-                <ul className="space-y-2">
-                  {result.recommendations.map((rec: string, index: number) => (
-                    <li key={index} className="flex items-start gap-2 text-sm">
-                      <CheckCircle2 className="w-4 h-4 text-chart-1 flex-shrink-0 mt-0.5" />
-                      <span className="text-foreground">{rec}</span>
-                    </li>
-                  ))}
-                </ul>
+                {result.recommendations.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Aucune recommandation disponible.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {result.recommendations.map((rec: string, index: number) => {
+                        return (
+                          <div
+                            key={index}
+                            className={`p-4 rounded-lg border ${
+                              rec.includes("💧")
+                                ? "bg-blue-500/10 border-blue-500/20"
+                                : rec.includes("☀️")
+                                ? "bg-yellow-500/10 border-yellow-500/20"
+                                : rec.includes("🚰")
+                                ? "bg-cyan-500/10 border-cyan-500/20"
+                                : rec.includes("🌡️")
+                                ? "bg-red-500/10 border-red-500/20"
+                                : rec.includes("⚠️")
+                                ? "bg-orange-500/10 border-orange-500/20"
+                                : rec.includes("📌")
+                                ? "bg-purple-500/10 border-purple-500/20"
+                                : "bg-green-500/10 border-green-500/20"
+                            }`}
+                          >
+                            <p className="text-sm font-medium text-foreground leading-relaxed">
+                              {rec}
+                            </p>
+                          </div>
+                        );
+                      })}
+                  </div>
+                )}
               </div>
 
               {result.diseases.length > 0 && (
@@ -359,6 +521,140 @@ export function RecognitionPage() {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {/* Plant Care Requirements */}
+              {result.careInfo?.careRequirements && (
+                <div className="pt-4 border-t border-border">
+                  <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                    <Leaf className="w-5 h-5 text-green-500" />
+                    Conditions de soins idéales
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Humidity */}
+                    <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Droplets className="w-4 h-4 text-blue-500" />
+                        <p className="text-xs text-muted-foreground font-semibold uppercase">Humidité du sol</p>
+                      </div>
+                      <div className="space-y-1">
+                        {result.careInfo.careRequirements.humidity.ideal && (
+                          <p className="text-lg font-bold text-blue-600">
+                            {result.careInfo.careRequirements.humidity.ideal}%
+                          </p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                          Min: {result.careInfo.careRequirements.humidity.min}% - Max: {result.careInfo.careRequirements.humidity.max}%
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Luminosity */}
+                    <div className="p-4 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Sun className="w-4 h-4 text-yellow-500" />
+                        <p className="text-xs text-muted-foreground font-semibold uppercase">Luminosité</p>
+                      </div>
+                      <div className="space-y-1">
+                        {result.careInfo.careRequirements.luminosity.ideal && (
+                          <p className="text-lg font-bold text-yellow-600">
+                            {result.careInfo.careRequirements.luminosity.ideal} lux
+                          </p>
+                        )}
+                        {result.careInfo.careRequirements.luminosity.description && (
+                          <p className="text-xs text-muted-foreground">
+                            {result.careInfo.careRequirements.luminosity.description}
+                          </p>
+                        )}
+                        {result.careInfo.careRequirements.luminosity.min && result.careInfo.careRequirements.luminosity.max && (
+                          <p className="text-xs text-muted-foreground">
+                            {result.careInfo.careRequirements.luminosity.min} - {result.careInfo.careRequirements.luminosity.max} lux
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Watering Frequency */}
+                    <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Droplets className="w-4 h-4 text-green-500" />
+                        <p className="text-xs text-muted-foreground font-semibold uppercase">Arrosage</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-bold text-green-600">
+                          {result.careInfo.careRequirements.watering.frequency}
+                        </p>
+                        {result.careInfo.careRequirements.watering.description && (
+                          <p className="text-xs text-muted-foreground">
+                            {result.careInfo.careRequirements.watering.description}
+                          </p>
+                        )}
+                        {result.careInfo.careRequirements.watering.minIntervalDays && result.careInfo.careRequirements.watering.maxIntervalDays && (
+                          <p className="text-xs text-muted-foreground">
+                            Tous les {result.careInfo.careRequirements.watering.minIntervalDays}-{result.careInfo.careRequirements.watering.maxIntervalDays} jours
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Additional Info */}
+                  {(result.careInfo.difficulty || result.careInfo.toxicity || result.careInfo.origin || result.careInfo.description || result.careInfo.careRequirements?.temperature) && (
+                    <div className="mt-4 pt-4 border-t border-border space-y-3">
+                      {result.careInfo.description && (
+                        <p className="text-sm text-muted-foreground italic">
+                          📖 {result.careInfo.description}
+                        </p>
+                      )}
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {result.careInfo.difficulty && (
+                          <div className="p-3 bg-secondary rounded-lg">
+                            <p className="text-xs text-muted-foreground font-semibold mb-1">DIFFICULTÉ</p>
+                            <p className="text-sm font-semibold text-foreground">{result.careInfo.difficulty}</p>
+                          </div>
+                        )}
+                        
+                        {result.careInfo.toxicity && (
+                          <div className="p-3 bg-secondary rounded-lg">
+                            <p className="text-xs text-muted-foreground font-semibold mb-1">TOXICITÉ</p>
+                            <p className="text-sm font-semibold text-foreground">{result.careInfo.toxicity}</p>
+                          </div>
+                        )}
+                        
+                        {result.careInfo.origin && (
+                          <div className="p-3 bg-secondary rounded-lg">
+                            <p className="text-xs text-muted-foreground font-semibold mb-1">ORIGINE</p>
+                            <p className="text-sm font-semibold text-foreground">{result.careInfo.origin}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Temperature */}
+                      {result.careInfo.careRequirements?.temperature && (
+                        <div className="p-3 bg-red-500/10 rounded-lg border border-red-500/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-base">🌡️</span>
+                            <p className="text-xs text-muted-foreground font-semibold uppercase">Température</p>
+                          </div>
+                          <div className="space-y-1">
+                            {result.careInfo.careRequirements.temperature.ideal && (
+                              <p className="text-lg font-bold text-red-600">
+                                {result.careInfo.careRequirements.temperature.ideal}°C
+                              </p>
+                            )}
+                            {result.careInfo.careRequirements.temperature.min && result.careInfo.careRequirements.temperature.max && (
+                              <p className="text-xs text-muted-foreground">
+                                Min: {result.careInfo.careRequirements.temperature.min}°C - Max: {result.careInfo.careRequirements.temperature.max}°C
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

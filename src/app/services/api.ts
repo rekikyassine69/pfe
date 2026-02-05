@@ -83,4 +83,6 @@ export const api = {
     }),
   fetchRecentRecognitions: (limit = 6) =>
     request(`/api/recognition/recent?limit=${limit}`),
-};
+  // AI Agent: Get plant care information by plant name
+  getPlantInfo: (plantName: string) =>
+    request(`/api/recognition/plant-info/${encodeURIComponent(plantName)}`),};
