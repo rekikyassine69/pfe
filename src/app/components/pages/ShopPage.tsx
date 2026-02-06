@@ -15,34 +15,38 @@ export function ShopPage() {
   };
 
   useEffect(() => {
+    const defaultImages = [
+      'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400',
+      'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400',
+      'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400',
+      'https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=400',
+      'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=400',
+      'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=400',
+    ];
+
     const mapped = produits.map((product, index) => {
       const features = [] as string[];
-      if (product.specifications?.capteurs) {
+      if (product.specifications?.capteurs && Array.isArray(product.specifications.capteurs)) {
         features.push(...product.specifications.capteurs.map((capteur: string) => `Capteur ${capteur}`));
       }
       if (product.specifications?.connectivite) {
         features.push(product.specifications.connectivite);
       }
+      
       return {
-        id: product._id || product.idProduit, // Utiliser _id MongoDB en priorité
+        id: product._id || product.idProduit,
         name: product.nom,
         description: product.description,
         price: product.prix,
-        rating: 4.7,
+        rating: product.note || 4.5,
         reviews: 0,
         stock: product.quantiteStock ?? product.stock ?? 0,
         statut: product.statut || 'disponible',
         category: product.categorie?.replace('_', ' ') || 'Produits',
-        image: product.images?.[0] || product.imageUrl || [
-          'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400',
-          'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400',
-          'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400',
-          'https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=400',
-          'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=400',
-          'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=400',
-        ][index % 6],
+        image: product.imageUrl ? product.imageUrl : defaultImages[index % defaultImages.length],
         features: features.length ? features : ['Accessoire IoT', 'Compatible mobile'],
-        bestseller: index % 3 === 0,
+        bestseller: product.estBestseller === true,
+        marque: product.marque,
       };
     });
 

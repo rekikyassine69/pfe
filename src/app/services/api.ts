@@ -67,6 +67,22 @@ export const api = {
       body: JSON.stringify({ nom, email, password }),
     }),
   me: () => request("/api/auth/me"),
+  updateProfile: (data: {
+    nom?: string;
+    prenom?: string;
+    telephone?: string;
+    bio?: string;
+    preferences?: Record<string, any>;
+  }) =>
+    request("/api/auth/me", {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    request("/api/auth/change-password", {
+      method: "POST",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    }),
   logout: () => request("/api/auth/logout", { method: "POST" }),
   forgotPassword: (email: string) =>
     request("/api/auth/forgot-password", {
