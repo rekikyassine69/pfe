@@ -75,6 +75,16 @@ export function AdminPage() {
     return monthLabels.map((label, index) => ({ month: label, amount: Math.round(totals[index]) }));
   }, [commandes]);
 
+  const formatOrderId = (order: any) => {
+    if (typeof order.idCommande === 'number') {
+      return `#ORD-${String(order.idCommande).padStart(4, '0')}`;
+    }
+    const rawId = order._id?.$oid ?? order._id;
+    const idText = typeof rawId === 'string' ? rawId : String(rawId ?? '');
+    const suffix = idText.length >= 6 ? idText.slice(-6).toUpperCase() : idText.toUpperCase();
+    return suffix ? `#ORD-${suffix}` : '#ORD-????';
+  };
+
   const recentOrders = useMemo(() => {
     const clientMap = new Map<string, any>();
     clients.forEach((client) => {
@@ -99,13 +109,20 @@ export function AdminPage() {
       .map((order) => {
         const clientId = order.clientId?.$oid ?? order.clientId;
         const client = clientMap.get(clientId);
+        const address = order.adresseLivraison || {};
+        const customerName = client?.prenom
+          ? `${client.prenom} ${client.nom ?? ''}`.trim()
+          : (client?.nom || `${address.prenom ?? ''} ${address.nom ?? ''}`.trim() || 'Client');
         const product = order.lignesCommande?.[0]?.nomProduit || 'Produit';
         const date = order.dateCommande?.$date ? new Date(order.dateCommande.$date) : new Date(order.dateCommande);
+        const total = typeof order.total === 'number' && order.total > 0
+          ? order.total
+          : (order.lignesCommande || []).reduce((sum: number, ligne: any) => sum + (ligne.sousTotal || 0), 0);
         return {
-          id: `#ORD-${String(order.idCommande ?? '').padStart(4, '0')}`,
-          customer: client?.nom || 'Client',
+          id: formatOrderId(order),
+          customer: customerName,
           product,
-          amount: `${(order.total || 0).toFixed(2)}€`,
+          amount: `${(total || 0).toFixed(2)}€`,
           status: statusMap[order.statut] || 'En cours',
           date: Number.isNaN(date.getTime()) ? '—' : date.toLocaleString('fr-FR'),
         };
