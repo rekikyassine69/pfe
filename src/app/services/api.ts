@@ -90,6 +90,32 @@ export const api = {
     const query = search.toString();
     return request(`/api/collections/${collection}${query ? `?${query}` : ""}`);
   },
+  adminFetchCollection: (collection: string, params?: Record<string, string | number>) => {
+    const search = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          search.set(key, String(value));
+        }
+      });
+    }
+    const query = search.toString();
+    return request(`/api/admin/collections/${collection}${query ? `?${query}` : ""}`);
+  },
+  adminCreateCollectionItem: (collection: string, data: Record<string, unknown>) =>
+    request(`/api/admin/collections/${collection}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  adminUpdateCollectionItem: (collection: string, id: string, data: Record<string, unknown>) =>
+    request(`/api/admin/collections/${collection}/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+  adminDeleteCollectionItem: (collection: string, id: string) =>
+    request(`/api/admin/collections/${collection}/${id}`, {
+      method: 'DELETE',
+    }),
   identifyPlant: (image: string, options?: Record<string, unknown>) =>
     request("/api/recognition/plant", {
       method: "POST",

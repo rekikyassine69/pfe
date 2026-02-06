@@ -81,6 +81,11 @@ router.post('/cart/add', requireAuth, async (req, res) => {
       return res.status(404).json({ message: 'Produit non trouvé' });
     }
 
+    // Vérifier si le produit est en rupture de stock ou hors stock
+    if (produit.statut === 'rupture' || produit.quantiteStock === 0) {
+      return res.status(400).json({ message: 'Ce produit n\'est pas disponible' });
+    }
+
     if (produit.quantiteStock < quantite) {
       return res.status(400).json({ message: 'Stock insuffisant' });
     }

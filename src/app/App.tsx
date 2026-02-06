@@ -21,6 +21,7 @@ import { ContactPage } from '@/app/components/pages/ContactPage';
 import { AdminPage } from '@/app/components/pages/AdminPage';
 import { AdminUsersPage } from '@/app/components/pages/AdminUsersPage';
 import { AdminPotsPage } from '@/app/components/pages/AdminPotsPage';
+import { AdminShopPage } from '@/app/components/pages/AdminShopPage';
 import { AdminOrdersPage } from '@/app/components/pages/AdminOrdersPage';
 import { AdminCoursesPage } from '@/app/components/pages/AdminCoursesPage';
 import { AdminGamesPage } from '@/app/components/pages/AdminGamesPage';
@@ -280,6 +281,8 @@ export default function App() {
         return <AdminUsersPage />;
       case 'admin-pots':
         return <AdminPotsPage />;
+      case 'admin-shop':
+        return <AdminShopPage />;
       case 'admin-orders':
         return <AdminOrdersPage />;
       case 'admin-courses':

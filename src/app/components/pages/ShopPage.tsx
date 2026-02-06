@@ -31,6 +31,7 @@ export function ShopPage() {
         rating: 4.7,
         reviews: 0,
         stock: product.quantiteStock ?? product.stock ?? 0,
+        statut: product.statut || 'disponible',
         category: product.categorie?.replace('_', ' ') || 'Produits',
         image: product.images?.[0] || product.imageUrl || [
           'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400',
@@ -154,7 +155,18 @@ export function ShopPage() {
                   </span>
                 </motion.div>
               )}
-              {product.stock < 20 && (
+              {product.stock === 0 || product.statut === 'rupture' ? (
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 + 0.2 }}
+                  className="absolute top-3 right-3"
+                >
+                  <span className="px-3 py-1 bg-red-500 text-white rounded-full text-xs font-medium shadow-lg">
+                    Rupture de stock
+                  </span>
+                </motion.div>
+              ) : product.stock < 20 && (
                 <motion.div 
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -215,26 +227,32 @@ export function ShopPage() {
                   <p className="text-2xl font-semibold text-foreground">
                     {product.price}€
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {product.stock} en stock
+                  <p className={`text-xs ${product.stock === 0 || product.statut === 'rupture' ? 'text-red-500 font-semibold' : 'text-muted-foreground'}`}>
+                    {product.stock === 0 || product.statut === 'rupture' ? 'Rupture' : `${product.stock} en stock`}
                   </p>
                 </div>
                 <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={product.stock > 0 && product.statut !== 'rupture' ? { scale: 1.05 } : {}}
+                  whileTap={product.stock > 0 && product.statut !== 'rupture' ? { scale: 0.95 } : {}}
                   onClick={async () => {
-                    setAddingProduct(product.id);
-                    try {
-                      await addToCart(product.id, 1);
-                    } finally {
-                      setAddingProduct(null);
+                    if (product.stock > 0 && product.statut !== 'rupture') {
+                      setAddingProduct(product.id);
+                      try {
+                        await addToCart(product.id, 1);
+                      } finally {
+                        setAddingProduct(null);
+                      }
                     }
                   }}
-                  disabled={addingProduct === product.id}
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-medium flex items-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={product.stock === 0 || product.statut === 'rupture' || addingProduct === product.id}
+                  className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg transition-opacity ${
+                    product.stock === 0 || product.statut === 'rupture'
+                      ? 'bg-muted text-muted-foreground cursor-not-allowed opacity-50'
+                      : 'bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed'
+                  }`}
                 >
                   <ShoppingCart className="w-4 h-4" />
-                  <span>{addingProduct === product.id ? 'Ajout...' : 'Ajouter'}</span>
+                  <span>{addingProduct === product.id ? 'Ajout...' : product.stock === 0 || product.statut === 'rupture' ? 'Rupture' : 'Ajouter'}</span>
                 </motion.button>
               </div>
             </div>
