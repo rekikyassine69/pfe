@@ -163,13 +163,39 @@ export const api = {
     request(`/api/admin/users${params ? `?${new URLSearchParams(params as any).toString()}` : ''}`),
   adminGetUser: (id: string) =>
     request(`/api/admin/users/${id}`),
-  adminUpdateUser: (id: string, data: { statut?: string; telephone?: string }) =>
+  adminCreateUser: (data: { nom: string; prenom: string; email: string; motDePasse: string; telephone?: string; statut?: string }) =>
+    request('/api/admin/users', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+  adminUpdateUser: (id: string, data: { statut?: string; telephone?: string; nom?: string; prenom?: string; email?: string }) =>
     request(`/api/admin/users/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data)
     }),
+  adminChangeUserRole: (id: string, role: 'client' | 'admin') =>
+    request(`/api/admin/users/${id}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role })
+    }),
   adminDeleteUser: (id: string) =>
     request(`/api/admin/users/${id}`, {
+      method: 'DELETE'
+    }),
+  adminGetAdmins: () =>
+    request('/api/admin/admins'),
+  adminCreateAdmin: (data: { nom: string; prenom: string; email: string; motDePasse: string; telephone?: string; statut?: string }) =>
+    request('/api/admin/admins', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+  adminUpdateAdmin: (id: string, data: { statut?: string; telephone?: string; nom?: string; prenom?: string; email?: string }) =>
+    request(`/api/admin/admins/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    }),
+  adminDeleteAdmin: (id: string) =>
+    request(`/api/admin/admins/${id}`, {
       method: 'DELETE'
     }),
   

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Users, Search, Plus, Edit2, Trash2, CheckCircle2, XCircle, Mail, Phone, Calendar } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
@@ -6,6 +6,7 @@ import { AddUserModal } from '@/app/components/modals/AddUserModal';
 import { EditUserModal } from '@/app/components/modals/EditUserModal';
 import { DeleteConfirmModal } from '@/app/components/modals/DeleteConfirmModal';
 import { useCollection } from '@/app/hooks/useCollection';
+import { api } from '@/app/services/api';
 
 export function AdminUsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,8 +16,7 @@ export function AdminUsersPage() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const [users, setUsers] = useState<any[]>([]);
-  const { data: clients } = useCollection<any>('clients');
-  const { data: admins } = useCollection<any>('administrateurs');
+  const [loading, setLoading] = useState(true);
   const { data: pots } = useCollection<any>('potsConnectes');
 
   const potCountByClient = useMemo(() => {
@@ -29,42 +29,100 @@ export function AdminUsersPage() {
     return counts;
   }, [pots]);
 
-  useEffect(() => {
-    const formatDate = (value: any) => {
-      const date = value?.$date ? new Date(value.$date) : new Date(value);
-      if (Number.isNaN(date.getTime())) return '—';
-      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+  const formatDate = (value: any) => {
+    const date = value?.$date ? new Date(value.$date) : new Date(value);
+    if (Number.isNaN(date.getTime())) return { label: '—', value: null };
+    return {
+      label: date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
+      value: date,
     };
+  };
 
-    const mappedAdmins = admins.map((admin) => ({
-      id: admin.idAdmin ?? admin._id,
-      name: admin.nom || 'Admin',
-      email: admin.email,
-      phone: '—',
-      role: 'Admin',
-      status: 'Actif',
-      pots: 0,
-      joinDate: formatDate(admin.dateCreation),
-    }));
+  const toStatusKey = (statut?: string) => (statut === 'inactif' || statut === 'inactive' ? 'inactive' : 'active');
+  const toStatusLabel = (key: string) => (key === 'inactive' ? 'Inactif' : 'Actif');
 
-    const mappedClients = clients.map((client) => {
-      const clientId = client._id?.$oid ?? client._id;
-      return {
-        id: client.idClient ?? client._id,
-        name: client.nom || 'Client',
-        email: client.email,
-        phone: '—',
-        role: 'Client',
-        status: 'Actif',
-        pots: potCountByClient.get(clientId) || 0,
-        joinDate: formatDate(client.dateInscription),
-      };
-    });
+  const mapName = (nom?: string, prenom?: string) => {
+    const parts = [prenom, nom].filter(Boolean).join(' ').trim();
+    return parts || nom || 'Utilisateur';
+  };
 
-    if (mappedAdmins.length || mappedClients.length) {
-      setUsers([...mappedAdmins, ...mappedClients]);
+  const parseName = (fullName: string) => {
+    const clean = (fullName || '').trim();
+    const parts = clean.split(/\s+/).filter(Boolean);
+    const prenom = parts.shift() || '';
+    const nom = parts.join(' ') || prenom || '';
+    return { nom, prenom };
+  };
+
+  const loadUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [clientData, adminData] = await Promise.all([
+        api.adminGetUsers().catch(err => {
+          console.error('Error fetching users:', err);
+          return [];
+        }),
+        api.adminGetAdmins().catch(err => {
+          console.error('Error fetching admins:', err);
+          return [];
+        }),
+      ]);
+
+      const mappedAdmins = (adminData || []).map((admin: any) => {
+        const { label, value } = formatDate(admin.dateCreation || admin.dateInscription || admin.createdAt);
+        return {
+          id: admin._id,
+          name: mapName(admin.nom, admin.prenom),
+          email: admin.email,
+          phone: admin.telephone || '—',
+          roleKey: 'admin',
+          roleLabel: 'Admin',
+          statusKey: toStatusKey(admin.statut),
+          statusLabel: toStatusLabel(toStatusKey(admin.statut)),
+          pots: 0,
+          joinDate: label,
+          joinDateValue: value,
+        };
+      });
+
+      const mappedClients = (clientData || []).map((client: any) => {
+        const clientId = client._id?.$oid ?? client._id;
+        const { label, value } = formatDate(client.dateInscription || client.dateCreation || client.createdAt);
+        const statusKey = toStatusKey(client.statut);
+        return {
+          id: client._id,
+          name: mapName(client.nom, client.prenom),
+          email: client.email,
+          phone: client.telephone || '—',
+          roleKey: 'client',
+          roleLabel: 'Client',
+          statusKey,
+          statusLabel: toStatusLabel(statusKey),
+          pots: potCountByClient.get(clientId) || 0,
+          joinDate: label,
+          joinDateValue: value,
+        };
+      });
+
+      if (mappedAdmins.length > 0 || mappedClients.length > 0) {
+        setUsers([...mappedAdmins, ...mappedClients]);
+      }
+    } catch (error: any) {
+      console.error('Error loading users:', error);
+      if (error?.message?.includes('401') || error?.message?.includes('Authentification')) {
+        // Silently handle auth errors - user may need to re-login
+        setUsers([]);
+      } else {
+        toast.error('Erreur lors du chargement des utilisateurs');
+      }
+    } finally {
+      setLoading(false);
     }
-  }, [admins, clients, potCountByClient]);
+  }, [potCountByClient]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   const recentUsersCount = useMemo(() => {
     const now = Date.now();
@@ -73,11 +131,10 @@ export function AdminUsersPage() {
       const date = value?.$date ? new Date(value.$date) : new Date(value);
       return !Number.isNaN(date.getTime()) && now - date.getTime() <= thirtyDays;
     };
-    return [
-      ...admins.map((a) => a.dateCreation),
-      ...clients.map((c) => c.dateInscription),
-    ].filter(isRecent).length;
-  }, [admins, clients]);
+    return users
+      .map((u) => u.joinDateValue)
+      .filter((value) => value && isRecent(value)).length;
+  }, [users]);
 
   const stats = [
     { label: 'Total Utilisateurs', value: String(users.length), icon: Users, color: 'text-chart-1' },
@@ -86,8 +143,29 @@ export function AdminUsersPage() {
     { label: 'Inactifs', value: '0', icon: XCircle, color: 'text-orange-500' },
   ];
 
-  const handleAddUser = (user: any) => {
-    setUsers([...users, user]);
+  const handleAddUser = async (user: { name: string; email: string; password: string; role: 'client' | 'admin'; status: 'active' | 'inactive' }) => {
+    try {
+      const { nom, prenom } = parseName(user.name);
+      const payload = {
+        nom,
+        prenom,
+        email: user.email,
+        motDePasse: user.password,
+        statut: user.status === 'inactive' ? 'inactif' : 'actif',
+      };
+
+      if (user.role === 'admin') {
+        await api.adminCreateAdmin(payload);
+      } else {
+        await api.adminCreateUser(payload);
+      }
+
+      toast.success(`Utilisateur "${user.name}" cree avec succes !`);
+      await loadUsers();
+    } catch (error: any) {
+      console.error('Error creating user:', error);
+      toast.error(error.message || 'Erreur lors de la creation de l\'utilisateur');
+    }
   };
 
   const handleEdit = (user: any) => {
@@ -95,10 +173,42 @@ export function AdminUsersPage() {
     setShowEditModal(true);
   };
 
-  const handleUpdateUser = (id: string, updatedData: any) => {
-    setUsers(users.map(user => 
-      user.id.toString() === id ? { ...user, ...updatedData } : user
-    ));
+  const handleUpdateUser = async (id: string, updatedData: any) => {
+    if (!selectedUser) return;
+    try {
+      const { nom, prenom } = parseName(updatedData.name);
+      const payload = {
+        nom,
+        prenom,
+        email: updatedData.email,
+        statut: updatedData.status === 'inactive' ? 'inactif' : 'actif',
+      };
+
+      // Check if role has changed
+      const roleChanged = selectedUser.roleKey !== updatedData.role;
+      
+      if (roleChanged) {
+        // Change role (this will transfer the user between collections)
+        await api.adminChangeUserRole(id, updatedData.role);
+        toast.success(`Utilisateur "${updatedData.name}" promu en ${updatedData.role === 'admin' ? 'administrateur' : 'client'} !`);
+      }
+
+      // Update other fields based on current role
+      if (selectedUser.roleKey === 'admin' && !roleChanged) {
+        await api.adminUpdateAdmin(id, payload);
+        toast.success(`Administrateur "${updatedData.name}" mis a jour !`);
+      } else if (selectedUser.roleKey === 'client' && !roleChanged) {
+        await api.adminUpdateUser(id, payload);
+        toast.success(`Client "${updatedData.name}" mis a jour !`);
+      }
+
+      setShowEditModal(false);
+      setSelectedUser(null);
+      await loadUsers();
+    } catch (error: any) {
+      console.error('Error updating user:', error);
+      toast.error(error.message || 'Erreur lors de la mise a jour');
+    }
   };
 
   const handleDeleteClick = (user: any) => {
@@ -106,11 +216,20 @@ export function AdminUsersPage() {
     setShowDeleteModal(true);
   };
 
-  const handleDeleteConfirm = () => {
-    if (selectedUser) {
-      setUsers(users.filter(user => user.id !== selectedUser.id));
-      toast.success(`Utilisateur "${selectedUser.name}" supprimé !`);
+  const handleDeleteConfirm = async () => {
+    if (!selectedUser) return;
+    try {
+      if (selectedUser.roleKey === 'admin') {
+        await api.adminDeleteAdmin(selectedUser.id);
+      } else {
+        await api.adminDeleteUser(selectedUser.id);
+      }
+      toast.success(`Utilisateur "${selectedUser.name}" supprime !`);
       setSelectedUser(null);
+      await loadUsers();
+    } catch (error: any) {
+      console.error('Error deleting user:', error);
+      toast.error(error.message || 'Erreur lors de la suppression');
     }
   };
 
@@ -190,7 +309,14 @@ export function AdminUsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filteredUsers.map((user, index) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-6 text-center text-muted-foreground">
+                    Chargement des utilisateurs...
+                  </td>
+                </tr>
+              ) : (
+                filteredUsers.map((user, index) => (
                 <motion.tr
                   key={user.id}
                   initial={{ opacity: 0, x: -20 }}
@@ -225,20 +351,20 @@ export function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.role === 'Admin'
+                      user.roleLabel === 'Admin'
                         ? 'bg-purple-500/20 text-purple-600'
                         : 'bg-blue-500/20 text-blue-600'
                     }`}>
-                      {user.role}
+                      {user.roleLabel}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.status === 'Actif'
+                      user.statusLabel === 'Actif'
                         ? 'bg-green-500/20 text-green-600'
                         : 'bg-orange-500/20 text-orange-600'
                     }`}>
-                      {user.status}
+                      {user.statusLabel}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -269,7 +395,7 @@ export function AdminUsersPage() {
                     </div>
                   </td>
                 </motion.tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>
@@ -305,7 +431,13 @@ export function AdminUsersPage() {
       <EditUserModal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
-        user={selectedUser}
+        user={selectedUser ? {
+          id: selectedUser.id,
+          name: selectedUser.name,
+          email: selectedUser.email,
+          role: selectedUser.roleKey,
+          status: selectedUser.statusKey,
+        } : null}
         onUpdate={handleUpdateUser}
       />
       <DeleteConfirmModal

@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import { Client, Administrateur } from '../models/User.js';
 import { Commande } from '../models/Commande.js';
 import { PotConnecte } from '../models/PotConnecte.js';
@@ -13,6 +14,13 @@ const router = express.Router();
 router.use(requireAuth, requireRole(['admin']));
 
 // ==================== USERS MANAGEMENT ====================
+
+const normalizeUserStatus = (value) => {
+  if (!value) return value;
+  if (value === 'active') return 'actif';
+  if (value === 'inactive') return 'inactif';
+  return value;
+};
 
 // Get all users (clients)
 router.get('/users', async (req, res) => {
@@ -42,6 +50,196 @@ router.get('/users', async (req, res) => {
   }
 });
 
+// Get all administrators
+router.get('/admins', async (_req, res) => {
+  try {
+    const admins = await Administrateur.find({}).select('-motDePasse');
+    res.json(admins);
+  } catch (error) {
+    console.error('Error fetching admins:', error);
+    res.status(500).json({ message: 'Erreur lors de la recuperation des administrateurs' });
+  }
+});
+
+// Create user (client)
+router.post('/users', async (req, res) => {
+  try {
+    const { nom, prenom, email, motDePasse, telephone, statut } = req.body;
+    if (!nom || !prenom || !email || !motDePasse) {
+      return res.status(400).json({ message: 'Nom, prenom, email, et motDePasse sont requis' });
+    }
+
+    const existingClient = await Client.findOne({ email });
+    const existingAdmin = await Administrateur.findOne({ email });
+    if (existingClient || existingAdmin) {
+      return res.status(409).json({ message: 'Email deja utilise' });
+    }
+
+    const hashed = await bcrypt.hash(motDePasse, 10);
+    const client = await Client.create({
+      nom,
+      prenom,
+      email,
+      motDePasse: hashed,
+      telephone,
+      statut: normalizeUserStatus(statut) || 'actif',
+      dateInscription: new Date(),
+      role: 'client',
+    });
+
+    res.status(201).json(client.toObject({ transform: (_doc, ret) => {
+      delete ret.motDePasse;
+      return ret;
+    }}));
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ message: 'Erreur lors de la creation de l\'utilisateur' });
+  }
+});
+
+// Create admin
+router.post('/admins', async (req, res) => {
+  try {
+    const { nom, prenom, email, motDePasse, telephone, statut } = req.body;
+    if (!nom || !prenom || !email || !motDePasse) {
+      return res.status(400).json({ message: 'Nom, prenom, email, et motDePasse sont requis' });
+    }
+
+    const existingClient = await Client.findOne({ email });
+    const existingAdmin = await Administrateur.findOne({ email });
+    if (existingClient || existingAdmin) {
+      return res.status(409).json({ message: 'Email deja utilise' });
+    }
+
+    const hashed = await bcrypt.hash(motDePasse, 10);
+    const admin = await Administrateur.create({
+      nom,
+      prenom,
+      email,
+      motDePasse: hashed,
+      telephone,
+      statut: normalizeUserStatus(statut) || 'actif',
+      dateInscription: new Date(),
+      role: 'admin',
+    });
+
+    res.status(201).json(admin.toObject({ transform: (_doc, ret) => {
+      delete ret.motDePasse;
+      return ret;
+    }}));
+  } catch (error) {
+    console.error('Error creating admin:', error);
+    res.status(500).json({ message: 'Erreur lors de la creation de l\'administrateur' });
+  }
+});
+
+// Change user role (transfer between collections) - MUST BE BEFORE /users/:id
+router.patch('/users/:id/role', async (req, res) => {
+  try {
+    const { role } = req.body;
+    const userId = req.params.id;
+
+    if (!role || !['client', 'admin'].includes(role)) {
+      return res.status(400).json({ message: 'Rôle invalide' });
+    }
+
+    // Find user in both collections (include password for transfer)
+    let user = await Client.findById(userId);
+    let isClient = true;
+    
+    if (!user) {
+      user = await Administrateur.findById(userId);
+      isClient = false;
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Check if role is already correct
+    const currentRole = isClient ? 'client' : 'admin';
+    if (currentRole === role) {
+      // Return user without password
+      const userObj = user.toObject();
+      delete userObj.motDePasse;
+      return res.json(userObj);
+    }
+
+    // Transfer user between collections - preserve all data
+    const userData = user.toObject();
+    console.log('User data before transfer:', { ...userData, motDePasse: '***' });
+    
+    // Ensure required fields are present with fallbacks
+    if (!userData.nom) {
+      return res.status(400).json({ 
+        message: 'Le nom de l\'utilisateur est requis pour changer le rôle.' 
+      });
+    }
+    
+    if (!userData.email || !userData.motDePasse) {
+      return res.status(400).json({ 
+        message: 'Données utilisateur incomplètes. Impossible de changer le rôle.' 
+      });
+    }
+    
+    // Handle missing prenom field - use empty string as fallback
+    if (!userData.prenom) {
+      console.log('Warning: prenom field is missing, using empty string');
+      userData.prenom = '';
+    }
+    
+    delete userData._id; // Remove old ID
+    delete userData.__v; // Remove version key
+    delete userData.createdAt; // Remove timestamps
+    delete userData.updatedAt;
+    delete userData.idClient; // Remove old custom ID if exists
+    userData.role = role;
+
+    let newUser;
+    if (role === 'admin') {
+      // Client -> Admin: Create in administrateurs, delete from clients
+      newUser = await Administrateur.create(userData);
+      await Client.findByIdAndDelete(userId);
+      
+      // Notify user about role change
+      await Notification.create({
+        clientId: newUser._id,
+        type: 'compte',
+        titre: 'Changement de rôle',
+        message: 'Votre compte a été promu administrateur.',
+        priorite: 'haute'
+      });
+    } else {
+      // Admin -> Client: Create in clients, delete from administrateurs
+      newUser = await Client.create(userData);
+      await Administrateur.findByIdAndDelete(userId);
+      
+      // Update pots and notifications references
+      await Promise.all([
+        PotConnecte.updateMany({ clientId: userId }, { clientId: newUser._id }),
+        Notification.updateMany({ clientId: userId }, { clientId: newUser._id })
+      ]);
+      
+      // Notify user about role change
+      await Notification.create({
+        clientId: newUser._id,
+        type: 'compte',
+        titre: 'Changement de rôle',
+        message: 'Votre rôle a été changé en client.',
+        priorite: 'haute'
+      });
+    }
+
+    res.json(newUser.toObject({ transform: (_doc, ret) => {
+      delete ret.motDePasse;
+      return ret;
+    }}));
+  } catch (error) {
+    console.error('Error changing user role:', error);
+    res.status(500).json({ message: 'Erreur lors du changement de rôle' });
+  }
+});
+
 // Get user details
 router.get('/users/:id', async (req, res) => {
   try {
@@ -66,11 +264,21 @@ router.get('/users/:id', async (req, res) => {
 // Update user status
 router.patch('/users/:id', async (req, res) => {
   try {
-    const { statut, telephone } = req.body;
+    const { statut, telephone, nom, prenom, email } = req.body;
     const updateData = {};
-    
-    if (statut) updateData.statut = statut;
+
+    if (statut) updateData.statut = normalizeUserStatus(statut);
     if (telephone !== undefined) updateData.telephone = telephone;
+    if (nom) updateData.nom = nom;
+    if (prenom) updateData.prenom = prenom;
+    if (email) {
+      const existingClient = await Client.findOne({ email, _id: { $ne: req.params.id } });
+      const existingAdmin = await Administrateur.findOne({ email });
+      if (existingClient || existingAdmin) {
+        return res.status(409).json({ message: 'Email deja utilise' });
+      }
+      updateData.email = email;
+    }
 
     const user = await Client.findByIdAndUpdate(
       req.params.id,
@@ -98,6 +306,42 @@ router.patch('/users/:id', async (req, res) => {
   }
 });
 
+// Update admin
+router.patch('/admins/:id', async (req, res) => {
+  try {
+    const { statut, telephone, nom, prenom, email } = req.body;
+    const updateData = {};
+
+    if (statut) updateData.statut = normalizeUserStatus(statut);
+    if (telephone !== undefined) updateData.telephone = telephone;
+    if (nom) updateData.nom = nom;
+    if (prenom) updateData.prenom = prenom;
+    if (email) {
+      const existingAdmin = await Administrateur.findOne({ email, _id: { $ne: req.params.id } });
+      const existingClient = await Client.findOne({ email });
+      if (existingAdmin || existingClient) {
+        return res.status(409).json({ message: 'Email deja utilise' });
+      }
+      updateData.email = email;
+    }
+
+    const admin = await Administrateur.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    ).select('-motDePasse');
+
+    if (!admin) {
+      return res.status(404).json({ message: 'Administrateur non trouve' });
+    }
+
+    res.json(admin);
+  } catch (error) {
+    console.error('Error updating admin:', error);
+    res.status(500).json({ message: 'Erreur lors de la mise a jour de l\'administrateur' });
+  }
+});
+
 // Delete user
 router.delete('/users/:id', async (req, res) => {
   try {
@@ -116,6 +360,21 @@ router.delete('/users/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting user:', error);
     res.status(500).json({ message: 'Erreur lors de la suppression de l\'utilisateur' });
+  }
+});
+
+// Delete admin
+router.delete('/admins/:id', async (req, res) => {
+  try {
+    const admin = await Administrateur.findByIdAndDelete(req.params.id);
+    if (!admin) {
+      return res.status(404).json({ message: 'Administrateur non trouve' });
+    }
+
+    res.json({ message: 'Administrateur supprime avec succes' });
+  } catch (error) {
+    console.error('Error deleting admin:', error);
+    res.status(500).json({ message: 'Erreur lors de la suppression de l\'administrateur' });
   }
 });
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Modal } from './Modal';
 import { User, Mail, Shield } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface UserData {
   id: string;
@@ -43,8 +42,6 @@ export function EditUserModal({ isOpen, onClose, user, onUpdate }: EditUserModal
     if (!user) return;
 
     onUpdate(user.id, formData);
-    toast.success(`Utilisateur "${formData.name}" mis à jour !`);
-    onClose();
   };
 
   if (!user) return null;
@@ -95,6 +92,9 @@ export function EditUserModal({ isOpen, onClose, user, onUpdate }: EditUserModal
               <option value="client">Client</option>
               <option value="admin">Administrateur</option>
             </select>
+            <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+              ⚠️ Le changement de rôle déplacera l'utilisateur entre les collections.
+            </p>
           </div>
 
           <div>

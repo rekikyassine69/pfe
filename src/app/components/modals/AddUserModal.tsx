@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { Modal } from './Modal';
 import { User, Mail, Lock, Shield } from 'lucide-react';
-import { toast } from 'sonner';
-
 interface AddUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (user: any) => void;
+  onAdd: (user: { name: string; email: string; password: string; role: 'client' | 'admin'; status: 'active' | 'inactive' }) => void;
 }
 
 export function AddUserModal({ isOpen, onClose, onAdd }: AddUserModalProps) {
@@ -21,19 +19,13 @@ export function AddUserModal({ isOpen, onClose, onAdd }: AddUserModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newUser = {
-      id: Date.now().toString(),
+    onAdd({
       name: formData.name,
       email: formData.email,
+      password: formData.password,
       role: formData.role,
       status: formData.status,
-      joinDate: new Date().toISOString().split('T')[0],
-      lastActive: new Date().toISOString().split('T')[0],
-      plants: 0,
-    };
-
-    onAdd(newUser);
-    toast.success(`Utilisateur "${formData.name}" créé avec succès !`);
+    });
     
     setFormData({
       name: '',
