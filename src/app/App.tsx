@@ -14,6 +14,9 @@ import { CoursesPage } from '@/app/components/pages/CoursesPage';
 import { CourseDetailPage } from '@/app/components/pages/CourseDetailPage';
 import { GamesPage } from '@/app/components/pages/GamesPage';
 import { ShopPage } from '@/app/components/pages/ShopPage';
+import { CartPage } from '@/app/components/pages/CartPage';
+import { CheckoutPage } from '@/app/components/pages/CheckoutPage';
+import { OrdersPage } from '@/app/components/pages/OrdersPage';
 import { ContactPage } from '@/app/components/pages/ContactPage';
 import { AdminPage } from '@/app/components/pages/AdminPage';
 import { AdminUsersPage } from '@/app/components/pages/AdminUsersPage';
@@ -30,6 +33,8 @@ import { PlantCarePage } from '@/app/components/pages/PlantCarePage';
 import { GamesDemoPage } from '@/app/components/pages/GamesDemoPage';
 import { CoursesPreviewPage } from '@/app/components/pages/CoursesPreviewPage';
 import { SettingsPage } from '@/app/components/pages/SettingsPage';
+import { CartProvider } from '@/app/hooks/useCart';
+import { NotificationsProvider } from '@/app/hooks/useNotifications';
 
 type UserRole = 'visitor' | 'client' | 'admin';
 
@@ -54,6 +59,13 @@ export default function App() {
     };
 
     restoreSession();
+
+    // Listen for custom navigation events
+    const handleCustomNavigate = (event: any) => {
+      handleNavigate(event.detail);
+    };
+    window.addEventListener('navigate', handleCustomNavigate);
+    return () => window.removeEventListener('navigate', handleCustomNavigate);
   }, []);
 
   useEffect(() => {
@@ -244,6 +256,12 @@ export default function App() {
         return <GamesPage />;
       case 'shop':
         return <ShopPage />;
+      case 'cart':
+        return <CartPage />;
+      case 'checkout':
+        return <CheckoutPage />;
+      case 'orders':
+        return <OrdersPage />;
       case 'contact':
         return <ContactPage />;
       case 'settings':
@@ -309,28 +327,30 @@ export default function App() {
     return (
       <>
         <ToastProvider />
-        <div className="flex min-h-screen bg-background">
-          <AdminSidebar 
-            currentPage={currentPage} 
-            onNavigate={handleNavigate}
-            onLogout={handleLogout}
-          />
-          <main className="flex-1 lg:ml-64 p-4 md:p-8">
-            <div className="max-w-7xl mx-auto">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentPage}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                >
-                  {renderAdminPage()}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </main>
-        </div>
+        <NotificationsProvider>
+          <div className="flex min-h-screen bg-background">
+            <AdminSidebar 
+              currentPage={currentPage} 
+              onNavigate={handleNavigate}
+              onLogout={handleLogout}
+            />
+            <main className="flex-1 lg:ml-64 p-4 md:p-8">
+              <div className="max-w-7xl mx-auto">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentPage}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  >
+                    {renderAdminPage()}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </main>
+          </div>
+        </NotificationsProvider>
       </>
     );
   }
@@ -339,29 +359,33 @@ export default function App() {
   return (
     <>
       <ToastProvider />
-      <div className="flex min-h-screen bg-background">
-        <Sidebar 
-          currentPage={currentPage} 
-          onNavigate={handleNavigate}
-          onLogout={handleLogout}
-          isAdmin={false}
-        />
-        <main className="flex-1 lg:ml-64 p-4 md:p-8">
-          <div className="max-w-7xl mx-auto">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentPage}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-              >
-                {renderClientPage()}
-              </motion.div>
-            </AnimatePresence>
+      <NotificationsProvider>
+        <CartProvider>
+          <div className="flex min-h-screen bg-background">
+            <Sidebar 
+              currentPage={currentPage} 
+              onNavigate={handleNavigate}
+              onLogout={handleLogout}
+              isAdmin={false}
+            />
+            <main className="flex-1 lg:ml-64 p-4 md:p-8">
+              <div className="max-w-7xl mx-auto">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentPage}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  >
+                    {renderClientPage()}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </main>
           </div>
-        </main>
-      </div>
+        </CartProvider>
+      </NotificationsProvider>
     </>
   );
 }

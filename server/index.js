@@ -9,6 +9,9 @@ import plantsRouter from "./routes/plants.js";
 import recognitionRouter from "./routes/recognition.js";
 import authRouter from "./routes/auth.js";
 import collectionsRouter from "./routes/collections.js";
+import shopRouter from "./routes/shop.js";
+import adminRouter from "./routes/admin.js";
+import notificationsRouter from "./routes/notifications.js";
 import { requireAuth, requireRole } from "./middleware/auth.js";
 
 dotenv.config();
@@ -24,6 +27,9 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/plants", plantsRouter);
 app.use("/api/recognition", recognitionRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/shop", shopRouter);
+app.use("/api/notifications", notificationsRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/collections", requireAuth, collectionsRouter);
 app.use("/api/admin/collections", requireAuth, requireRole(["admin"]), collectionsRouter);
 

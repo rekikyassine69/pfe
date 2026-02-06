@@ -10,4 +10,5 @@ export { Jeu } from './Jeu.js';
 export { Score } from './Score.js';
 export { Produit } from './Produit.js';
 export { Commande } from './Commande.js';
+export { Panier } from './Panier.js';
 export { Notification } from './Notification.js';

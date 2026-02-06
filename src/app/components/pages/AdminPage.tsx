@@ -84,7 +84,10 @@ export function AdminPage() {
 
     const statusMap: Record<string, string> = {
       livree: 'Livré',
+      'en cours': 'En cours',
       en_cours: 'En cours',
+      confirmee: 'Confirmée',
+      'en attente': 'En attente',
       en_attente: 'En attente',
       annulee: 'Annulé',
       annule: 'Annulé',

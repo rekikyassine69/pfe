@@ -5,7 +5,7 @@ const produitSchema = new mongoose.Schema({
   description: String,
   categorie: String,
   prix: { type: Number, required: true },
-  stock: { type: Number, default: 0 },
+  quantiteStock: { type: Number, default: 0 },
   imageUrl: String,
   specifications: mongoose.Schema.Types.Mixed,
   marque: String,

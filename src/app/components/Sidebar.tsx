@@ -7,6 +7,7 @@ import {
   BookOpen, 
   Gamepad2, 
   ShoppingCart, 
+  Package,
   Settings, 
   MessageSquare,
   LayoutDashboard,
@@ -34,6 +35,7 @@ export function Sidebar({ currentPage, onNavigate, onLogout, isAdmin = false }: 
     { id: 'courses', label: 'Cours en ligne', icon: BookOpen },
     { id: 'games', label: 'Jeux Éducatifs', icon: Gamepad2 },
     { id: 'shop', label: 'Boutique', icon: ShoppingCart },
+    { id: 'orders', label: 'Mes Commandes', icon: Package },
     { id: 'contact', label: 'Contact', icon: MessageSquare },
   ];
 
