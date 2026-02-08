@@ -59,6 +59,97 @@
 },
 {
   "_id": {
+    "$oid": "507f1f77bcf86cd799439604"
+  },
+  "idJeu": 4,
+  "nomJeu": "Puzzle des Capteurs",
+  "type": "puzzle",
+  "description": "Assemblez les composants IoT",
+  "difficulte": "moyen",
+  "regles": "Cliquez sur chaque composant pour placer les capteurs dans le bon ordre pour créer un système IoT complet.",
+  "niveaux": [
+    {
+      "niveau": 1,
+      "composants": ["Capteur d'humidité", "Arduino", "Batterie"],
+      "tempsLimite": 120
+    },
+    {
+      "niveau": 2,
+      "composants": ["Capteur d'humidité", "Capteur de température", "Arduino", "WiFi Module", "Batterie"],
+      "tempsLimite": 180
+    },
+    {
+      "niveau": 3,
+      "composants": ["Capteur d'humidité", "Capteur de température", "Capteur de lumière", "Arduino", "WiFi Module", "Cloud Storage", "Écran", "Batterie"],
+      "tempsLimite": 240
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439605"
+  },
+  "idJeu": 5,
+  "nomJeu": "Course contre la Déshydratation",
+  "type": "runner",
+  "description": "Arrosez vos plantes à temps !",
+  "difficulte": "facile",
+  "regles": "Attrapez les gouttes d'eau qui tombent pour sauver les plantes. Chaque plante laissée sans eau vous coûte des points.",
+  "niveaux": [
+    {
+      "niveau": 1,
+      "vitesse": 3,
+      "nombrePlantes": 5,
+      "duree": 60
+    },
+    {
+      "niveau": 2,
+      "vitesse": 5,
+      "nombrePlantes": 8,
+      "duree": 90
+    },
+    {
+      "niveau": 3,
+      "vitesse": 7,
+      "nombrePlantes": 12,
+      "duree": 120
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "507f1f77bcf86cd799439606"
+  },
+  "idJeu": 6,
+  "nomJeu": "Jardin Virtuel Manager",
+  "type": "strategy",
+  "description": "Créez et gérez votre propre jardin numérique",
+  "difficulte": "difficile",
+  "regles": "Organisez votre jardin virtuel, cultivez des plantes, gérez les ressources et gagnez des points selon votre succès.",
+  "niveaux": [
+    {
+      "niveau": 1,
+      "espaceDispo": 9,
+      "bugetsInitial": 1000,
+      "duree": 300
+    },
+    {
+      "niveau": 2,
+      "espaceDispo": 16,
+      "budgetInitial": 1500,
+      "duree": 450
+    },
+    {
+      "niveau": 3,
+      "espaceDispo": 25,
+      "budgetInitial": 2000,
+      "duree": 600
+    }
+  ]
+}
+]
+{
+  "_id": {
     "$oid": "507f1f77bcf86cd799439602"
   },
   "idJeu": 2,
